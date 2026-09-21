@@ -1,0 +1,46 @@
+{
+ "bias": "short",
+ "targets": [
+  {
+   "level": "vwap_m1",
+   "price": 30617.22
+  },
+  {
+   "level": "weekly_val",
+   "price": 30547.0
+  },
+  {
+   "level": "session_low",
+   "price": 30496.0
+  }
+ ],
+ "invalidation": {
+  "level": "weekly_high",
+  "price": 30799.0
+ },
+ "waiting_for": "shorts licensed on rebalance to the 2m/3m MA following this breakdown, or on a fresh retest of the 30727-30736 (bb_ma_15m/weekly_vah) rejection zone from below that stalls again",
+ "two_sided": true,
+ "condition_for_other_side": "Longs resume on a reclaim of the 30727-30736 confluence (bb_ma_15m/weekly_vah) with 2m/3m MA displacement, not a wick - the 739.50 poke already failed to hold. That targets a retest of the weekly high (~799); full invalidation of the day's short bias still needs a 15m decisive-body close above 799.",
+ "anticipated_resolution": {
+  "level": "bb_ma_15m_weekly_vah_confluence",
+  "price": 30736.0,
+  "expect": "holds",
+  "act_on_resolution": true
+ },
+ "acceptance_rule": "The 30727-30736 rejection zone breaks only on a 15m decisive-body close above it that holds the next candle - a wick through (as already happened to 739.50) doesn't count. Weekly high 799 breaks the same way and hasn't.",
+ "other_side_tripwire": {
+  "level": "bb_ma_15m_weekly_vah_confluence",
+  "price": 30736.0,
+  "event": "2m_close_through_with_ma"
+ },
+ "defended_level": {
+  "level": "weekly_vah_bb_ma_15m_confluence",
+  "price": 30736.0,
+  "memory": "rejected 07:30 (15m absorption, body_ratio 0.12) near the weekly high; retested from below on this bounce, wicked to 739.50 on the 10:30 15m candle, no body closed above - defended twice",
+  "status": "holding"
+ },
+ "flush": false,
+ "flush_direction": null,
+ "escalation_response": "accommodated",
+ "reasoning": "Short thesis already paid: the failed weekly-high poke (807.75, no 15m close held) led to a crash to 496, blowing through weekly_val. The bounce off that low stalled short of my named 751-761 zone, actually rejecting at bb_ma_15m/weekly_vah (727-736, wick to 739.5, no 15m body close above), and is now displacing away through own MA/VWAP/daily POC-VAL on the 2-3m. Relocating the trigger to where it actually rejected; weekly high 799 stays outer invalidation, unbroken by a decisive 15m close. Choppy session (0.059 path efficiency), not flush - standard MA-rebalance floor applies."
+}

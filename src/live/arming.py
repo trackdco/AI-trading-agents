@@ -41,22 +41,31 @@ class ArmingAuthorization:
     token_sha256: str          # hex digest of the token phrase Angus issued
     armed_sha: str             # the certified commit the token authorizes
     account: str               # the funded trade account the armed run must use
+    entrypoint: str            # e.g. "scripts.ny_run" — the ONE script this phrase arms
 
 
 def load_authorization(path: str | Path = ARMING_FILE) -> ArmingAuthorization:
     """Read Angus's committed authorization. Missing file or field = no authorization exists
-    = arming refused — absence is the disarmed state, never a default."""
+    = arming refused — absence is the disarmed state, never a default.
+
+    `entrypoint` (2026-08-03 audit): the repo carries more than one live-armable script
+    (ny_run.py, and the older canon_run.py which trades a DIFFERENT account) sharing this
+    same lock — verify_for_arming previously checked only the token and the commit, so a
+    phrase issued for one would silently also arm the other. Required, no default: every
+    authorization Angus commits names the one script it's good for."""
     import yaml
     p = Path(path)
     if not p.exists():
         raise ArmingError(f"no arming authorization on file ({p}) — Angus has not issued one")
     raw = yaml.safe_load(p.read_text()) or {}
-    missing = [k for k in ("token_sha256", "armed_sha", "account") if not raw.get(k)]
+    missing = [k for k in ("token_sha256", "armed_sha", "account", "entrypoint")
+              if not raw.get(k)]
     if missing:
         raise ArmingError(f"arming authorization incomplete — missing {missing}")
     return ArmingAuthorization(token_sha256=str(raw["token_sha256"]).strip().lower(),
                                armed_sha=str(raw["armed_sha"]).strip().lower(),
-                               account=str(raw["account"]).strip())
+                               account=str(raw["account"]).strip(),
+                               entrypoint=str(raw["entrypoint"]).strip())
 
 
 def token_matches(token: str, auth: ArmingAuthorization) -> bool:
@@ -99,13 +108,19 @@ def provenance_error(auth: ArmingAuthorization, *, head: str,
     return ""
 
 
-def verify_for_arming(token: str, *, repo: str | Path = ".",
+def verify_for_arming(token: str, *, entrypoint: str, repo: str | Path = ".",
                       path: str | Path = ARMING_FILE) -> ArmingAuthorization:
     """The one call the runner makes. Returns the authorization when EVERY check passes;
-    raises ArmingError with the exact reason otherwise."""
+    raises ArmingError with the exact reason otherwise. `entrypoint` is the CALLER's own
+    identity (e.g. "scripts.ny_run") — required so a phrase issued for one live strategy
+    can never arm a different one that happens to share this file."""
     auth = load_authorization(path)
     if not token_matches(token, auth):
         raise ArmingError("token phrase does not match the committed authorization")
+    if entrypoint != auth.entrypoint:
+        raise ArmingError(
+            f"this authorization was issued for {auth.entrypoint!r}, not {entrypoint!r} "
+            "— a phrase for one live strategy must never arm a different one")
     head = head_sha(repo)
     err = provenance_error(auth, head=head, changed_files=files_changed_since(auth.armed_sha, repo))
     if err:

@@ -1,0 +1,362 @@
+# THE PLAYBOOK
+
+The decision procedure, distilled from a full narrated week (2026-06-22 →
+2026-06-26) and reconciled line by line against the tape. **11 takes, 8
+passes, 2 unfilled limits, 5 session-days.** Every price he named reproduces
+on our bars.
+
+This is what the agent runs. `docs/AGENT-OPERATING-SPEC.md` is how it
+operates the chart; this is what it decides. Source of truth for any
+individual claim: `data/narrated_days/*.json`.
+
+---
+
+## 0. WHAT THE WEEK LOOKED LIKE
+
+| day | character | takes | result |
+|---|---|---|---|
+| Mon 22 | topping the weekly range | 3 | +1.0R, +3.8R, London R unrecoverable |
+| Tue 23 | 400pt gap fill, one-way down | 3 | +2.94R, +3.69R, +3.13R |
+| Wed 24 | chop, range unbroken all day | 3 | −0.46R, −1.0R, +3.58R |
+| Thu 25 | London one-way pump, then an 897pt collapse | 2 | break-even, +180pt |
+| Fri 26 | bottoming the weekly range | 3 | +2.45R, +2.35R, +2.90R |
+
+He passed **three London candidates in one day** on Wednesday and **the whole
+of London** on Thursday. Two limits never filled, one of which would have
+made 2R. He does not chase and does not mind.
+
+---
+
+## 1. THE THESIS COMES FIRST, AND IT IS ABOUT LOCATION
+
+Before any candle matters he establishes **where price is in the multi-day
+range** and **what he expects it to do from there**. Every trade in the week
+is downstream of that sentence.
+
+- Mon: *"we're topping out this range"* → shorts into a top
+- Tue: *"I'm expecting us to fill a new week opening gap"* → shorts, with a
+  named destination
+- Wed: *"it's either gonna break this range… or keep going lower"* → **no
+  thesis, so no trades until one appears**
+- Thu: *"just straight pumping"* → nothing to do in London
+- Fri: *"bottoming out this weekly range"* → longs preferred, shorts allowed
+
+**The thesis names a destination.** Gap fill, weekly VAL, the 17 June lows,
+the top of the range. Targets come from the thesis, not from R multiples.
+
+**The thesis can be two-sided.** Friday: *"I'm more long-biased, but I'm not
+opposed to shorts. If it's going to continue down, it's going to continue
+down here."* He then took a short **and** a long on the same day, both
+winners. A two-sided thesis is not indecision — it is a conditional plan.
+
+**The thesis completing is a reason to stop.** Tuesday, once the gap filled
+at the open, he passed a mechanically valid short and flipped to expecting a
+rebalance. Friday, once he believed the week had bottomed, he excluded shorts
+for the rest of the window.
+
+---
+
+## 2. THE TRIGGER — a hard gate, and it is not one thing
+
+**A candidate requires closure through TWO levels.**
+
+> *"My entry always needs to be closure through two levels. That's usually
+> what I stick by."*
+
+The levels are: the candle's **own BB(20) MA**, a **VWAP band** (mid, ±1, ±2,
+±3), the **developing POC / VAH / VAL**, and the **anchored weekly** profile
+edges.
+
+Three qualifications that the week established and that matter:
+
+1. **A rejection counts toward the pair**, not only a closure. Tue N2 closed
+   through the 2m MA while *rejecting* the VWAP mid and the POC.
+2. **The own BB MA is mandatory — CONFIRMED by him**, 2026-08-10:
+
+   > *"Usually I want it to break the BB MA and another structural level in
+   > the same candle, but it's up to my discretion… I need a break through of
+   > 2 structural levels."*
+
+   11 of 11 takes close through the candle's own MA; the second leg varies
+   freely. **Same candle is the norm.**
+3. **But the pair may complete SEQUENTIALLY, at his discretion.** Friday
+   London: the 04:00 2m closed through the MA but not VWAP; he waited; the
+   04:04 2m closed through VWAP; *then* he limited the retest. He flags this
+   as the exception — *"usually I wouldn't"*.
+
+   `scripts/two_level_check.py` detects both shapes and labels them. It finds
+   his Friday trade as `04:04 2m DOWN sequential (+4m) [own_ma@04:00, vwap]`.
+
+   **Ruling, 2026-08-11 — an agent PASS on a sequential pair is within
+   doctrine.** Given unprompted while watching the first agent replay of this
+   very day: *"this is the one trade where I wouldn't be mad about it not
+   taking. I usually instate it has to break another level along with the MA
+   in the same candle. This was a heavily discretionary reading."* So:
+   same-candle is the rule; Friday's sequential take was discretion ON TOP of
+   the rule, not the rule itself; and a scorer must not count an agent pass at
+   2026-06-25 L1 as a plain error. This also lowers the stakes on
+   `SEQ_CANDLES = 3` — the guessed window matters less when a sequential pair
+   is optional-take by construction.
+
+   **Caveat on Thursday's negative control:** allowing sequential completion
+   at up to 3 candles surfaces a 04:48 short on Thursday London
+   (`own_ma@04:39` + VWAP+1 + VAH, a 9-minute gap) that same-candle-only
+   excludes. His words were *"no closure through 2 levels **at once**"* —
+   which is the same-candle reading, and that holds exactly. The sequential
+   reading is looser and would have found one. Recorded, not resolved.
+
+**Timeframes: 2m and 3m.** He checks the other one for confirmation —
+*"we look at the 3-minute really quick first as well"* — and simultaneous
+closure raises conviction without being required.
+
+---
+
+## 3. THE ENTRY — a limit on the retest, never a market order
+
+> *"The damn agent is gonna be doing limit orders because that's how I
+> fucking trade."*
+
+The trigger candle is the **signal** bar, not the entry bar.
+
+**Which level to limit at: the CLOSEST structure to price at the trigger's
+close** — *"the last thing it would have broken through."*
+
+This is not a stylistic preference and the week paid for it twice:
+
+- **Mon N1** entered at market on the close: **1.0R**. The retest at 30,851
+  would have filled with a 33pt stop instead of 55pt for the same target —
+  **2.33R**. His own critique, and the arithmetic confirms it.
+- **Fri PRE1** limited the POC (29,369) rather than the 3m MA (29,382.79).
+  Price never got back to the MA — highest print after the fill was 29,377.
+  Limiting the "obvious" level would have meant **no trade at all**.
+
+**The offset is forward-looking.** A couple of points inside, offset in the
+direction the level is *travelling*: *"this candle is closed through, this
+Bollinger Band is probably going to move down, I'm going to give it three
+points of leeway."*
+
+**LIMIT LIFETIME — two clauses, both hard:**
+
+1. **~10 minutes maximum.**
+2. **Cancel if price reaches the next structural level before filling.**
+   *"If it runs to a structural level and then fills me, I'm not very
+   confident in that anymore."*
+
+**He never chases.** A late fill is a different, worse trade. Two limits went
+unfilled in the week; one would have made 2R. *"I could care less."*
+
+---
+
+## 4. THE STOP — where the thesis dies, plus clearance
+
+Never a reflex placement at the candle's extreme. **The test: does the
+candle's extreme sit ON a live level?**
+
+- **If yes, go beyond that level.** Price can go touch it and come back.
+  Mon L1 (candle high near the weekly high), Tue N1 (candle low sat exactly
+  at VWAP−1), Tue N2 (candle high at the POC/VWAP-mid it kept rejecting),
+  Wed L1 and Wed PRE1 (candle high at the 3m MA and VWAP+1). Five instances,
+  one rule.
+- **If no, use it.** Mon N2 (30,913.5 above a 30,911.75 high), Tue L1
+  (30,033.5 = the candle high exactly), Thu PRE1 (30,202.5 above 30,201.75),
+  Fri PRE1 (29,400 at a 29,401.00 high).
+
+**Stop width drives size, not the decision.** *"This would have been de-risked
+with a 68 point stop, maybe two micros."* A wide stop is taken smaller, not
+skipped — but an *oversized* one gets scrutiny (Fri N1: *"that's still a
+fucking big stop, jeez louise"*, taken anyway because the thesis was strong).
+
+---
+
+## 4b. SIZING — driven by conviction, not by the setup
+
+> *"All my sizing is inherently based off of my confidence behind my thesis…
+> when I'm very confident, I will risk a lil more."*
+
+Four inputs, in his own order of importance:
+
+1. **Confidence in the thesis** — the primary driver. Not confidence in the
+   trigger; confidence in the *read*. This is why he can take a valid setup
+   *light* rather than passing it: Friday's London short was declared light
+   size before entry — *"it's not like a full-conviction trade"* — and still
+   made 2.45R.
+2. **Session.** London is risked **lower** as a rule. *"New York is the money
+   maker."* The trade counts say the same thing: 4 London fills in the week
+   against 10 in New York.
+3. **Available drawdown.** *"I'm conscious of the fact that fundeds have EOD
+   DD, so I like to use that to my advantage."* End-of-day trailing drawdown
+   only ratchets on the **closing** balance, so intraday equity swings don't
+   permanently raise the floor — which changes what intraday risk costs.
+4. **Stop width** — mechanical, and the last input, not the first. A wide
+   stop is taken smaller; it does not veto the trade.
+
+**Sitting out is a legitimate action.**
+
+> *"If I'm happy with what we took in London, I might just sit out New York
+> entirely and just forward test to learn."*
+
+Banking a good London and watching New York is **not** a failure to act, and
+an agent must be able to choose it. It is also the only behaviour in the
+playbook that produces learning without risk, which makes it the correct
+default whenever the agent is uncertain about its own calibration.
+
+**Not yet known: the actual size ladder.** "A lil more" is not a number, and
+nothing in the narration pins what light / normal / high conviction mean in
+contracts or percent of account. **Sizing must not be simulated until that is
+stated** — the agent logs a conviction label (A/B/C) and leaves the multiplier
+to him.
+
+---
+
+## 5. THE EXIT
+
+**Targets are structure named in the thesis.** Weekly VAL, prior-day levels,
+the pre-market high, VWAP bands, the 15m MA, a fib level, the top of a range.
+
+**Take profit sits a couple of points SHORT of the band.**
+
+**Partial at intermediate structure, then break-even.** Typically 75% at the
+first level. Also move to break-even on touching an intermediate band even
+without taking a partial.
+
+**When two levels cluster, take the further one.** *"Price never touches a
+value area high and then just runs straight from it. It usually wicks around,
+and with VWAP right there, I'm inclined to believe it would touch VWAP."*
+
+**Extend the target when the thesis is confirming.** Fri N1 moved from the
+developing VAH to VWAP+1 mid-trade — worth ~90 points. Extend the target,
+never the risk.
+
+**Target size scales to direction.** A counter-trend rebalance gets a modest
+target by design.
+
+**In chop, trail aggressively** — beyond the wick of any candle that rejects
+your level against you. Wed L1 cut a 29pt loss to 13.25pt, and the untrailed
+stop would have been hit anyway.
+
+**R is quoted at the FULL target**, not blended across partials.
+
+---
+
+## 6. THE HARD CONSTRAINTS
+
+1. Direction must match the standing thesis.
+2. Inside a window: **LONDON 03:00–04:59, NY_PRE 08:00–09:29, NY_AM
+   09:30–11:00** NY. **Entries only** — *"you don't flatten trades when the
+   window closes."* (11:00 confirmed 2026-08-10; his practical centre of mass
+   is nearer 10:45, and January's 10:51 entry now sits inside the window.)
+3. **PER-WINDOW TRADE CAPS — LONDON 2, NY_PRE 1, NY_AM 2.** Corrected
+   2026-08-10 (see the note below; an earlier reading of "2 in New York"
+   was wrong).
+
+   | window | cap | week's actual |
+   |---|---|---|
+   | LONDON | 2 | 0–1 |
+   | NY_PRE | 1 | 0–1 |
+   | NY_AM | 2 | 1–2 |
+
+   **These are caps, not quotas.** Zero breaches across the week, and the
+   caps were never *binding* — he never used his full London allowance and
+   never took the maximum 3 in New York.
+
+   **The cap counts FILLS, not attempts.** Tuesday and Wednesday each placed
+   an unfilled pre-market limit *and* still took 2 in NY_AM.
+
+   > **My error, recorded.** The week shows exactly 2 New York fills every
+   > single day, and I read that as a hard total cap of 2. It isn't — the
+   > real structure is 1 pre-market + 2 NY_AM, so the maximum is 3 and the
+   > week simply never reached it. The count was right; the inference from
+   > it was wrong. **A cap that is never binding cannot be inferred from
+   > observed counts** — it has to be stated, and he stated it.
+4. Not in the first few minutes of the cash open.
+5. After a displacement, wait for the rebalance before entering.
+6. A thesis alone is never enough — the trigger must exist.
+7. **Headroom.** Two levels broken is the minimum, not the criterion. The
+   next level beyond the entry must not sit immediately in the way. *"I don't
+   like taking trades where it has to break through something in order for my
+   trade to work."*
+8. **POC alignment.** POC should be *with* the trade, not an obstacle.
+9. **In chop, require higher-timeframe alignment** before taking anything.
+10. **No entries before high-impact news.**
+11. **Move to break-even before the cash open** when carrying a pre-market
+    position.
+
+---
+
+## 7. THE TWO ROWS THAT DEFINE THE CHARACTER
+
+**Thursday's break-even.** A pre-market short, planned 2.45R, moved to
+break-even before the open *"because open volatility can cook you even if
+your thesis is wrong."* Break-even hit at 09:30. The market then fell 897
+points and his target printed at 09:31. **29.2R was available had he held.**
+
+> *"That's straight gambling for me."*
+
+**Friday's refusal.** A trigger he believed in with a stop he hated. He
+considered limiting a nearer level to get a tighter fill and avoid missing
+the move — and refused.
+
+> *"I don't really wanna miss a good entry because I'm being tight with where
+> I place my limits. Nah, I'm sticking to my rules. I gotta stick to my
+> fucking rules."*
+
+**Any scoring that marks either of these as an error is scoring the wrong
+thing.** A rule that pays out over a year is not refuted by the day it costs
+the most. This is the single most important instruction for the scorer.
+
+---
+
+## 8. THE THREE-OPTION DECISION
+
+Not take/pass. **Take full / take light / pass.**
+
+> *"I'd probably take this one with light size because it's not like a
+> full-conviction trade."*
+
+That trade returned 2.45R. Light size is a real third branch and the log
+must carry it.
+
+---
+
+## 9. WHAT IS CALIBRATED
+
+Every level he named across five days reproduces on our bars:
+
+| | status |
+|---|---|
+| VWAP mid / ±1 / ±2 / ±3 | source `open`, 18:00 anchor — matched to ~0.1pt |
+| BB(20) MA, 2m/3m/15m/1h | matched (2m MA he read as 30,008.5 vs our 30,008.58) |
+| developing daily POC / VAH / VAL | matched to ~0.5pt |
+| anchored weekly profile | 18:00 NY seven days back, developing — VAL confirmed twice |
+| fibs | drawn on **manually marked swings**, not a fixed range — confirmed Friday |
+
+**Two ambiguities that must never be resolved by guessing:**
+
+- **"Value area"** means the daily profile some days and the anchored weekly
+  one others. On 2026-06-25 they sat **165 points apart**, and taking the
+  daily one would have exited a 180pt trade at 30–45pt. Compute both.
+- **Fib swings** are a judgment call, not a formula. Using a full-session
+  range instead of his marked swing landed ~70pt off on 2026-06-23; using his
+  marked swing on 2026-06-26 landed on the level to within 2 points.
+
+---
+
+## 10. WHAT IS STILL OPEN
+
+**Closed 2026-08-10.** The own BB MA is confirmed mandatory (same candle
+normally, sequentially at his discretion). The window is 11:00, which also
+absorbs January's 10:51 entry. Both are folded in above.
+
+**Still open — one item, and it is small:**
+
+1. **Monday 22 June's London stop.** *"Stops at 30"*, sentence cut off; asked
+   and he does not recall. **That trade's R is unrecoverable, not merely
+   unknown** — it is excluded from any R aggregate rather than estimated.
+   Everything else about the trade (entry 30,753, TP1 at 30,713, the runner
+   missing VWAP+1 by ~9pt) stands.
+
+**And one thing to watch rather than resolve:** the sequential-completion
+window. `SEQ_CANDLES = 3` is a guess, not his number. It is what decides
+whether Thursday London had zero qualifying shorts or one. If the agent
+starts taking trades he would not have, this is the first parameter to
+question.

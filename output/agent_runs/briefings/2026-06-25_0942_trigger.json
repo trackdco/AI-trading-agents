@@ -1,0 +1,129 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "NYA3-0942",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-26T09:42 ET",
+ "candle_start": "09:38 (2m, one bar stale \u2014 orchestrator overshoot, noted) / 09:39 (3m, closes exactly 09:42)",
+ "timeframe": "2m + 3m, same structural event",
+ "leak_check": "pass \u2014 truncated at 09:41:59; last completed 2m bar starts 09:40",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/candidate_0940_cluster_fail.png",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "daily_poc",
+    "price": 29369.0
+   },
+   {
+    "level": "vwap_mid",
+    "price": 29441.0
+   },
+   {
+    "level": "prior_day_val",
+    "price": 29465.0
+   }
+  ],
+  "invalidation": {
+   "level": "session_low_spring",
+   "price": 29181.5
+  },
+  "waiting_for": "rebalance into the reclaimed 29290-96 cluster that holds as support \u2014 the fill at 29298 WAS that hold-test being bought",
+  "two_sided": true,
+  "condition_for_other_side": "2m acceptance back below 29290 with the cluster failing as resistance on retest kills the spring and reopens shorts at weekly_low 29160.5",
+  "as_of": "09:36 re-read",
+  "tension": "the kill clause is under live test: closes 29286.5 / 29240.75 / 29251.5 \u2014 three consecutive 2m closes below 29290, the middle one decisive. Judge whether that is acceptance-with-cluster-failure, and set thesis_stale if you judge the long expired."
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_2m": {
+  "start": "09:38",
+  "direction": "DOWN",
+  "open": 29288.75,
+  "high": 29308.5,
+  "low": 29238.75,
+  "close": 29240.75,
+  "volume": 2969,
+  "levels": "own 2m MA + vwap_m1, same candle"
+ },
+ "signal_candle_3m": {
+  "start": "09:39",
+  "direction": "DOWN",
+  "open": 29280.5,
+  "close": 29251.5,
+  "closed_at": "09:42",
+  "levels": "own 3m MA + vwap_m1 (sequential, own-MA leg at 09:30)"
+ },
+ "pair_shape": "same_candle (2m) / sequential (3m)",
+ "levels_closed": [
+  "own_ma_2m",
+  "vwap_m1"
+ ],
+ "open_position": {
+  "candidate_id": "NYA2-0936-readjudication",
+  "side": "LONG",
+  "entry": 29298.0,
+  "stop": 29197.0,
+  "status": "open, -46.5 at the 09:40 close; no partials; stop 29197 mechanical",
+  "note": "your verdict is about THIS new candidate only; the orchestrator manages the open position on doctrine"
+ },
+ "time_context": "minute 12 of the cash open; displacement regime ongoing (every bar since 09:30 exceeds 0.5*W15)",
+ "levels_at_decision": {
+  "vwap": {
+   "mid": 29438.0,
+   "m1": 29272.0,
+   "m2": 29106.0,
+   "note": "computed at 09:42"
+  },
+  "bb_ma": {
+   "tf_2m": 29280.0,
+   "tf_3m": 29284.0,
+   "tf_15m": 29352.0,
+   "note": "computed at 09:42"
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29540.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30081.0
+  },
+  "prior_day": {
+   "low": 29295.75,
+   "val": 29465.0
+  },
+  "weekly_low": 29160.5,
+  "session_low": 29181.5
+ },
+ "headroom": {
+  "direction_of_trade": "down (candidate)",
+  "next_levels_below": [
+   {
+    "level": "daily_val",
+    "price": 29225.0,
+    "distance_from_0940_close": 26.5
+   },
+   {
+    "level": "session_low_spring",
+    "price": 29181.5
+   },
+   {
+    "level": "weekly_low",
+    "price": 29160.5
+   }
+  ]
+ },
+ "poc_alignment": {
+  "daily_poc": 29369.0,
+  "position": "overhead \u2014 against a short"
+ },
+ "fills_this_window": 1,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill at the limit price"
+}

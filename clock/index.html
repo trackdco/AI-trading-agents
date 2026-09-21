@@ -1,0 +1,1023 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Imperium Clock</title>
+<meta name="description" content="Clock on, clock off, see everyone's hours. Imperium Detailing.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#09090A">
+
+<!-- Added to a phone's home screen this opens without browser chrome, like an app. -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Clock">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+
+<!-- Fonts are served from here, not Google: one less round trip on a phone
+     with one bar, and the app still looks right with no signal at all. -->
+<link rel="preload" href="fonts/bigshoulders-8a3351.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/instrumentsans-f587e7.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="tokens.css">
+
+<style>
+/* Imperium Clock.
+
+   One bold thing: the dial. A chronograph — brushed bezel, sixty ticks, a
+   sweeping arc and a mechanical readout. Everything else on the screen is
+   deliberately quiet so the dial carries it.
+
+   There is one piece of non-user-triggered motion in the whole app, and it
+   fires on the press of Start: the bezel lights tick by tick around the face.
+   No fade-ups on scroll, no hover shimmer on every card. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--void); }
+body {
+  margin: 0;
+  background: var(--graphite);
+  color: var(--ash);
+  font: 400 var(--t-body)/1.55 var(--sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+}
+
+/* Two fixed layers give the graphite a material rather than a flat fill: a
+   low warm wash off the top, and a fine grain. Neither scrolls or takes
+   pointer events. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -30vh -25vw auto;
+  height: 120vh;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  transition: opacity 900ms var(--move);
+  background:
+    radial-gradient(50vw 36vh at 50% 0%, rgba(255, 176, 32, 0.07), transparent 70%),
+    radial-gradient(70vw 40vh at 12% 24%, rgba(78, 155, 232, 0.06), transparent 72%);
+}
+body[data-running]::before { opacity: 1; }
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+h1, h2, h3 { margin: 0; color: var(--ivory); font-family: var(--display); font-weight: 700; letter-spacing: 0.005em; }
+p { margin: 0 0 0.85em; }
+p:last-child { margin-bottom: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+a { color: var(--imperium); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--imperium); outline-offset: 3px; border-radius: 6px; }
+.tnum { font-variant-numeric: tabular-nums lining-nums; }
+[hidden] { display: none !important; }
+button { font: inherit; cursor: pointer; touch-action: manipulation; }
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--measure) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* ================================================================== app === */
+.app {
+  position: relative;
+  z-index: 2;
+  min-height: 100dvh;
+  padding-bottom: calc(var(--tab-h) + 26px + env(safe-area-inset-bottom));
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding-block: calc(16px + env(safe-area-inset-top)) 4px;
+}
+.head img { height: 26px; width: auto; display: block; }
+.head .wordmark {
+  font-family: var(--display);
+  font-size: var(--t-3);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ivory);
+  line-height: 1;
+}
+.head .who {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 7px 15px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ash);
+  font: 500 var(--t-small) var(--sans);
+  transition: border-color var(--snap), color var(--snap), background var(--snap);
+}
+.head .who:hover, .head .who:active { border-color: var(--imperium); color: var(--ivory); }
+.head .who .pip { width: 7px; height: 7px; border-radius: 50%; background: var(--slate); flex: none; transition: background var(--move); }
+.head .lock {
+  flex: none;
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--slate);
+  transition: border-color var(--snap), color var(--snap);
+}
+.head .lock svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.head .lock:hover, .head .lock:active { border-color: var(--imperium); color: var(--ivory); }
+body[data-running] .head .who .pip { background: var(--amber); box-shadow: 0 0 0 3px var(--amber-glow); }
+
+/* Says where the hours are going, but only when that is not the shared sheet. */
+.strip {
+  display: block;
+  width: 100%;
+  margin: 12px 0 0;
+  padding: 12px 15px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--warn);
+  border-radius: 11px;
+  background: var(--panel);
+  color: var(--ash);
+  font-size: var(--t-small);
+  text-align: left;
+}
+.strip b { color: var(--ivory); font-weight: 600; }
+.strip[data-tone="warn"] { border-left-color: var(--imperium); cursor: default; }
+
+/* ================================================================ views === */
+.view { padding-top: 6px; }
+.view[data-leaving] { opacity: 0; transform: translateY(6px); }
+.view {
+  opacity: 1;
+  transform: none;
+  transition: opacity 200ms var(--move), transform 200ms var(--move);
+}
+
+/* ================================================================= dial === */
+.dial-wrap {
+  position: relative;
+  width: min(74vw, 300px);
+  aspect-ratio: 1;
+  margin: 14px auto 0;
+  display: grid;
+  place-items: center;
+}
+
+/* Brushed metal, faked with a conic sweep masked to a ring. It is the thing
+   that stops the face reading as a flat circle on a flat background. */
+.sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 212deg,
+    #211E24, #3C3743, #1D1B21, #35313B, #1B1920, #332F38, #211E24);
+  -webkit-mask-image: radial-gradient(circle, transparent 78%, #000 79%);
+  mask-image: radial-gradient(circle, transparent 78%, #000 79%);
+  opacity: 0.85;
+}
+.face {
+  position: absolute;
+  inset: 7%;
+  border-radius: 50%;
+  background:
+    radial-gradient(120% 120% at 50% 6%, #201D22 0%, #141317 56%, #0D0C0F 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 241, 236, 0.06),
+    0 24px 60px -30px rgba(0, 0, 0, 0.9);
+  transition: box-shadow var(--sweep);
+}
+body[data-running] .face {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 203, 99, 0.16),
+    0 0 70px -14px var(--amber-glow),
+    0 24px 60px -30px rgba(0, 0, 0, 0.9);
+}
+
+.dial { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.dial .tick {
+  stroke: var(--steel);
+  stroke-width: 2;
+  stroke-linecap: round;
+  transition: stroke var(--move), opacity var(--move);
+}
+.dial .tick.major { stroke-width: 2.6; opacity: 0.95; }
+body[data-running] .dial .tick.lit { stroke: var(--amber); }
+body[data-running] .dial .tick.lit.major { stroke: var(--amber-lit); }
+
+.dial .arc-bg { fill: none; stroke: rgba(244, 241, 236, 0.06); stroke-width: 3; }
+.dial .arc {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 3;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 5px var(--amber-glow));
+  transition: stroke-dashoffset 900ms var(--move), opacity var(--move);
+  opacity: 0;
+}
+body[data-running] .dial .arc { opacity: 1; }
+
+/* ============================================================== readout === */
+.readout { position: relative; z-index: 2; text-align: center; padding-inline: 6%; }
+.state {
+  display: block;
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--slate);
+  transition: color var(--move);
+}
+body[data-running] .state { color: var(--amber); }
+
+.read { display: block; }
+.read .strips {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  margin: 9px 0 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(42px, 13.5vw, 62px);
+  line-height: 1;
+  letter-spacing: 0.005em;
+  color: var(--slate);
+  font-variant-numeric: tabular-nums lining-nums;
+  transition: color var(--move), text-shadow var(--move);
+}
+body[data-running] .read { color: var(--ivory); filter: drop-shadow(0 0 20px rgba(255, 203, 99, 0.3)); }
+
+/* Each digit is a strip of 0-9 behind a one-character window, so a change
+   rolls the way a mechanical counter does rather than blinking. */
+.dg { display: block; width: 0.45em; height: 1em; overflow: hidden; }
+.dg .roll { display: block; transform: translateY(calc(var(--n, 0) * -1em)); transition: transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1); }
+.dg i { display: block; height: 1em; line-height: 1; font-style: normal; }
+.sep { display: block; line-height: 1; opacity: 0.6; padding-inline: 0.05em; }
+
+/* Outside the dial: a long job name has nowhere to go inside a circle. */
+.since {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 12px auto 0;
+  max-width: 30ch;
+  text-align: center;
+  font-size: var(--t-small);
+  color: var(--slate);
+  min-height: 1.5em;
+}
+
+/* ================================================================ inputs == */
+.lab {
+  display: block;
+  margin-bottom: 7px;
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+.lab em { font-style: normal; text-transform: none; letter-spacing: 0; opacity: 0.8; }
+input, select {
+  width: 100%;
+  min-height: 52px;
+  padding: 13px 15px;
+  border: 1px solid var(--line-2);
+  border-radius: 13px;
+  background: var(--panel);
+  color: var(--ivory);
+  /* 16px floor, or iOS Safari zooms the page when a field takes focus. */
+  font: 400 var(--t-body)/1.4 var(--sans);
+  transition: border-color var(--snap), box-shadow var(--snap);
+}
+input::placeholder { color: var(--slate); }
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--imperium);
+  box-shadow: 0 0 0 3px rgba(78, 155, 232, 0.2);
+}
+select {
+  appearance: none;
+  padding-right: 42px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%23928D89' d='M0 1.4 1.4 0 6 4.6 10.6 0 12 1.4 6 8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 12px 8px;
+}
+.job { margin-top: 20px; }
+
+/* =============================================================== buttons == */
+.go {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 64px;
+  margin-top: 16px;
+  padding: 12px 22px;
+  border: 0;
+  border-radius: 15px;
+  background: var(--ivory);
+  color: var(--void);
+  font: 600 var(--t-3)/1.2 var(--sans);
+  letter-spacing: 0.01em;
+  transition: background var(--move), color var(--move), transform 90ms var(--snap), opacity var(--snap);
+}
+.go:active { transform: scale(0.985); }
+.go:disabled { opacity: 0.35; cursor: not-allowed; }
+.go.stop {
+  background: var(--panel);
+  color: var(--amber);
+  box-shadow: inset 0 0 0 1px var(--amber-deep);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 9px 17px;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ash);
+  font: 500 var(--t-small) var(--sans);
+  transition: border-color var(--snap), color var(--snap), background var(--snap);
+}
+.btn:hover, .btn:active { border-color: var(--imperium); color: var(--ivory); background: var(--panel); }
+.btn.danger:hover, .btn.danger:active { border-color: var(--warn); color: var(--warn); }
+.btn.key { border-color: rgba(78, 155, 232, 0.5); color: var(--ivory); }
+
+.ghost {
+  min-height: 44px;
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  color: var(--slate);
+  font: 500 var(--t-small) var(--sans);
+  text-decoration: underline;
+  text-decoration-color: var(--steel);
+  text-underline-offset: 5px;
+  transition: color var(--snap);
+}
+.ghost:hover, .ghost:active { color: var(--imperium); }
+.quick { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 12px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
+.chip {
+  min-height: 44px;
+  padding: 9px 15px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ash);
+  font: 500 var(--t-small) var(--sans);
+  font-variant-numeric: tabular-nums lining-nums;
+  transition: border-color var(--snap), color var(--snap), background var(--snap);
+}
+.chip:hover { border-color: var(--imperium); color: var(--ivory); }
+.chip[aria-pressed="true"] { background: var(--amber); border-color: var(--amber); color: var(--void); font-weight: 600; }
+
+/* ================================================================= stats == */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-top: 26px; }
+.stat {
+  padding: 14px 13px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+}
+.stat .k {
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--slate);
+  min-height: 2.4em;
+}
+.stat .v {
+  margin-top: 3px;
+  font-family: var(--display);
+  font-size: 29px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ivory);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.stat .v small { font-size: 14px; font-weight: 600; color: var(--slate); margin-left: 2px; }
+.stat[data-live] .v { color: var(--amber); }
+
+.onnow { margin-top: 28px; }
+.live-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--t-small);
+}
+.live-row .pip { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 3px var(--amber-glow); flex: none; }
+.live-row b { color: var(--ivory); font-weight: 600; }
+.live-row .at { color: var(--slate); }
+.live-row .el {
+  margin-left: auto;
+  font-family: var(--display);
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--amber);
+  font-variant-numeric: tabular-nums;
+}
+
+/* =============================================================== sections = */
+.sec-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 14px;
+  margin: 4px 0 14px;
+}
+.sec-head h2 { flex: none; font-size: var(--t-2); line-height: 1.1; }
+.sec-head .aside { font-size: var(--t-small); color: var(--slate); }
+h3.sub {
+  margin: 26px 0 10px;
+  font-family: var(--sans);
+  font-size: var(--t-micro);
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+h3.sub:first-child { margin-top: 2px; }
+
+/* ================================================================ shifts == */
+.day { margin-bottom: 18px; }
+.day .date {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 7px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+.day .date b { color: var(--ash); text-transform: none; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 5px 14px;
+  padding: 13px 2px;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+}
+.row .main { grid-column: 1; min-width: 0; }
+.row .person { color: var(--ivory); font-weight: 600; }
+.row .times { font-size: var(--t-small); color: var(--slate); font-variant-numeric: tabular-nums; }
+.row .job-note { font-size: var(--t-small); color: var(--ash); overflow-wrap: anywhere; }
+.row .dur {
+  grid-column: 2;
+  text-align: right;
+  font-family: var(--display);
+  font-size: 23px;
+  font-weight: 700;
+  color: var(--ivory);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.row[data-open] .dur { color: var(--amber); }
+.row .acts { grid-column: 1 / -1; display: flex; gap: 8px; margin-top: 5px; }
+
+.who-row, .staff-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--t-small);
+}
+.who-row b, .staff-row b { color: var(--ivory); font-weight: 600; }
+.who-row .hrs {
+  margin-left: auto;
+  font-family: var(--display);
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--ivory);
+  font-variant-numeric: tabular-nums;
+}
+.who-row .pay { min-width: 5.4em; text-align: right; color: var(--slate); font-variant-numeric: tabular-nums; }
+.who-row.total b, .who-row.total .hrs, .who-row.total .pay { color: var(--amber); }
+.staff-row .rate { margin-left: auto; color: var(--slate); font-variant-numeric: tabular-nums; }
+.add-staff { display: grid; grid-template-columns: 1fr 96px auto; gap: 8px; margin-top: 12px; align-items: end; }
+.add-staff .btn { min-height: 52px; }
+.btn-wrap { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 14px; }
+.empty { padding: 26px 4px; color: var(--slate); font-size: var(--t-small); }
+
+/* ================================================================ toasts == */
+#status {
+  position: fixed;
+  left: 0; right: 0;
+  bottom: calc(var(--tab-h) + 10px + env(safe-area-inset-bottom));
+  z-index: 40;
+  padding-inline: var(--gutter);
+  pointer-events: none;
+}
+#status > * { pointer-events: auto; }
+.note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(var(--measure));
+  margin-inline: auto;
+  padding: 13px 15px;
+  border: 1px solid var(--line-2);
+  border-left: 3px solid var(--good);
+  border-radius: 12px;
+  background: var(--panel-2);
+  box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.9);
+  font-size: var(--t-small);
+  color: var(--ash);
+  animation: liftIn 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.note.bad { border-left-color: var(--warn); }
+.note span { flex: 1; }
+.note b { color: var(--ivory); }
+@keyframes liftIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* =================================================================== tabs = */
+.tabs {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 45;
+  display: grid;
+  grid-template-columns: repeat(var(--tabs, 3), 1fr);
+  height: calc(var(--tab-h) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: rgba(14, 13, 15, 0.88);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  border-top: 1px solid var(--line);
+}
+.tabs button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 3px;
+  border: 0;
+  background: none;
+  color: var(--slate);
+  font: 600 11px/1 var(--sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color var(--move);
+}
+.tabs button svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.tabs button[aria-selected="true"] { color: var(--ivory); }
+/* One indicator that slides between tabs, rather than three that fade. */
+.tabs::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% / var(--tabs, 3));
+  height: 2px;
+  background: var(--imperium);
+  transform: translateX(calc(var(--tab, 0) * 100%));
+  transition: transform var(--move);
+}
+
+/* =================================================================== gate = */
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: start center;
+  padding: 24px;
+  background: var(--graphite);
+  overflow: hidden auto;      /* a phone on its side must still reach the 0 */
+}
+.gate::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 86%;
+  pointer-events: none;
+  background: radial-gradient(46vw 38vh at 50% 0%, rgba(255, 176, 32, 0.13), transparent 70%);
+}
+.gate[hidden] { display: none; }
+.gate-in { position: relative; width: 100%; max-width: 318px; margin-block: auto; text-align: center; }
+.gate-in img { height: 40px; width: auto; margin: 0 auto 13px; display: block; }
+.gate-in h1 { font-size: 32px; line-height: 1; letter-spacing: 0.01em; }
+.gate-sub { margin: 9px 0 0; font-size: var(--t-small); color: var(--slate); min-height: 1.5em; }
+.gate-sub.bad { color: var(--warn); }
+
+.dots { display: flex; justify-content: center; gap: 15px; margin: 22px 0 26px; }
+.dots i {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 1px solid var(--steel);
+  transition: background var(--snap), border-color var(--snap), transform var(--snap), box-shadow var(--snap);
+}
+.dots i[data-on] { background: var(--amber); border-color: var(--amber); transform: scale(1.15); box-shadow: 0 0 0 4px var(--amber-glow); }
+
+.pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; }
+.pad button {
+  min-height: 64px;
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  background: var(--panel);
+  color: var(--ivory);
+  font: 600 25px var(--display);
+  font-variant-numeric: tabular-nums;
+  transition: background var(--snap), transform 80ms var(--snap), border-color var(--snap);
+}
+.pad button:active { transform: scale(0.95); background: var(--panel-2); }
+.pad button.soft { font: 500 14px var(--sans); color: var(--slate); background: transparent; }
+
+/* ================================================================ dialogs = */
+dialog {
+  width: min(430px, calc(100vw - 28px));
+  padding: 22px;
+  border: 1px solid var(--line-2);
+  border-radius: 20px;
+  background: var(--panel);
+  color: var(--ash);
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.95);
+}
+dialog::backdrop { background: rgba(6, 6, 7, 0.8); backdrop-filter: blur(3px); }
+dialog h3 { font-size: var(--t-2); margin-bottom: 11px; }
+dialog .grid { display: grid; gap: 12px; }
+dialog .acts { display: flex; gap: 10px; margin-top: 18px; }
+dialog .acts .btn { flex: 1; min-height: 52px; }
+dialog .ask-body { margin: 0; color: var(--slate); font-size: var(--t-small); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.people { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.people button {
+  min-height: 58px;
+  border: 1px solid var(--line-2);
+  border-radius: 13px;
+  background: transparent;
+  color: var(--ivory);
+  font: 600 var(--t-body) var(--sans);
+  transition: border-color var(--snap), background var(--snap);
+}
+.people button:hover, .people button[aria-pressed="true"] { border-color: var(--amber); background: rgba(255, 176, 32, 0.1); }
+.people button small { display: block; margin-top: 3px; font: 500 var(--t-micro) var(--sans); color: var(--amber); }
+.people-note { margin: 12px 0 0; font-size: var(--t-small); color: var(--slate); }
+
+/* The day-logger lives in a sheet rather than its own page: it is a two-tap
+   correction, not a destination. */
+.days { display: grid; grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)); gap: 8px; }
+.days button {
+  min-height: 60px;
+  padding: 8px 6px;
+  border: 1px solid var(--line-2);
+  border-radius: 13px;
+  background: transparent;
+  color: var(--ash);
+  font: 500 var(--t-small)/1.25 var(--sans);
+  transition: border-color var(--snap), background var(--snap);
+}
+.days button b { display: block; color: var(--ivory); font-weight: 600; }
+.days button small { display: block; color: var(--slate); font-size: var(--t-micro); }
+.days button[aria-pressed="true"] { border-color: var(--amber); background: rgba(255, 176, 32, 0.1); }
+.days button[aria-pressed="true"] small { color: var(--ash); }
+
+.dial-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; }
+.step {
+  flex: none;
+  width: 56px; height: 56px;
+  display: grid; place-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ivory);
+  font: 400 27px/1 var(--sans);
+  transition: border-color var(--snap), background var(--snap), transform 80ms var(--snap);
+}
+.step:active { transform: scale(0.94); }
+.step:disabled { opacity: 0.3; cursor: not-allowed; }
+.big {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(46px, 15vw, 66px);
+  line-height: 1;
+  color: var(--ivory);
+  font-variant-numeric: tabular-nums;
+}
+.big.zero { color: var(--slate); }
+.dial-sub { margin: 8px 0 0; text-align: center; font-size: var(--t-small); color: var(--slate); min-height: 1.5em; }
+
+/* A phone on its side, or a small phone: the dial gives up its size first,
+   because everything under it is what you actually have to reach. */
+@media (max-height: 620px) and (orientation: landscape) {
+  .dial-wrap { width: min(42vh, 200px); margin-top: 6px; }
+  .read { font-size: clamp(32px, 9vh, 44px); }
+  .stats { margin-top: 18px; }
+  .gate-in img { display: none; }
+  .gate-in h1 { font-size: 24px; }
+  .dots { margin: 10px 0 12px; }
+  .pad { gap: 8px; }
+  .pad button { min-height: 46px; }
+}
+
+/* ================================================================= motion = */
+@media (prefers-reduced-motion: no-preference) {
+  .gate-in[data-wrong] { animation: nope 420ms var(--snap); }
+  @keyframes nope {
+    0%, 100% { transform: translateX(0); }
+    18% { transform: translateX(-9px); }
+    38% { transform: translateX(9px); }
+    58% { transform: translateX(-5px); }
+    78% { transform: translateX(3px); }
+  }
+  body[data-running] .state { animation: pulse 2.6s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.58; } }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="gate-in" id="gateIn">
+    <img src="logo.webp" alt="Imperium Detailing" width="66" height="40">
+    <h1>Imperium Clock</h1>
+    <p class="gate-sub" id="gateSub">Enter your code</p>
+    <div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+    <div class="pad" id="pad">
+      <button type="button" data-k="1">1</button>
+      <button type="button" data-k="2">2</button>
+      <button type="button" data-k="3">3</button>
+      <button type="button" data-k="4">4</button>
+      <button type="button" data-k="5">5</button>
+      <button type="button" data-k="6">6</button>
+      <button type="button" data-k="7">7</button>
+      <button type="button" data-k="8">8</button>
+      <button type="button" data-k="9">9</button>
+      <button type="button" class="soft" data-k="clear">Clear</button>
+      <button type="button" data-k="0">0</button>
+      <button type="button" class="soft" data-k="back">Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="app wrap" id="app" hidden>
+
+  <header class="head">
+    <img src="logo.webp" alt="Imperium Detailing" width="43" height="26">
+    <span class="wordmark">Clock</span>
+    <button class="who" id="whoBtn" type="button"><span class="pip"></span><span id="whoName">Who are you?</span></button>
+    <button class="lock" id="lockBtn" type="button" aria-label="Lock the app">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    </button>
+  </header>
+
+  <button class="strip" id="linkNote" type="button" hidden></button>
+
+  <main id="views">
+
+    <!-- ========================================================== clock === -->
+    <section class="view" id="v-clock" data-view="clock">
+
+      <div class="dial-wrap">
+        <span class="sheen" aria-hidden="true"></span>
+        <span class="face" aria-hidden="true"></span>
+        <svg class="dial" viewBox="0 0 240 240" aria-hidden="true">
+          <g id="ticks"></g>
+          <circle class="arc-bg" cx="120" cy="120" r="88"></circle>
+          <circle class="arc" id="arc" cx="120" cy="120" r="88"
+                  transform="rotate(-90 120 120)" stroke-dasharray="552.9" stroke-dashoffset="552.9"></circle>
+        </svg>
+        <div class="readout">
+          <span class="state" id="stateLabel" aria-live="polite">Not on the clock</span>
+          <div class="read tnum" id="read" role="timer" aria-live="off"></div>
+        </div>
+      </div>
+      <p class="since" id="since">Pick your name to get started.</p>
+
+      <div class="job" id="jobWrap">
+        <label class="lab" for="jobIn">Job or customer <em>(optional)</em></label>
+        <input id="jobIn" type="text" placeholder="e.g. Huracán full detail, Kambah" autocomplete="off">
+      </div>
+
+      <button class="go" id="mainBtn" type="button">Start shift</button>
+
+      <div class="quick" id="quick">
+        <button class="ghost" id="backLink" type="button">Forgot to press start?</button>
+        <button class="ghost" id="dayLink" type="button">Log a whole day</button>
+      </div>
+      <div class="chips" id="backChips" hidden>
+        <button class="chip" data-back="15" type="button">15 min ago</button>
+        <button class="chip" data-back="30" type="button">30 min</button>
+        <button class="chip" data-back="45" type="button">45 min</button>
+        <button class="chip" data-back="60" type="button">1 hour</button>
+        <button class="chip" data-back="90" type="button">1.5 hours</button>
+        <button class="chip" data-back="120" type="button">2 hours</button>
+        <button class="chip" data-back="0" type="button">Now</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat" id="stToday"><div class="k" id="kToday">Today</div><div class="v tnum" id="sToday">0<small>h</small></div></div>
+        <div class="stat" id="stWeek"><div class="k" id="kWeek">Pay week</div><div class="v tnum" id="sWeek">0<small>h</small></div></div>
+        <div class="stat" id="stOn"><div class="k">On now</div><div class="v tnum" id="sOn">0</div></div>
+      </div>
+
+      <div class="onnow" id="onNow" hidden></div>
+    </section>
+
+    <!-- ======================================================= timesheet == -->
+    <section class="view" id="v-sheet" data-view="sheet" hidden>
+      <div class="sec-head">
+        <h2>Timesheet</h2>
+        <span class="aside" id="shiftScope"></span>
+      </div>
+      <div id="shifts"><div class="empty">Loading&hellip;</div></div>
+    </section>
+
+    <!-- =========================================================== admin == -->
+    <section class="view" id="v-admin" data-view="admin" hidden>
+      <div class="sec-head">
+        <h2>Admin</h2>
+        <span class="aside" id="weekRange"></span>
+      </div>
+
+      <h3 class="sub">Hours and pay this week</h3>
+      <div id="weekTotals"><div class="empty">Nothing logged this pay week yet.</div></div>
+      <div class="btn-wrap">
+        <button class="btn" id="prevWeek" type="button">&larr; Previous</button>
+        <button class="btn" id="nextWeek" type="button">Next &rarr;</button>
+        <button class="btn key" id="csvBtn" type="button">Download CSV</button>
+      </div>
+
+      <h3 class="sub">The crew</h3>
+      <div id="staffList"><div class="empty">Nobody on the crew yet.</div></div>
+      <div class="add-staff">
+        <div>
+          <label class="lab" for="newName">Name</label>
+          <input id="newName" type="text" placeholder="Name" autocomplete="off">
+        </div>
+        <div>
+          <label class="lab" for="newRate">$/hour</label>
+          <input id="newRate" type="number" inputmode="decimal" min="0" step="0.5" placeholder="27">
+        </div>
+        <button class="btn" id="addStaff" type="button">Add</button>
+      </div>
+
+      <h3 class="sub">Anything missed</h3>
+      <p style="font-size:14px;color:var(--slate)">Add a shift nobody clocked, or fix one that&rsquo;s wrong.</p>
+      <div class="btn-wrap">
+        <button class="btn" id="manualBtn" type="button">Add a past shift</button>
+      </div>
+
+      <h3 class="sub">Where the hours go</h3>
+      <p style="font-size:14px;color:var(--slate)" id="storeNote"></p>
+    </section>
+
+  </main>
+
+  <div id="status"></div>
+
+  <nav class="tabs" id="tabs" aria-label="Sections" style="--tabs: 2">
+    <button type="button" data-tab="clock" aria-selected="true">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      Clock
+    </button>
+    <button type="button" data-tab="sheet" aria-selected="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      Timesheet
+    </button>
+    <button type="button" data-tab="admin" aria-selected="false" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+      Admin
+    </button>
+  </nav>
+</div>
+
+<dialog id="whoDlg">
+  <h3>Who are you?</h3>
+  <div class="people" id="whoList"></div>
+  <p class="people-note">A shift that is already running keeps running whoever is picked.</p>
+  <div class="acts"><button class="btn" id="whoCancel" type="button">Just looking</button></div>
+</dialog>
+
+<dialog id="editDlg">
+  <h3 id="editTitle">Edit shift</h3>
+  <div class="grid">
+    <div><label class="lab" for="eWho">Who</label><select id="eWho"></select></div>
+    <div><label class="lab" for="eDate">Date</label><input id="eDate" type="date"></div>
+    <div class="two" id="eTimes">
+      <div><label class="lab" for="eStart">Start</label><input id="eStart" type="time"></div>
+      <div><label class="lab" for="eEnd">Finish</label><input id="eEnd" type="time"></div>
+    </div>
+    <div id="eHoursWrap" hidden>
+      <label class="lab" for="eHours">Hours worked</label>
+      <input id="eHours" type="number" inputmode="decimal" min="0.25" max="20" step="0.25">
+    </div>
+    <div><label class="lab" for="eJob">Job or customer</label><input id="eJob" type="text" autocomplete="off"></div>
+    <p id="eErr" style="margin:0;color:var(--warn);font-size:14px" hidden></p>
+  </div>
+  <div class="acts">
+    <button class="btn" id="eCancel" type="button">Cancel</button>
+    <button class="btn key" id="eSave" type="button">Save</button>
+  </div>
+</dialog>
+
+<dialog id="timeDlg">
+  <h3>When did you start?</h3>
+  <div class="grid">
+    <div><label class="lab" for="tTime">Start time today</label><input id="tTime" type="time"></div>
+    <p style="margin:0;font-size:14px;color:var(--slate)">The clock counts from then, so the hours are right.</p>
+  </div>
+  <div class="acts">
+    <button class="btn" id="tCancel" type="button">Cancel</button>
+    <button class="btn key" id="tSave" type="button">Use this time</button>
+  </div>
+</dialog>
+
+<!-- Nobody pressed anything all day. A day and a number is all that honestly
+     exists, so that is all this asks for. -->
+<dialog id="dayDlg">
+  <h3>Log a whole day</h3>
+  <div class="grid">
+    <div>
+      <span class="lab">Which day</span>
+      <div class="days" id="days"></div>
+    </div>
+    <div id="pickWrap" hidden>
+      <label class="lab" for="pickDate">Or pick a date</label>
+      <input id="pickDate" type="date">
+    </div>
+    <div>
+      <span class="lab">How long</span>
+      <div class="dial-row">
+        <button class="step" id="dMinus" type="button" aria-label="Fifteen minutes less">&minus;</button>
+        <div class="big tnum zero" id="dBig" role="status" aria-live="polite">0:00</div>
+        <button class="step" id="dPlus" type="button" aria-label="Fifteen minutes more">+</button>
+      </div>
+      <p class="dial-sub" id="dSub">Tap a number, then nudge it.</p>
+      <div class="chips" id="dQuick">
+        <button class="chip" type="button" data-h="2">2h</button>
+        <button class="chip" type="button" data-h="4">4h</button>
+        <button class="chip" type="button" data-h="6">6h</button>
+        <button class="chip" type="button" data-h="8">8h</button>
+      </div>
+    </div>
+    <div><label class="lab" for="dJob">Job or customer <em>(optional)</em></label><input id="dJob" type="text" autocomplete="off"></div>
+  </div>
+  <div class="acts">
+    <button class="btn" id="dCancel" type="button">Cancel</button>
+    <button class="btn key" id="dSave" type="button">Log it</button>
+  </div>
+</dialog>
+
+<!-- The browser's own confirm() box is blocked inside an embedded viewer, which
+     made Delete look broken. This asks in the page, so it works anywhere. -->
+<dialog id="askDlg">
+  <h3 id="askTitle">Are you sure?</h3>
+  <p class="ask-body" id="askBody"></p>
+  <div class="acts">
+    <button class="btn" id="askNo" type="button">Cancel</button>
+    <button class="btn danger" id="askYes" type="button">Delete</button>
+  </div>
+</dialog>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

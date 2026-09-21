@@ -1,0 +1,133 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "trigger_escalation",
+ "window": "NY_AM 09:30-11:00 ET (cap 2 fills, 0 used)",
+ "decision_minute": "2026-06-22T10:18 ET (session-day 2026-06-21)",
+ "leak_check": "pass - truncated at 10:17:59; the 3m bar starting 10:15 completes AT 10:18",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d21_c6_1018.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "price_at_decision": 30855.25,
+ "last_completed_2m_bar": {
+  "start": "10:16",
+  "open": 30897.75,
+  "high": 30897.75,
+  "low": 30848.0,
+  "close": 30855.25,
+  "volume": 3210
+ },
+ "position_state": "FLAT. Three NY_AM longs were licensed and none filled - one void on cancel geometry, two cancelled when price reached their cancel levels.",
+ "window_state": {
+  "LONDON": "1 of 2 used, closed by time",
+  "NY_PRE": "1 of 1 used, closed by time",
+  "NY_AM": "0 of 2 used, 42 minutes remaining"
+ },
+ "levels_at_decision_CHART": {
+  "vwap": 30736.24,
+  "vwap_p1": 30886.76,
+  "vwap_m1": 30585.73,
+  "vwap_p2": 31037.28,
+  "vwap_m2": 30435.21,
+  "bb_2m_basis": 30894.74,
+  "bb_2m_upper": 30979.86,
+  "bb_2m_lower": 30809.61
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 30894.74,
+  "bb_ma_3m": 30878.96,
+  "bb_ma_15m": 30784.78,
+  "bb_ma_60m": null,
+  "day_range_fibs": {
+   "0.382": 30578.35,
+   "0.5": 30652.75,
+   "0.618": 30727.15,
+   "0.705": 30782.0
+  },
+  "session_high_so_far": 30968.0,
+  "session_low_so_far": 30337.5,
+  "daily_profile": {
+   "poc": 30810.0,
+   "val": 30644.0,
+   "vah": 30969.0,
+   "note": "DEVELOPING as-of 10:18"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30349.0,
+   "vah": 30798.0,
+   "note": "DEVELOPING as-of 10:18"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29923.0
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "the_escalating_bar": {
+   "3m": {
+    "start": "10:15",
+    "open": 30909.75,
+    "close": 30855.25
+   },
+   "2m": {
+    "start": "10:16",
+    "open": 30897.75,
+    "high": 30897.75,
+    "low": 30848.0,
+    "close": 30855.25,
+    "volume": 3210
+   },
+   "levels_closed": [
+    "own_ma_3m",
+    "own_ma_2m",
+    "vwap_p1"
+   ],
+   "pair_shape": "same_candle"
+  },
+  "session_range_so_far": {
+   "high": 30968.0,
+   "low": 30337.5,
+   "span": 630.5
+  }
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "what_to_emit": "your standard thesis JSON for this window.",
+ "prior_thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_vah",
+   "price": 30770.0
+  },
+  "waiting_for": "Longs add on either a 15m decisive close above 30872-30880 (daily VAH / bb-2m upper / session high) confirming continuation, or a shallow rebalance that holds above 30757-30771 (weekly VAH / prior-day high, now support) and turns back up - no chasing the raw high tag. A stall-and-rollover at 30872-30880 that closes back through the 2m MA licenses the short scalp toward that same 30757-30771 zone instead.",
+  "two_sided": true,
+  "condition_for_other_side": "Shorts licensed AT the 30872-30880 cluster on a rejection that stalls and rolls over, back toward the 30757-30771 zone.",
+  "anticipated_resolution": {
+   "level": "daily_vah",
+   "price": 30872.0,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close above 30872-30880 with a decisive body confirms continuation; a low-body-ratio absorption candle there means the level is holding, not breaking.",
+  "reasoning": "V-reversed off 30337.5, ground through London chop, then accepted above the 30757-30771 weekly-VAH/prior-day-high confluence on real hourly closes. Ran to session high 30873.5 tagging daily VAH/bb-2m-upper, now faded to 30822. Long-biased toward weekly_high 30975.5, broken confluence now support on retest."
+ },
+ "what_happened_since_the_last_read": "price ran from 30822 at the cash open to a session high of 30968.00 at 10:10, stalling 7.5pt under the weekly high 30975.50, and has since given back 120pt in eight minutes to 30855.25.",
+ "why_you_are_being_re-fired": "The trigger escalated and the orchestrator's gate granted it. It names the rejected level as the session high 30968.00 - 7.5pt under the weekly high 30975.50 - and states that your condition_for_other_side points at 30872-30880, a cluster price rallied through. A same-candle two-level break on both the 2m and 3m closed through their own MAs and vwap_p1. Re-read and restate.",
+ "escalation_response_field": "your output must include escalation_response set to either accommodated or reaffirmed."
+}

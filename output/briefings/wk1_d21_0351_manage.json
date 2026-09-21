@@ -1,0 +1,143 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "WK1-D21-L1-0342",
+ "decision_minute": "2026-06-22T03:51 ET",
+ "reason_for_call": "stalling",
+ "leak_check": "pass - replay truncated at 03:50:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/wk1_d21_0351_mg.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "short",
+  "entry": 30753.58,
+  "stop": 30776.0,
+  "targets": [
+   {
+    "level": "weekly_vah",
+    "price": 30714.0
+   }
+  ],
+  "conviction": "C",
+  "opened_at": "03:42",
+  "R_in_points": 22.42,
+  "current_stop_distance": 22.42,
+  "open_pnl_in_R": -0.39
+ },
+ "level_in_question": {
+  "level": "adverse_excursion_0.5R",
+  "price": null
+ },
+ "price_at_decision": 30762.25,
+ "last_completed_2m_bar": {
+  "start": "03:49",
+  "closed_at": "03:51",
+  "open": 30762.5,
+  "high": 30764.5,
+  "low": 30755.5,
+  "close": 30762.25,
+  "volume": 167,
+  "minutes": 2
+ },
+ "recent_2m_bars": [
+  {
+   "start": "03:43",
+   "closed_at": "03:45",
+   "open": 30750.75,
+   "high": 30756.75,
+   "low": 30744.5,
+   "close": 30749.5,
+   "volume": 258,
+   "minutes": 2
+  },
+  {
+   "start": "03:45",
+   "closed_at": "03:47",
+   "open": 30749.25,
+   "high": 30765.0,
+   "low": 30745.25,
+   "close": 30760.0,
+   "volume": 268,
+   "minutes": 2
+  },
+  {
+   "start": "03:47",
+   "closed_at": "03:49",
+   "open": 30760.25,
+   "high": 30767.0,
+   "low": 30760.25,
+   "close": 30762.75,
+   "volume": 122,
+   "minutes": 2
+  },
+  {
+   "start": "03:49",
+   "closed_at": "03:51",
+   "open": 30762.5,
+   "high": 30764.5,
+   "low": 30755.5,
+   "close": 30762.25,
+   "volume": 167,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "read_at": "2026-06-22T03:51 ET, from the chart's own study series",
+  "note": "levels move; these are the values stamped at the last bar before this minute"
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30573.49,
+   "vwap_p1": 30672.04,
+   "vwap_p2": 30770.58,
+   "vwap_p3": 30869.13,
+   "vwap_m1": 30474.94,
+   "vwap_m2": 30376.4,
+   "vwap_m3": 30277.85
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30767.08,
+   "bb_ma_3m": 30761.49,
+   "bb_ma_15m": 30652.45,
+   "bb_ma_60m": 30619.55
+  },
+  "day_range_fibs": {
+   "0.382": 30507.2,
+   "0.5": 30559.62,
+   "0.618": 30612.05,
+   "0.705": 30650.7
+  },
+  "session_high_so_far": 30781.75,
+  "session_low_so_far": 30337.5,
+  "daily_profile": {
+   "poc": 30563.0,
+   "val": 30469.0,
+   "vah": 30660.0,
+   "note": "DEVELOPING as-of 03:51"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30353.0,
+   "vah": 30714.0,
+   "high": 30975.5,
+   "low": 29923.0,
+   "anchor": "2026-06-15 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:51"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  }
+ },
+ "crowded_path": false,
+ "management_actions_so_far": [],
+ "what_to_emit": "your management JSON, per your contract.",
+ "why_this_call": "the position has moved 0.5R or more AGAINST you since the fill without reaching an intermediate level. This is the second half of `stalling` in your contract - momentum visibly gone against your direction.",
+ "excursion_since_fill": {
+  "mfe_points": 9.08,
+  "mae_points": 13.42,
+  "R_in_points": 22.42,
+  "note": "maximum favourable and adverse excursion in points since the fill bar, to this minute."
+ }
+}

@@ -1,0 +1,141 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "V5-D23-L9-0448",
+ "window": "LONDON 03:00-04:59 ET",
+ "session": "LONDON",
+ "decision_minute": "2026-06-24T04:48 ET",
+ "candle_start": "04:44 (2m) / 04:45 (3m)",
+ "timeframe": "2m and 3m",
+ "leak_check": "pass - truncated at 04:47:59; last completed 2m bar starts 04:46, and the 3m bar starting 04:45 completes AT 04:48",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d23_c5_0448.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap",
+    "price": 29764.06
+   },
+   {
+    "level": "prior_day_val",
+    "price": 29637.0
+   },
+   {
+    "level": "weekly_low",
+    "price": 29577.25
+   }
+  ],
+  "invalidation": {
+   "level": "session_high",
+   "price": 29891.75
+  },
+  "waiting_for": "nothing - short licensed now at the range-top confluence (vwap_p1 29834.51 / 2m BB basis 29829.79 / 2m BB upper 29854.46 / daily VAH 29858), per T22 fade-the-edge",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed on a 15m close above session_high 29891.75 (confluence with 2m BB upper and vwap_p2 29904.96) with a decisive body - an actual range breakout, not a poke through",
+  "anticipated_resolution": {
+   "level": "range_high_29891",
+   "price": 29891.75,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond 29891.75 with a decisive body, not a wick-heavy absorption candle",
+  "reasoning": "Overnight rotated in a ~306pt range (29585.5-29891.75) through several full swings since 18:00 - a range day, so T22 applies: fade the edge, don't anticipate the break. Price sits in the vwap_p1/2m-BB-basis confluence; the last 2m candle wicked to 29837 and closed back under both."
+ },
+ "waiting_for_status": "SATISFIED BY CONSTRUCTION - the thesis licenses shorts at the range top with no gate, and its invalidation (the range high 29891.75) has NEVER been closed above. The 04:00-04:15 15m bar reached 29,860 and closed 29,858.25, 33pt short of it. The range held.",
+ "POSITION_STATE": "FLAT. LONDON has used 1 of its 2 fills; ONE REMAINS and 11 minutes of window. This is the last realistic entry of the session.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "signal_candle_2m": {
+  "start": "04:44",
+  "direction": "DOWN",
+  "open": 29841.0,
+  "high": 29841.0,
+  "low": 29825.75,
+  "close": 29825.75,
+  "volume": 151,
+  "levels": "own 2m MA + vwap_p1, same candle; the supplementary scan also flags it as rejection-first, rejecting vwap_p1 at 04:38"
+ },
+ "signal_candle_3m": {
+  "start": "04:45",
+  "direction": "DOWN",
+  "open": 29834.75,
+  "close": 29810.25,
+  "closed_at": "04:48",
+  "levels": "own 3m MA + developing daily POC, same candle; rejection-first, rejecting vwap_p1 at 04:39 and again at 04:42"
+ },
+ "last_completed_2m_bar": {
+  "start": "04:46",
+  "open": 29825.5,
+  "high": 29833.5,
+  "low": 29809.0,
+  "close": 29810.25,
+  "volume": 226
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m",
+  "own_ma_3m",
+  "vwap_p1",
+  "daily_poc"
+ ],
+ "rejection_context": "the FOURTH failure at the vwap_p1 / 2m-BB-upper band this window. Price ran to 29,866.25 at 04:30-04:45, could not hold, and this pair closes back through both its own MAs, vwap_p1 and the developing POC. The 04:00 push topped 33pt under the range high and has now given back 56pt.",
+ "the_history_of_this_level": "03:00 rejection produced a +1.76R short. 03:54 rejection produced a short that cancelled unfilled (and its counterfactual was -1R, so the cancel saved). 04:38 rejection was passed. This is the fourth.",
+ "CAUTION": "volume is thin - 151 and 226 contracts. And the 2m BB basis 29836.54 now sits ABOVE the close while the 2m BB lower 29810.42 is AT it, so the band has rolled over with price. Ask whether there is room left below before the session VWAP 29770.49.",
+ "levels_at_decision_CHART": {
+  "vwap": 29770.49,
+  "vwap_p1": 29838.88,
+  "vwap_m1": 29702.1,
+  "vwap_p2": 29907.27,
+  "vwap_m2": 29633.71,
+  "bb_2m_basis": 29836.54,
+  "bb_2m_upper": 29862.65,
+  "bb_2m_lower": 29810.42
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29836.54,
+  "bb_ma_3m": 29827.14,
+  "bb_ma_15m": 29802.56,
+  "bb_ma_60m": 29771.67,
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "session_high_so_far": 29891.75,
+  "session_low_so_far": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29725.0,
+   "vah": 29868.0,
+   "note": "DEVELOPING as-of 04:48"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 30026.0,
+   "vah": 30955.0,
+   "note": "DEVELOPING as-of 04:48"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29577.25
+ },
+ "levels_below_for_target_selection": "the 2m BB lower 29810.42 is AT the close. Below: the 15m MA 29802.56, the session VWAP 29770.49, vwap_m1 29702.10, prior-day VAL 29637.0, the session low 29585.5. Apply T17: R = |entry-stop| FIRST, then the NEAREST level inside 1.0R-2.5R; fixed 1.5R only if none qualifies.",
+ "T17_REMINDER": "the band is 1.0R-2.5R, widened at the bottom from 1.5R.",
+ "T20_REMINDER": "your limit must sit BETWEEN current price and where the move came FROM (above, 29841). A limit below 29810.25 is FORBIDDEN and the orchestrator checks it arithmetically.",
+ "ENTRY_GEOMETRY": "for a SHORT: limit ABOVE current price; cancel_if_reaches BELOW both price and the limit, not already violated, and able to fire before the fill.",
+ "fills_this_window": 1,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

@@ -1,0 +1,89 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_PRE 08:00-09:29 ET (cap 1 fill)",
+ "decision_minute": "2026-06-22T08:00 ET (session-day 2026-06-21)",
+ "leak_check": "pass - truncated at 07:59:59; last completed 2m bar starts 07:58",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d21_0800_nypre.png",
+ "chart_note": "anchored-weekly VP DRAWING is hidden (7-days-back anchor unreachable in replay). Its levels are numeric below and DEVELOPING - recomputed as-of this minute.",
+ "price_at_decision": 30757.75,
+ "prior_thesis_as_of_0300": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "weekly_vah",
+    "price": 30754.0
+   },
+   {
+    "level": "prior_day_high",
+    "price": 30770.75
+   },
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   }
+  ],
+  "invalidation": {
+   "level": "overnight_low",
+   "price": 30337.5
+  },
+  "waiting_for": "rebalance to the 15m MA / 0.705 fib before longs are licensed",
+  "two_sided": true,
+  "condition_for_other_side": "hard rejection at the 30737-30771 cluster licenses shorts back toward the 15m MA/0.705 confluence, or deeper to the VWAP mid/daily POC/0.5 fib confluence"
+ },
+ "what_happened_since_0300": "Your other-side condition fired: the cluster was rejected at 03:42 and the resulting short paid its first target at prior-day VAH 30701 (04:11) before the runner exited at breakeven 05:06. Since then the tape has CHOPPED in a ~30699-30781 band all morning - four 15m MA close-throughs in ninety minutes (05:45 DOWN body 0.79, 06:15 UP 0.75, 06:45 DOWN 0.60, 07:30 UP 0.29) with no follow-through either way, plus two displacement bars at 07:06 (84.5pt) and 07:12 (56.5pt) that also went nowhere. The 15m MA rebalance your long was waiting for HAS now happened - repeatedly - and price sits back at 30757.75, mid-cluster.",
+ "between_window_note": "the four 15m crosses are listed re-fire events; they were folded into this window-open read rather than fired individually, because London entries had closed and the book was flat from 05:06. Recorded as an orchestrator deviation.",
+ "levels_at_0800": {
+  "vwap": {
+   "mid": 30617.24,
+   "p1": 30729.3,
+   "p2": 30841.36,
+   "m1": 30505.18,
+   "m2": 30393.12
+  },
+  "bb_ma": {
+   "tf_2m": 30750.19,
+   "tf_3m": 30751.78,
+   "tf_15m": 30736.61,
+   "tf_60m": null
+  },
+  "day_range_fibs": {
+   "0.382": 30524.87,
+   "0.5": 30582.75,
+   "0.618": 30640.63,
+   "0.705": 30683.3
+  },
+  "day_high": 30828.0,
+  "day_low": 30337.5,
+  "daily_profile": {
+   "poc": 30727.0,
+   "val": 30557.0,
+   "vah": 30824.0,
+   "note": "DEVELOPING as-of 08:00 (POC has migrated up from 30563 at 03:00 with the overnight grind)"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30351.0,
+   "vah": 30762.0,
+   "anchor": "2026-06-14 18:00 ET",
+   "note": "DEVELOPING as-of 08:00 - VAL has risen from 30343 and VAH from 30754 since the open"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "session_high": 30828.0,
+  "session_low_since_0300": 30699.0
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false,
+  "note": "no scheduled US releases this session-day; next red-folder is Core PCE on 2026-06-25"
+ }
+}

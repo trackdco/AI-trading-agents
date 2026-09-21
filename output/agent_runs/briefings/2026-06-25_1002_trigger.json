@@ -1,0 +1,110 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "NYA9-1002",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-26T10:02 ET",
+ "candle_start": "10:00",
+ "timeframe": "2m",
+ "leak_check": "pass \u2014 truncated at 10:01:59; last completed 2m bar starts 10:00",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/refire_1002_pdval_print.png",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "daily_vah",
+    "price": 29540.0
+   },
+   {
+    "level": "prior_day_poc",
+    "price": 29655.0
+   },
+   {
+    "level": "weekly_poc",
+    "price": 29710.0
+   }
+  ],
+  "invalidation": {
+   "level": "bb_ma_15m",
+   "price": 29376.0
+  },
+  "waiting_for": "rebalance to prior_day_val 29465 that holds as support \u2014 BINDING; note the entry doctrine (limit on the retest) is exactly how such a hold gets bought, per the NYA2 precedent this window",
+  "two_sided": false,
+  "as_of": "10:02 re-fire, destination_printed/extension \u2014 seconds before this adjudication"
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle": {
+  "start": "10:00",
+  "direction": "UP",
+  "open": 29444.0,
+  "high": 29529.0,
+  "low": 29414.0,
+  "close": 29501.5,
+  "volume": 4385,
+  "note": "closed through prior_day_val 29465 with acceptance; continuation of the V"
+ },
+ "pair_shape": "sequential",
+ "sequential_detail": "own-MA leg at 09:54 (+6m, at the SEQ_CANDLES=3 boundary); this candle's second legs: prior_day_val close-through and the 60m MA (~29490s); detection also flagged a developing-VAH closure as computed at detection time (VAH now 29540, above the close \u2014 treat that leg cautiously)",
+ "levels_closed": [
+  "own_ma_2m@09:54 (sequential leg)",
+  "prior_day_val (29465)",
+  "bb_ma_60m (~29490)"
+ ],
+ "time_context": "10:02 \u2014 the V off the spring is 320pt in 26 min; displacement regime cooling (10:00 bar range 115pt)",
+ "levels_at_decision": {
+  "vwap": {
+   "mid": 29434.0,
+   "m1": 29268.0
+  },
+  "bb_ma": {
+   "tf_2m": 29335.0,
+   "tf_3m": 29334.0,
+   "tf_15m": 29376.0
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29540.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30081.0
+  },
+  "prior_day": {
+   "low": 29295.75,
+   "val": 29465.0,
+   "poc": 29655.0
+  },
+  "weekly_low": 29160.5,
+  "session_low": 29181.5,
+  "london_session_high": 29562.75
+ },
+ "headroom": {
+  "direction_of_trade": "up (candidate)",
+  "next_levels_overhead": [
+   {
+    "level": "daily_vah",
+    "price": 29540.0,
+    "distance_from_close": 38.5
+   },
+   {
+    "level": "london_session_high",
+    "price": 29562.75
+   }
+  ],
+  "note": "the 29540/29562.75 VAH-London-high cluster is the first structure overhead; from a 29465 retest entry it is 75-98pt of path"
+ },
+ "poc_alignment": {
+  "daily_poc": 29369.0,
+  "position": "below \u2014 with a long"
+ },
+ "fills_this_window": 1,
+ "window_cap": 2,
+ "cap_counts": "fills, not attempts \u2014 one slot remains",
+ "fill_model_note": "limits are simulated: touch-equals-fill at the limit price"
+}

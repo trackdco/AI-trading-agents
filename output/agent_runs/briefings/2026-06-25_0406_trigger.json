@@ -1,0 +1,138 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "L2-0406",
+ "window": "LONDON 03:00-04:59 ET",
+ "session": "LONDON",
+ "decision_minute": "2026-06-26T04:06 ET",
+ "candle_start": "04:04 (2m) / 04:03 (3m)",
+ "timeframe": "2m and 3m simultaneously",
+ "leak_check": "pass \u2014 series truncated at 04:05:59; last completed 2m bar starts 04:04",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/candidate_0406_downpair.png",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "prior_day_poc",
+    "price": 29655.0
+   },
+   {
+    "level": "weekly_poc",
+    "price": 29710.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_val",
+   "price": 29290.0
+  },
+  "waiting_for": "nothing",
+  "two_sided": true,
+  "condition_for_other_side": "hard rejection at the 29655-29710 cluster licenses shorts back toward weekly_val 29290",
+  "as_of": "03:18 re-fire, rebalance_completed"
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_2m": {
+  "start": "04:04",
+  "direction": "DOWN",
+  "open": 29503.75,
+  "high": 29504.0,
+  "low": 29474.25,
+  "close": 29477.25,
+  "volume": 417
+ },
+ "signal_candle_3m": {
+  "start": "04:03",
+  "direction": "DOWN",
+  "open": 29500.75,
+  "close": 29477.25,
+  "note": "also shows a rejection of its own 3m MA (wick above, close back below)"
+ },
+ "pair_shape": "sequential",
+ "sequential_detail": "own-MA leg at candle_start 04:00 (2m bar O29528.25 C29502.5 closed DOWN through the 2m MA ~29522); VWAP-mid leg on the 04:04 candle (closed 29477.25 through vwap 29492.65). Gap 4 minutes (2 candles). Both 2m and 3m completed the pair at this decision minute.",
+ "levels_closed": [
+  "own_ma_2m@04:00 (sequential leg)",
+  "vwap (04:04 candle, both TFs)"
+ ],
+ "price_action_context": "The morning rally stalled twice at 29562.75 (03:34) and 29557.75 (04:00) without reaching the 29652-29655 destination cluster; price has now broken back below VWAP mid. Last ~40 min range: 29474-29562.",
+ "levels_at_decision": {
+  "vwap": {
+   "mid": 29492.65,
+   "p1": 29680.01,
+   "m1": 29305.29
+  },
+  "bb_ma": {
+   "tf_2m": 29522.59,
+   "tf_3m": 29510.94,
+   "tf_15m": 29384.59
+  },
+  "daily_profile": {
+   "poc": 29355.0,
+   "val": 29161.0,
+   "vah": 29644.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30095.0
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "session_high_since_0300": 29562.75
+ },
+ "headroom": {
+  "direction_of_trade": "down",
+  "next_levels_below": [
+   {
+    "level": "prior_day_val",
+    "price": 29465.0,
+    "distance_from_close": 12.25
+   },
+   {
+    "level": "daily_poc",
+    "price": 29355.0
+   },
+   {
+    "level": "vwap_m1",
+    "price": 29305.29
+   },
+   {
+    "level": "weekly_val",
+    "price": 29290.0
+   }
+  ],
+  "note": "prior_day_val sits 12.25pt below the signal close, immediately in a short's path"
+ },
+ "poc_alignment": {
+  "daily_poc": 29355.0,
+  "position": "below price \u2014 with a short",
+  "weekly_poc": 29710.0,
+  "position_weekly": "overhead \u2014 against a short; it is the standing thesis destination"
+ },
+ "open_position": {
+  "candidate_id": "L1-0318",
+  "side": "LONG",
+  "entry": 29493.0,
+  "stop": 29462.0,
+  "targets": [
+   {
+    "level": "daily_vah/prior_day_poc cluster",
+    "price": 29652.0
+   }
+  ],
+  "status": "open, unrealized -15.75 at the 04:04 close; no partials taken",
+  "note": "your verdict is about THIS new candidate only; the orchestrator manages the open position on doctrine"
+ },
+ "fills_this_window": 1,
+ "window_cap": 2,
+ "cap_counts": "fills, not attempts",
+ "fill_model_note": "limits are simulated: touch-equals-fill at the limit price"
+}

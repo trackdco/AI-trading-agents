@@ -1,0 +1,176 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "jn1-0531-L1",
+ "decision_minute": "2026-06-01T03:17 ET",
+ "reason_for_call": "intermediate_level_broken",
+ "leak_check": "pass - replay truncated at 03:16:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-05-31_L1_0317_manage.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "short",
+  "entry": 30579.5,
+  "stop": 30579.5,
+  "targets": [
+   {
+    "level": "daily_poc",
+    "price": 30558.0
+   },
+   {
+    "level": "vwap",
+    "price": 30523.68
+   },
+   {
+    "level": "daily_val",
+    "price": 30510.0
+   },
+   {
+    "level": "day_fib_0.5",
+    "price": 30478.25
+   },
+   {
+    "level": "prior_day_vah",
+    "price": 30439.0
+   },
+   {
+    "level": "weekly_val",
+    "price": 29773.0
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "03:12",
+  "R_in_points": 10.5,
+  "current_stop_distance": 0.0,
+  "open_pnl_in_R": 1.24
+ },
+ "level_in_question": {
+  "level": "bb_ma_15m",
+  "price": 30565.24
+ },
+ "price_at_decision": 30566.5,
+ "last_completed_2m_bar": {
+  "start": "03:14",
+  "closed_at": "03:16",
+  "open": 30572.0,
+  "high": 30573.25,
+  "low": 30565.25,
+  "close": 30566.5,
+  "volume": 214,
+  "minutes": 2
+ },
+ "candle_grid_note": "This decision minute is 03:17, which is the close of the 3m candle. A 2m chart has no bar closing on an odd minute, so the last 2m bar that exists closes at 03:16. price_at_decision and every 2m field below are that 03:16 bar - they will not equal the 3m close, and the chart legend will read the 03:16 bar. Judge the 3m candle and the 03:16 2m candle; neither is fabricated.",
+ "recent_2m_bars": [
+  {
+   "start": "03:09",
+   "closed_at": "03:11",
+   "open": 30583.75,
+   "high": 30586.5,
+   "low": 30580.0,
+   "close": 30583.5,
+   "volume": 182,
+   "minutes": 2
+  },
+  {
+   "start": "03:11",
+   "closed_at": "03:13",
+   "open": 30583.75,
+   "high": 30583.75,
+   "low": 30576.75,
+   "close": 30578.0,
+   "volume": 125,
+   "minutes": 2
+  },
+  {
+   "start": "03:13",
+   "closed_at": "03:15",
+   "open": 30576.25,
+   "high": 30576.5,
+   "low": 30565.25,
+   "close": 30570.75,
+   "volume": 304,
+   "minutes": 2
+  },
+  {
+   "start": "03:15",
+   "closed_at": "03:17",
+   "open": 30570.5,
+   "high": 30573.25,
+   "low": 30561.25,
+   "close": 30562.0,
+   "volume": 265,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "source": "data_get_study_values at 03:16:59 cursor",
+  "vwap": 30523.95,
+  "vwap_p1": 30580.55,
+  "vwap_m1": 30467.35,
+  "vwap_p2": 30637.16,
+  "vwap_m2": 30410.75,
+  "bb_basis_2m_last_completed_plot": 30577.21
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30524.15,
+   "vwap_p1": 30580.71,
+   "vwap_p2": 30637.28,
+   "vwap_p3": 30693.85,
+   "vwap_m1": 30467.58,
+   "vwap_m2": 30411.01,
+   "vwap_m3": 30354.44
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30576.75,
+   "bb_ma_3m": 30574.64,
+   "bb_ma_15m": 30564.89,
+   "bb_ma_60m": 30457.88
+  },
+  "day_range_fibs": {
+   "0.382": 30450.64,
+   "0.5": 30478.25,
+   "0.618": 30505.86,
+   "0.705": 30526.22
+  },
+  "session_high_so_far": 30595.25,
+  "session_low_so_far": 30361.25,
+  "daily_profile": {
+   "poc": 30558.0,
+   "val": 30512.0,
+   "vah": 30591.0,
+   "note": "DEVELOPING as-of 03:17"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30043.0,
+   "val": 29773.0,
+   "vah": 30304.0,
+   "high": 30595.25,
+   "low": 29744.0,
+   "anchor": "2026-05-25 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:17"
+  },
+  "prior_day": {
+   "poc": 30406.0,
+   "val": 30328.0,
+   "vah": 30439.0,
+   "high": 30536.0,
+   "low": 30216.5
+  }
+ },
+ "crowded_path": {
+  "flag": true,
+  "levels_between_entry_and_tp1": {
+   "bb_ma_2m": "broken 03:14",
+   "bb_ma_3m": "broken 03:14",
+   "bb_ma_15m": "broken this minute"
+  }
+ },
+ "management_actions_so_far": [
+  {
+   "minute": "03:14",
+   "action": "breakeven",
+   "new_stop": 30579.5,
+   "reason": "crowded_path override - BE at first level reached"
+  }
+ ],
+ "what_to_emit": "your management JSON, per your contract."
+}

@@ -1,0 +1,148 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "LONDON 03:00-04:59 ET",
+ "decision_minute": "2026-06-22T03:00 ET",
+ "leak_check": "pass - replay truncated at 02:59:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/m1_d21_0300.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30736.75,
+ "last_completed_2m_bar": {
+  "start": "02:58",
+  "closed_at": "03:00",
+  "open": 30733.75,
+  "high": 30738.5,
+  "low": 30731.75,
+  "close": 30736.75,
+  "volume": 115,
+  "minutes": 2
+ },
+ "position_state": "FLAT. First window of the session-day; nothing carried in.",
+ "window_state": {
+  "LONDON": "0 fills - open. Window fill caps are LIFTED for this run.",
+  "NY_PRE": "not yet open",
+  "NY_AM": "not yet open"
+ },
+ "levels_at_decision_CHART": {
+  "vwap": 30560.99,
+  "vwap_p1": 30649.08,
+  "vwap_m1": 30472.9,
+  "vwap_p2": 30737.16,
+  "vwap_m2": 30384.82,
+  "vwap_p3": 30825.25,
+  "vwap_m3": 30296.73,
+  "bb_2m_basis": 30721.83,
+  "bb_2m_upper": 30749.52,
+  "bb_2m_lower": 30694.13,
+  "source": "data_get_study_values at this minute"
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30560.82,
+   "vwap_p1": 30649.12,
+   "vwap_p2": 30737.42,
+   "vwap_p3": 30825.72,
+   "vwap_m1": 30472.52,
+   "vwap_m2": 30384.22,
+   "vwap_m3": 30295.92
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30721.83,
+   "bb_ma_3m": 30706.34,
+   "bb_ma_15m": 30618.17,
+   "bb_ma_60m": 30609.19
+  },
+  "day_range_fibs": {
+   "0.382": 30492.11,
+   "0.5": 30539.88,
+   "0.618": 30587.64,
+   "0.705": 30622.85
+  },
+  "session_high_so_far": 30742.25,
+  "session_low_so_far": 30337.5,
+  "daily_profile": {
+   "poc": 30563.0,
+   "val": 30487.0,
+   "vah": 30658.0,
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30353.0,
+   "vah": 30714.0,
+   "high": 30975.5,
+   "low": 29923.0,
+   "anchor": "2026-06-15 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.144,
+  "net_move_15m": 159.75,
+  "total_15m_travel": 1111.0,
+  "candles_15m_up": 18,
+  "candles_15m_down": 18,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "02:00",
+   "open": 30641.5,
+   "high": 30684.0,
+   "low": 30638.0,
+   "close": 30681.0,
+   "body_ratio": 0.86
+  },
+  {
+   "start": "02:15",
+   "open": 30682.25,
+   "high": 30738.5,
+   "low": 30675.75,
+   "close": 30729.25,
+   "body_ratio": 0.75
+  },
+  {
+   "start": "02:30",
+   "open": 30729.0,
+   "high": 30735.0,
+   "low": 30704.75,
+   "close": 30724.0,
+   "body_ratio": 0.17
+  },
+  {
+   "start": "02:45",
+   "open": 30724.75,
+   "high": 30742.25,
+   "low": 30720.5,
+   "close": 30736.75,
+   "body_ratio": 0.55
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "reasoning": "No events released so far today, none scheduled later today, and no rows since the prior session close."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "new_week_open": {
+  "prior_session_close": 30647.0,
+  "this_session_open": 30577.0,
+  "gap": -70.0,
+  "prior_session_high": 30770.75,
+  "prior_session_low": 30388.0,
+  "note": "this is the first session of a new trading week; it opened Sunday 18:00 ET against the prior session's close. The prior session's last traded bar was 12:59 ET - it ended early."
+ }
+}

@@ -1,0 +1,116 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "V5-D22-L1-0322",
+ "window": "LONDON 03:00-04:59 ET",
+ "session": "LONDON",
+ "decision_minute": "2026-06-23T03:22 ET",
+ "candle_start": "03:20 (2m)",
+ "timeframe": "2m",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d22_c1_0322.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_low",
+    "price": 29923.0
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29735.88
+   }
+  ],
+  "invalidation": {
+   "level": "bb_ma_15m",
+   "price": 30259.3
+  },
+  "waiting_for": "trend day - 15m MA floor suspended (T15). Short licensed either on a 15m decisive-body close below the weekly low (29,923) with entry on the retest, or - if a countertrend bounce forms first - on that bounce stalling and rolling over wherever it stalls, followed by closure through the 2m/3m MA and retest.",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed AT the weekly low/session low cluster (29,923-29,950), on a hold there - absorption plus reclaim back above vwap_m2 (29,941) and vwap_m1 (30,146).",
+  "anticipated_resolution": {
+   "level": "weekly_low_29923",
+   "price": 29923.0,
+   "expect": "break_down",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond the level with a decisive body (high body_ratio), not a wick-heavy absorption candle.",
+  "reasoning": "Overnight round-tripped: a brief push right after the 18:00 open, then a relentless one-way decline to session/weekly lows with almost no rotation - a trend day, not a range. Price sits 382pt below VWAP, below the 2m BB lower band, and 289pt below the 15m MA, so the 15m floor is suspended (T15). Weekly low (29,923) is only 47pt below and is the immediate destination."
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "levels_at_decision_CHART": {
+  "vwap": 30330.56,
+  "vwap_p1": 30545.77,
+  "vwap_m1": 30115.36,
+  "vwap_m2": 29900.15,
+  "vwap_m3": 29684.94,
+  "bb_2m_basis": 30008.66,
+  "bb_2m_upper": 30061.2,
+  "bb_2m_lower": 29956.12
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 30008.66,
+  "bb_ma_3m": 30013.16,
+  "bb_ma_15m": 30218.7,
+  "bb_ma_60m": 30507.46,
+  "day_range_fibs": {
+   "0.382": 30232.96,
+   "0.5": 30322.38,
+   "0.618": 30411.79,
+   "0.705": 30477.71
+  },
+  "session_high_so_far": 30701.25,
+  "session_low_so_far": 29943.5,
+  "daily_profile": {
+   "poc": 30032.0,
+   "val": 29944.0,
+   "vah": 30491.0,
+   "note": "DEVELOPING as-of 03:22"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30353.0,
+   "vah": 30732.0,
+   "note": "DEVELOPING as-of 03:22"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29923.0
+ },
+ "T17_REMINDER": "first target band is 1.0R-2.5R, widened at the bottom from 1.5R. Compute R = |entry-stop| FIRST, take the NEAREST level inside the band, fixed 1.5R only if none qualifies.",
+ "T20_REMINDER": "your limit must sit BETWEEN current price and where the move came FROM. Price has to come BACK to fill you; a limit needing further displacement is a breakout bet and is forbidden.",
+ "T25_REMINDER": "escalation requires a SAME-CANDLE two-level break behind a NAMED rejection. The gate refuses a sequential pair before it spends budget, and refuses any escalation carrying a mechanical gate (window, cap, news, the 09:35 buffer, an open position).",
+ "fill_model_note": "limits are simulated: touch-equals-fill",
+ "leak_check": "pass - truncated at 03:21:59; last completed 2m bar starts 03:20 (from the chart's own series)",
+ "waiting_for_status": "DIRECTION MISMATCH against a short thesis - judge it properly, do not reflex-pass. The thesis DOES license longs, but only AT the 29,923-29,950 weekly-low/session-low cluster on a hold there PLUS a reclaim back above BOTH vwap_m2 (29,900.15) and vwap_m1 (30,115.36). Price is 30,033: above vwap_m2, well below vwap_m1. So the licence is HALF met. Decide whether half is enough, and if you think the thesis cannot accommodate what you are seeing, escalate rather than pass.",
+ "signal_candle_2m": {
+  "start": "03:20",
+  "direction": "UP",
+  "open": 30008.5,
+  "high": 30034.75,
+  "low": 30007.75,
+  "close": 30033.0,
+  "volume": 457,
+  "levels": "own 2m MA (30008.66) + developing daily POC, same candle"
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m",
+  "daily_poc"
+ ],
+ "context": "the session low is 29943.5. This is the first bounce off it. The thesis calls the day a TREND day with the 15m MA floor suspended and price 382pt below VWAP.",
+ "levels_above_for_target_selection": "the 2m BB upper 30061.20, the 15m MA 30218.7, vwap_m1 30115.36, then the developing daily VAH and the session VWAP 30330.56.",
+ "fills_this_window": 0,
+ "window_cap": 2
+}

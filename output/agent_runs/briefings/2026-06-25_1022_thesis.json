@@ -1,0 +1,64 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "destination_printed",
+ "event_detail": "your primary remaining target prior_day_poc 29655 PRINTED: the 10:20-10:22 bar ran to 29665.25 and closed 29616.25 on 4662 contracts. Before it, your waiting_for was satisfied for the record: the 10:10-10:18 pullback held the 29523-29540 zone (lows 29515.5/29523/29524.75) and was bought. Only weekly_poc 29710 remains of your named structure.",
+ "window": "NY_AM (entries close 11:00; cap 2/2 used, book flat \u2014 this read governs the record only).",
+ "decision_minute": "2026-06-26T10:22 ET (session-day 2026-06-25)",
+ "leak_check": "pass \u2014 truncated at 10:21:59; last completed 2m bar starts 10:20",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/refire_1022_pdpoc_print.png",
+ "price_at_decision": 29616.25,
+ "prior_thesis_as_of_1008": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "prior_day_poc",
+    "price": 29655.0
+   },
+   {
+    "level": "weekly_poc",
+    "price": 29710.0
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_val",
+   "price": 29465.0
+  },
+  "waiting_for": "rebalance toward daily_vah 29540 that holds as support"
+ },
+ "levels_at_1022": {
+  "vwap": {
+   "mid": 29434.0,
+   "p1": 29597.0,
+   "note": "computed at 10:22 \u2014 price is above vwap_p1"
+  },
+  "bb_ma": {
+   "tf_2m": 29520.0,
+   "tf_3m": 29500.0,
+   "tf_15m": 29408.0
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29540.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30079.0
+  },
+  "prior_day": {
+   "val": 29465.0,
+   "poc": 29655.0,
+   "vah": 29884.0
+  },
+  "weekly_low": 29160.5,
+  "session_low": 29181.5,
+  "session_high_new": 29665.25
+ },
+ "fib_source": "none available",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ }
+}

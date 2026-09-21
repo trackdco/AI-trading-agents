@@ -1,0 +1,239 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/i-m-new",
+      "destination": "/im-new/",
+      "permanent": true
+    },
+    {
+      "source": "/visiting-1",
+      "destination": "/im-new/",
+      "permanent": true
+    },
+    {
+      "source": "/9-30-am-north",
+      "destination": "/sundays/north/",
+      "permanent": true
+    },
+    {
+      "source": "/9-30-am-belconnen",
+      "destination": "/sundays/belconnen/",
+      "permanent": true
+    },
+    {
+      "source": "/6-30-pm-city-anu",
+      "destination": "/sundays/city/",
+      "permanent": true
+    },
+    {
+      "source": "/6-30-pm-lake-g-uc",
+      "destination": "/sundays/lake-g/",
+      "permanent": true
+    },
+    {
+      "source": "/kids",
+      "destination": "/kids/",
+      "permanent": true
+    },
+    {
+      "source": "/youth",
+      "destination": "/youth/",
+      "permanent": true
+    },
+    {
+      "source": "/connecting-1",
+      "destination": "/connect/",
+      "permanent": true
+    },
+    {
+      "source": "/connect-card",
+      "destination": "/connect-card/",
+      "permanent": true
+    },
+    {
+      "source": "/connect-in",
+      "destination": "/connect-lunch/",
+      "permanent": true
+    },
+    {
+      "source": "/growth-groups-test-2026",
+      "destination": "/growth-groups/",
+      "permanent": true
+    },
+    {
+      "source": "/jesus-on-life",
+      "destination": "/jesus-on-life/",
+      "permanent": true
+    },
+    {
+      "source": "/divorce-care",
+      "destination": "/divorce-care/",
+      "permanent": true
+    },
+    {
+      "source": "/crossroads-english",
+      "destination": "/english/",
+      "permanent": true
+    },
+    {
+      "source": "/partnership",
+      "destination": "/partnership/",
+      "permanent": true
+    },
+    {
+      "source": "/apps",
+      "destination": "/apps/",
+      "permanent": true
+    },
+    {
+      "source": "/about-1",
+      "destination": "/about/",
+      "permanent": true
+    },
+    {
+      "source": "/who-we-are",
+      "destination": "/who-we-are/",
+      "permanent": true
+    },
+    {
+      "source": "/what-we-believe",
+      "destination": "/what-we-believe/",
+      "permanent": true
+    },
+    {
+      "source": "/crossroads-stories",
+      "destination": "/stories/",
+      "permanent": true
+    },
+    {
+      "source": "/crossroads-history",
+      "destination": "/history/",
+      "permanent": true
+    },
+    {
+      "source": "/global-regional-partners",
+      "destination": "/global-partners/",
+      "permanent": true
+    },
+    {
+      "source": "/mts",
+      "destination": "/mts/",
+      "permanent": true
+    },
+    {
+      "source": "/policies-and-reporting",
+      "destination": "/policies/",
+      "permanent": true
+    },
+    {
+      "source": "/contact-us",
+      "destination": "/contact/",
+      "permanent": true
+    },
+    {
+      "source": "/employment",
+      "destination": "/employment/",
+      "permanent": true
+    },
+    {
+      "source": "/teaching-1",
+      "destination": "/teaching/",
+      "permanent": true
+    },
+    {
+      "source": "/online-bible-talks",
+      "destination": "/sermons/",
+      "permanent": true
+    },
+    {
+      "source": "/library-of-bible-talks",
+      "destination": "/sermons/",
+      "permanent": true
+    },
+    {
+      "source": "/word-to-life-podcast",
+      "destination": "/word-to-life/",
+      "permanent": true
+    },
+    {
+      "source": "/library-of-bible-studies",
+      "destination": "/bible-studies/",
+      "permanent": true
+    },
+    {
+      "source": "/leaders-bible-study-resources",
+      "destination": "/bible-studies/",
+      "permanent": true
+    },
+    {
+      "source": "/recommended-resources",
+      "destination": "/resources/",
+      "permanent": true
+    },
+    {
+      "source": "/crosstrain",
+      "destination": "/crosstrain/",
+      "permanent": true
+    },
+    {
+      "source": "/training-opportunities",
+      "destination": "/crosstrain/",
+      "permanent": true
+    },
+    {
+      "source": "/serving-1",
+      "destination": "/serving/",
+      "permanent": true
+    },
+    {
+      "source": "/want-to-serve",
+      "destination": "/serving/",
+      "permanent": true
+    },
+    {
+      "source": "/giving",
+      "destination": "/giving/",
+      "permanent": true
+    },
+    {
+      "source": "/events",
+      "destination": "/events/",
+      "permanent": true
+    },
+    {
+      "source": "/who-is-jesus",
+      "destination": "/who-is-jesus/",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+ "thesis": "{\"bias\":\"long\",\"day_type\":\"gap-up holding highs, trend continuation\",\"thesis\":\"+316 gap held overnight, last 5 bars tight 25822-25830 near highs, no fade \u2014 favors long pullback entries\",\"invalidates\":\"clean break/hold below 25800 overnight-range mid\"}",
+ "reread": "{\"bias\":\"long\",\"note\":\"Opening range held above overnight low, pushed to new high 25860, closed 25840 near top of range \u2014 strength confirmed, favor long pullbacks\"}",
+ "turns": [
+  {
+   "minute": "2025-10-27 10:20:00-04:00",
+   "why": "OPPOSING SIGNAL FILLED",
+   "sent": "harness: opposing canon signal (2025-10-27_1020_l_422) filled at 25829.5 \u2014 position closed and reversed (law)",
+   "reply": "(no reply \u2014 mechanical)"
+  }
+ ]
+}

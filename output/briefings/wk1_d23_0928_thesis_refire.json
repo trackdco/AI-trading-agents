@@ -1,0 +1,181 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "escalation",
+ "window": "NY_PRE",
+ "decision_minute": "2026-06-24T09:28 ET",
+ "leak_check": "pass - replay truncated at 09:27:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/wk1_d23_0928.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 29729.75,
+ "last_completed_2m_bar": {
+  "start": "09:26",
+  "closed_at": "09:28",
+  "open": 29747.0,
+  "high": 29756.25,
+  "low": 29726.5,
+  "close": 29729.75,
+  "volume": 1208,
+  "minutes": 2
+ },
+ "position_state": {
+  "open_position": null,
+  "fills_today": 5
+ },
+ "window_state": {
+  "window": "NY_PRE",
+  "opens": "08:00",
+  "closes": "09:29",
+  "fills_this_window": 1,
+  "cap": "LIFTED for this run (written cap 1)"
+ },
+ "levels_at_decision_CHART": {
+  "read_at": "2026-06-24T09:28 ET, from the chart's own study series",
+  "bb_ma_2m": 29743.66,
+  "vwap": 29775.4,
+  "vwap_m1": 29712.75,
+  "vwap_m2": 29650.09,
+  "svp_hd_REGULAR_HOURS_0930_1600": {
+   "poc": 29821.0,
+   "vah": 29856.0,
+   "val": 29734.0,
+   "note": "REGULAR-HOURS profile of the previous cash session; everything else is 18:00-anchored."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 29775.54,
+   "vwap_p1": 29838.39,
+   "vwap_p2": 29901.24,
+   "vwap_p3": 29964.09,
+   "vwap_m1": 29712.69,
+   "vwap_m2": 29649.84,
+   "vwap_m3": 29586.99
+  },
+  "bb_ma": {
+   "bb_ma_2m": 29743.66,
+   "bb_ma_3m": 29762.67,
+   "bb_ma_15m": 29800.51,
+   "bb_ma_60m": 29761.15
+  },
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "session_high_so_far": 29891.75,
+  "session_low_so_far": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29733.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING as-of 09:28"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29733.0,
+   "val": 29661.0,
+   "vah": 29914.0,
+   "high": 30701.25,
+   "low": 29577.25,
+   "anchor": "2026-06-22 18:00:00-04:00",
+   "note": "DEVELOPING as-of 09:28"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.02,
+  "net_move_15m": -40.25,
+  "total_15m_travel": 2008.75,
+  "candles_15m_up": 28,
+  "candles_15m_down": 34,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "08:30",
+   "open": 29851.75,
+   "high": 29865.75,
+   "low": 29784.25,
+   "close": 29793.0,
+   "body_ratio": 0.72
+  },
+  {
+   "start": "08:45",
+   "open": 29792.25,
+   "high": 29798.0,
+   "low": 29752.5,
+   "close": 29762.0,
+   "body_ratio": 0.66
+  },
+  {
+   "start": "09:00",
+   "open": 29764.25,
+   "high": 29790.75,
+   "low": 29698.75,
+   "close": 29703.0,
+   "body_ratio": 0.67
+  },
+  {
+   "start": "09:15",
+   "open": 29705.0,
+   "high": 29756.25,
+   "low": 29692.5,
+   "close": 29729.75,
+   "body_ratio": 0.39
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": []
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "session_high_so_far",
+    "price": 29891.75
+   },
+   {
+    "level": "weekly_vah",
+    "price": 29914.0
+   },
+   {
+    "level": "prior_day_vah",
+    "price": 29928.0
+   }
+  ],
+  "invalidation": {
+   "level": "bb_ma_2m_vwap_p1_0.705fib_cluster",
+   "price": 29803.61
+  },
+  "waiting_for": "retest of the broken vwap_p1/bb_ma_2m/0.705-fib cluster (~29802-29841, confluent with the 15m MA ~29811) holding as support before longs are licensed",
+  "two_sided": true,
+  "condition_for_other_side": "a 15m close back below the bb_ma_2m/vwap_p1/0.705-fib cluster (~29802-29841) with a decisive body relicenses shorts toward daily_val 29737 and weekly_val 29655",
+  "anticipated_resolution": {
+   "level": "cluster_retest_bbma2m",
+   "price": 29803.61,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "a 15m close beyond the vwap_p1/bb_ma_2m/0.705-fib cluster (~29802-29841) with a decisive body - the 07:45 candle just printed this (close 29862.25, body_ratio 0.75), reversing the prior short thesis's own flip condition and clearing its invalidation at vwap_p1 29834.51",
+  "flush": false,
+  "flush_direction": null,
+  "reasoning": "London's short thesis paid (4/4 closed positive/flat) but its own flip condition has now fired: the 07:45 15m candle closed 29862.25 (body_ratio 0.75) decisively above the vwap_p1/bb_ma_2m/0.705-fib cluster (~29802-29841), clearing my prior invalidation. Session stays rotational (0.051 path efficiency, 26up/30down, not a flush), so I flip long on acceptance, targeting weekly_vah/vwap_p2 confluence (29914) and prior_day_vah (29928), waiting for a retest of the broken cluster to hold before entries.",
+  "emitted_at": "2026-06-24T08:00 ET (NY_PRE window_open)"
+ },
+ "what_happened_since_the_last_read": "You emitted the standing NY_PRE thesis at 08:00 with a long bias, waiting for the 29802-29841 cluster to hold as support. Price traded up to 29868 and has since fallen to a session low near 29692.50; it is 29729.75 at this minute. The cash open is two minutes away.",
+ "why_you_are_being_re-fired": "Tier 2 returned thesis_stale on the candidate at this minute and the orchestrator is re-firing you before its verdict is used. Its escalation object, verbatim and unedited:\n\n  level: \"bb_ma_2m_vwap_p1_0.705fib_cluster\"\n  direction: \"short\"\n  why_thesis_cannot_accommodate: \"Thesis bias is long, waiting for this cluster to hold as support; price has instead closed 74pt below it, and this candle's own_ma_2m+daily_val break is a fresh leg toward the thesis's own named short targets (daily_val 29737, weekly_val 29655) - only 2m confirms, 3m did not break its own MA this candle, so grade this cautiously if re-affirmed.\"\n\nRe-read the chart at this minute and emit your thesis. Re-affirming your standing view is a complete and expected answer; so is accommodating. Nothing here is a recommendation."
+}

@@ -1,0 +1,206 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM",
+ "decision_minute": "2026-06-03T09:30 ET",
+ "leak_check": "pass - replay truncated at 09:29:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-02_NYAM_0930.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30753.75,
+ "last_completed_2m_bar": {
+  "start": "09:28",
+  "closed_at": "09:30",
+  "open": 30741.5,
+  "high": 30761.5,
+  "low": 30738.25,
+  "close": 30753.75,
+  "volume": 2108,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "NY_AM",
+  "entries": "09:30-11:00 earliest entry 09:35",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30733.2,
+  "bb_upper_2m": 30758.01,
+  "bb_lower_2m": 30708.39,
+  "vwap": 30712.68,
+  "vwap_p1": 30756.95,
+  "vwap_m1": 30668.4,
+  "vwap_p2": 30801.23,
+  "vwap_m2": 30624.12,
+  "vwap_p3": 30845.51,
+  "vwap_m3": 30579.85,
+  "read_at": "chart cursor 09:29:59 - last COMPLETE 2m bar closes 09:30",
+  "_session_calendar": {
+   "session_day_label": "2026-06-02",
+   "session_opens": "2026-06-02 18:00 ET (Tuesday evening)",
+   "cash_session_traded": "2026-06-03 (Wednesday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30713.33,
+   "vwap_p1": 30757.25,
+   "vwap_p2": 30801.17,
+   "vwap_p3": 30845.09,
+   "vwap_m1": 30669.41,
+   "vwap_m2": 30625.48,
+   "vwap_m3": 30581.56
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30733.72,
+   "bb_ma_3m": 30731.39,
+   "bb_ma_15m": 30751.97,
+   "bb_ma_60m": 30709.21
+  },
+  "day_range_fibs": {
+   "0.382": 30652.07,
+   "0.5": 30680.12,
+   "0.618": 30708.18,
+   "0.705": 30728.86
+  },
+  "session_high_so_far": 30799.0,
+  "session_low_so_far": 30561.25,
+  "daily_profile": {
+   "poc": 30718.0,
+   "val": 30676.0,
+   "vah": 30757.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30676.0,
+   "val": 30554.0,
+   "vah": 30761.0,
+   "high": 30799.0,
+   "low": 30317.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "prior_day": {
+   "poc": 30676.0,
+   "val": 30532.0,
+   "vah": 30713.0,
+   "high": 30763.25,
+   "low": 30317.75
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.012,
+  "net_move_15m": 12.0,
+  "total_15m_travel": 978.5,
+  "candles_15m_up": 33,
+  "candles_15m_down": 28,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "08:30",
+   "open": 30754.0,
+   "high": 30755.5,
+   "low": 30703.5,
+   "close": 30726.5,
+   "body_ratio": 0.53
+  },
+  {
+   "start": "08:45",
+   "open": 30725.75,
+   "high": 30734.75,
+   "low": 30700.0,
+   "close": 30717.25,
+   "body_ratio": 0.24
+  },
+  {
+   "start": "09:00",
+   "open": 30716.75,
+   "high": 30742.5,
+   "low": 30712.5,
+   "close": 30730.25,
+   "body_ratio": 0.45
+  },
+  {
+   "start": "09:15",
+   "open": 30730.5,
+   "high": 30763.25,
+   "low": 30728.5,
+   "close": 30753.75,
+   "body_ratio": 0.67
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": true,
+  "fomc_day": false,
+  "blackout_events": [
+   {
+    "event": "ISM Services PMI",
+    "time_et": "10:00"
+   }
+  ],
+  "drivers": [],
+  "falsified_by": "No falsifiable directional claim made; lean is neutral because no dated, pre-decision-minute catalyst bears on NQ or its constituents today.",
+  "reasoning": "Nothing has released so far today. ISM Services PMI at 10:00 ET is scheduled inside the NY_AM window and is not covered by the standing non-gating ruling (that ruling applies to ISM Manufacturing only; Services remains an open question), so it gates entries as high-impact."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "prior_day_vah",
+    "price": 30713.0
+   },
+   {
+    "level": "weekly_poc",
+    "price": 30676.0
+   },
+   {
+    "level": "weekly_val",
+    "price": 30532.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_high",
+   "price": 30794.25
+  },
+  "waiting_for": "shorts: nothing further - rejection already printed at the weekly high (30794.25) on the 07:30 15m candle (close 30773.25, body_ratio 0.12); licensed on retest of the 30780-794 zone from below. longs: need a 2m/3m reclaim of 30794.25 with MA displacement before re-licensing, full breakout confirms on a 15m decisive-body close that holds.",
+  "two_sided": true,
+  "condition_for_other_side": "Longs resume on a 2m/3m close back above 30794.25 with the 2m/3m MA reclaiming alongside it (displacement, not a wick) - only ~14pt from current price, well within reach. A 15m decisive-body close above that holds the next candle would confirm a genuine breakout of the weekly range and I'd go with it rather than fade it.",
+  "anticipated_resolution": {
+   "level": "weekly_high",
+   "price": 30794.25,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "Weekly high 30794.25 is only broken on a 15m decisive-body close above it that holds the following candle; the top holds and the short read firms on a 15m decisive-body close back below the 30713-725 broken cluster.",
+  "other_side_tripwire": {
+   "level": "weekly_high",
+   "price": 30794.25,
+   "event": "2m_close_through_with_ma"
+  },
+  "defended_level": {
+   "level": "prior_day_vah_weekly_vah_cluster",
+   "price": 30713.0,
+   "memory": "defended 3x since 03:15, broken with displacement ~04:00; now the first support/short target on a fade from the weekly high",
+   "status": "untested"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "reasoning": "Since the 04:03 short read, price displaced clean through the 30713-725 cluster, broke the prior-day high, and printed a new weekly high at 30794.25 - that long thesis's targets (30757/30763) are fully spent. The 07:30 15m candle rejected the high hard (close 30773.25, body_ratio 0.12) and price is now capped just under it at 30780 in a choppy, non-flush session (path_efficiency 0.045, 30up/25down). Location argues fade-the-top of the developing weekly range toward the broken cluster (now support) and weekly POC; two-sided on a 2m/3m reclaim of 30794.25 with MA displacement."
+ },
+ "what_happened_since_the_last_read": "Since your 08:00 read, stated as price facts only: between 08:00 and this decision minute the session traded a high of 30799.00 and a low of 30700.00. All levels in levels_at_decision_BUILD are recomputed as of this minute."
+}

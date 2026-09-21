@@ -1,0 +1,32 @@
+/* Imperium Detailing — the look, in one place.
+
+   The palette is the one from imperiumdetailing.com.au, so the timesheet reads
+   as part of the same business. Both pages load this, so a colour only ever
+   changes here. Everything else about a page's layout stays in that page. */
+:root {
+  --bg: #050608;
+  --raise: #0e1014;
+  --well: #090b0f;
+  --accent: #3a8fe0;
+  --ink: #f3f5f8;          /* 17.5:1 on --bg */
+  --body: #c2c8d2;         /* 11.4:1 */
+  --muted: #8e97a5;        /* 6.4:1 — still AA */
+  --line: rgba(243, 245, 248, 0.09);
+  --line-2: rgba(243, 245, 248, 0.18);
+  --live: #4ade80;
+  --warn: #ff9d95;
+
+  --gutter: 18px;
+  --measure: 32rem;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  --t-micro: 12px;
+  --t-small: 14px;
+  --t-body: 16px;
+  --t-3: 20px;
+  --t-2: 26px;
+
+  --sans: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Big Shoulders Display", var(--sans);
+}
+@media (min-width: 620px) { :root { --gutter: 28px; --t-2: 30px; } }

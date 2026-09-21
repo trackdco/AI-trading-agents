@@ -1,0 +1,132 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "R2-D25-NYA2-0958",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-26T09:58 ET",
+ "candle_start": "09:54 (3m) / 09:56 (2m)",
+ "timeframe": "3m and 2m",
+ "leak_check": "pass - truncated at 09:57:59; last completed 2m bar starts 09:56 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/r2_d25_c5_0958.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. This briefing is authoritative. The chart is truncated at the cursor and carries NO trade drawings of any kind.",
+ "chart_note": "the weekly VP drawing is anchored to a different window - ignore it visually; correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger from his chart's own study series at the last bar; BB MAs/fibs from the build; session profile from his chart.",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "prior_day_val",
+    "price": 29465.0
+   },
+   {
+    "level": "day_range_fib_0.5",
+    "price": 29526.62
+   },
+   {
+    "level": "prior_day_poc",
+    "price": 29655.0
+   }
+  ],
+  "invalidation": {
+   "level": "anchored_weekly_val",
+   "price": 29277.75
+  },
+  "waiting_for": "A 15m decisive-body close back above the daily POC/15m MA confluence (29369-29374) to confirm the reversal off the weekly VAL/prior-day-low sweep, then long the retest of that reclaimed zone toward prior-day VAL (29465).",
+  "two_sided": true,
+  "condition_for_other_side": "A 15m decisive-body close back below the weekly VAL/prior-day-low cluster (~29278-29296) after rejection at the 15m MA/daily POC relicenses shorts toward a fresh leg beneath today's weekly low (29160.5).",
+  "anticipated_resolution": {
+   "level": "15m_ma_daily_poc",
+   "price": 29373.79,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "A major level (weekly VAL, prior-day low, the 15m MA/daily POC) breaks or is reclaimed only on a 15m close beyond it with a decisive body - not a 1-2m poke or wick.",
+  "reasoning": "Overnight's 732pt trend leg made the weekly low (29160.5); since 06:00 it's read rotational, with lower highs at 29562.75 and 29400.50. The 09:18 flush to 29211.25 swept weekly VAL/prior-day-low without a 15m close beneath it, then reversed 149pt on the heaviest volume of the day - a failed breakdown, which pays the other way. Both downside destinations are spent, so I lean long into a reclaim of the 15m MA/daily POC (29369-29374); rotational day, so that MA is the floor, and shorts stay licensed on rejection there back below weekly VAL."
+ },
+ "waiting_for_status": "FIRED ON YOUR TIMEFRAMES, NOT YET ON HIS - this is the decision. The thesis wants a 15m decisive-body close above 29369-29374 and THEN a long of the retest. Price has now closed through that confluence on the 3m (09:54-09:57, close 29414.00) and on the 2m (09:56-09:58, close 29443.00), taking the VWAP with it. The 15m bar that ratifies it opened at 09:45 and closes at 10:00 - two minutes from now. anticipated_resolution names exactly this level with expect: break_up and act_on_resolution: true.",
+ "prior_adjudications_this_window": "zero fills, five passes. Every one of them cited waiting_for. This is the first candidate where waiting_for's own condition is in play rather than pending.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "signal_candle_3m": {
+  "start": "09:54",
+  "direction": "UP",
+  "open": 29286.75,
+  "close": 29414.0,
+  "closed_at": "09:57",
+  "levels": "own 3m MA + developing daily POC + 15m MA, same candle; rejected the VWAP at the high"
+ },
+ "signal_candle_2m": {
+  "start": "09:56",
+  "direction": "UP",
+  "open": 29322.75,
+  "high": 29454.0,
+  "low": 29311.75,
+  "close": 29443.0,
+  "volume": 5243,
+  "levels": "own 2m MA (sequential leg at 09:50) + VWAP + daily POC + 15m MA",
+  "note": "a 120.25pt bull body, the second-heaviest bar of the session behind the 09:34 reversal bar you passed."
+ },
+ "pair_shape": "same_candle (3m) / sequential (2m)",
+ "levels_closed": [
+  "own_ma_3m",
+  "own_ma_2m",
+  "vwap",
+  "daily_poc",
+  "bb_ma_15m"
+ ],
+ "break_context": "the 29360-29372 ceiling was tested four times since the cash open (09:30 high 29371.75, 09:42 29360.50, 09:44 29365.25, then stalling under it 09:50-09:54) and on the fifth attempt price went through it and through the VWAP in a single two-minute bar.",
+ "structure_note": "the session opened with a 190pt flush to 29181.5, based 25 minutes in a 29217-29372 box, and has now broken the top of that box. The larger structure is still the 732pt down-leg from the overnight high: VWAP 29416 is the first thing reclaimed, the 0.382 fib is 29440 and the prior-day low 29295.75 is now well below.",
+ "levels_at_decision_CHART": {
+  "vwap": 29416.32,
+  "vwap_p1": 29577.99,
+  "vwap_m1": 29254.66,
+  "vwap_p2": 29739.65,
+  "vwap_m2": 29093.0,
+  "bb_2m_basis": 29302.99,
+  "bb_2m_upper": 29405.84,
+  "bb_2m_lower": 29200.14
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29302.99,
+  "bb_ma_3m": 29307.79,
+  "bb_ma_15m": 29370.67,
+  "day_range_fibs": {
+   "0.382": 29440.22,
+   "0.5": 29526.62,
+   "0.618": 29613.03,
+   "0.705": 29676.74
+  },
+  "day_high": 29892.75,
+  "day_low": 29160.5,
+  "session_low_since_open": 29181.5,
+  "daily_profile": {
+   "poc": 29327.0,
+   "val": 29222.0,
+   "vah": 29474.0,
+   "note": "DEVELOPING"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29709.13,
+   "val": 29248.0,
+   "vah": 30047.75,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "weekly_high": 30968.0
+ },
+ "levels_above_for_target_selection": "the 2m BB upper 29405.84 and the VWAP 29416.32 are now BELOW the close. Above: the 0.382 fib 29440.22, the developing daily VAH 29474, prior-day VAL 29465, then the 0.5 fib 29526.62, then vwap_p1 29577.99 and the 0.618 fib 29613.03, then prior-day POC 29655 and the 0.705 fib 29676.74. Apply T11: compute R = |entry-stop| FIRST, then the NEAREST level inside 1.5R-2.5R; a FIXED 1.5R if none qualifies.",
+ "note_on_entry_mechanics": "four takes have been licensed today and NONE has filled - two London limits died on entry mechanics. If you take this, price the limit and the cancel where an ordinary wiggle reaches neither, and remember the limit is priced off a close that is already one to two minutes old by the time it is live.",
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

@@ -139,7 +139,7 @@ class MockDTCServer:
             # state the B4/B8 stop_resting read-back is defined over.
             fills = (m.get("OrderType") == D.ORDER_TYPE_MARKET
                      or self.order_mode == "fill"
-                     or (self.order_mode == "fill_entry"
+                     or (self.order_mode in ("fill_entry", "fill_entry_stop_errors")
                          and m.get("OrderType") != D.ORDER_TYPE_STOP))
             if fills:
                 self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid, OrderStatus=D.ORDER_STATUS_FILLED,
@@ -151,6 +151,19 @@ class MockDTCServer:
             elif self.order_mode == "reject":
                 self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid,
                            OrderStatus=D.ORDER_STATUS_REJECTED, InfoText="risk rejected")
+            elif (self.order_mode in ("stop_errors", "fill_entry_stop_errors")
+                  and m.get("OrderType") == D.ORDER_TYPE_STOP):
+                # 2026-08-05 incident, reproduced: Sierra's Trade Orders window showed a
+                # stop leg as "Error", a label the DTC OrderStatusEnum has no distinct
+                # numeric code for. 99 stands in for whatever that real status turns out
+                # to be -- not REJECTED(9), not any code DTCBroker._working()/FILLED
+                # already recognizes. "stop_errors": entry stays resting (no fill race).
+                # "fill_entry_stop_errors": entry fills normally (the fill-race case).
+                # The two legs are independent orders (v4 design, dtc_client.py's own
+                # submit_bracket docstring) -- ParentTriggerClientOrderID is never sent,
+                # so OrderType is the only reliable entry-vs-stop signal here.
+                self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid,
+                           OrderStatus=99, InfoText="Error")
         elif t == D.CANCEL_ORDER:
             # model Sierra: a cancel of an unknown/never-seen order is REJECTED with text,
             # not silently absorbed; cancelling a working parent cancels its bracket

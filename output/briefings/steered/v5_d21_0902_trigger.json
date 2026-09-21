@@ -1,0 +1,128 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "V5-D21-NYP1-0902",
+ "window": "NY_PRE 08:00-09:29 ET",
+ "session": "NY_PRE",
+ "decision_minute": "2026-06-22T09:02 ET",
+ "candle_start": "09:00 (2m and 3m)",
+ "timeframe": "2m and 3m",
+ "leak_check": "pass - truncated at 09:01:59; last completed 2m bar starts 09:00 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d21_c2_0902.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "session_high",
+    "price": 30828.0
+   },
+   {
+    "level": "vwap_p2",
+    "price": 30846.15
+   },
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_high",
+   "price": 30770.75
+  },
+  "waiting_for": "retest of the breakout cluster - prior-day high 30770.75 / weekly VAH ~30762 / 2m-3m MA 30756-30761 - holding as support (closure back through the 2m/3m MA on the retest, then reclaim) before longs are licensed; no chasing untested into the session high at 30828.",
+  "two_sided": true,
+  "condition_for_other_side": "a 15m decisive-body close back below the prior-day-high/weekly-VAH cluster (~30756-30770.75), failing the breakout back into the range - licenses shorts back toward session vwap 30619.86 and the range low.",
+  "anticipated_resolution": {
+   "level": "prior_day_high_weekly_vah_cluster",
+   "price": 30770.75,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "a 15m close back below the prior-day-high/weekly-VAH cluster (~30756-30770.75) with a decisive body, not a wick-heavy absorption candle, confirms the failed breakout and kills this long",
+  "reasoning": "11hr rotational range (30337.5-30828) topped three times at the prior-day-high/weekly-VAH/2m-BB-upper cluster; the 08:00 15m bar closed 30780.50, body_ratio 0.71 - acceptance through my own invalidation and verbatim through my own condition_for_other_side. A range that breaks is no longer a range (T22). Flipping long: wait for the cluster (30756-30771, MA-stacked) to hold as support on retest, targeting the untested session high 30828, then vwap_p2 30846, then weekly high 30975.5. Two-sided - failed-breakout risk stays live."
+ },
+ "waiting_for_status": "NOT satisfied, and judge WHY carefully. The thesis (re-fired 46 minutes ago on its own invalidation) is LONG and wants a RETEST of 30756-30771 holding as support before longs are licensed. That retest never came - price went from 30780 straight up to 30869.75 without looking back, and the low since the re-fire is 30796.25. So the direction matches and the geometry does not. Note the thesis's own words: 'no chasing untested into the session high at 30828' - price is now 28pt ABOVE that session high.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "signal_candle_2m": {
+  "start": "09:00",
+  "direction": "UP",
+  "open": 30801.0,
+  "high": 30869.75,
+  "low": 30801.0,
+  "close": 30856.75,
+  "volume": 1562,
+  "levels": "own 2m MA (30818.14) + developing daily VAH, same candle; opened on its low"
+ },
+ "signal_candle_3m": {
+  "start": "09:00",
+  "direction": "UP",
+  "open": 30801.0,
+  "close": 30851.5,
+  "levels": "own 3m MA + daily VAH, same candle"
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m",
+  "own_ma_3m",
+  "daily_vah"
+ ],
+ "what_was_rejected_QUESTION": "the escalation rule turns on whether you can NAME a rejected level here. Be honest about it: this is a continuation bar in an advance that has run 89pt in two minutes on 1,562 contracts, the heaviest bar of the session. If nothing was rejected, this is a two-level break with no rejection story, and your contract is explicit that such a break is not a trigger in its own right.",
+ "levels_at_decision_CHART": {
+  "vwap": 30634.7,
+  "vwap_p1": 30755.59,
+  "vwap_m1": 30513.81,
+  "vwap_p2": 30876.48,
+  "vwap_m2": 30392.92,
+  "bb_2m_basis": 30818.14,
+  "bb_2m_upper": 30845.85,
+  "bb_2m_lower": 30790.43
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 30818.14,
+  "bb_ma_3m": 30807.33,
+  "bb_ma_15m": 30751.44,
+  "bb_ma_60m": null,
+  "day_range_fibs": {
+   "0.382": 30540.82,
+   "0.5": 30603.62,
+   "0.618": 30666.43,
+   "0.705": 30712.74
+  },
+  "day_high": 30869.75,
+  "day_low": 30337.5,
+  "session_high_so_far": 30869.75,
+  "session_low_so_far": 30337.5,
+  "daily_profile": {
+   "poc": 30727.0,
+   "val": 30563.0,
+   "vah": 30844.0,
+   "note": "DEVELOPING"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30351.0,
+   "vah": 30766.0,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29923.0
+ },
+ "levels_above_for_target_selection": "the 2m BB upper 30845.85 is already BELOW the close. Above: vwap_p2 30876.48, then the weekly high 30975.5. That is thin. Apply T17: R = |entry-stop| FIRST, then the NEAREST level inside 1.0R-2.5R (band widened at the bottom from 1.5R); a FIXED 1.5R if none qualifies.",
+ "T20_REMINDER": "your limit must sit BETWEEN current price and where the move came FROM - price has to come BACK to fill you. The move came from 30801 below. A limit above 30856.75 is a breakout bet and is forbidden.",
+ "fills_this_window": 0,
+ "window_cap": 1,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

@@ -1,0 +1,199 @@
+//@version=5
+// =============================================================================
+// NQ EXPECTED MOVE — VXN session bands, developing intraday
+// =============================================================================
+// WHAT THIS IS, AND WHAT IT IS NOT. Read this before trading off it.
+//
+// This plots the STATISTICAL EXPECTED MOVE for the session, derived from VXN
+// (CBOE Nasdaq-100 volatility index). The 1SD band is the range that contains
+// roughly 68% of session outcomes; the 2SD band roughly 95%.
+//
+// THESE ARE NOT PUT/CALL WALLS. A put wall or call wall is an OPTIONS OPEN
+// INTEREST concept: the strike where dealer hedging flow actually defends
+// price. That is a real thing and it is why "don't try to blast through the
+// put wall" is sound instinct — but it requires the options chain (OI by
+// strike, gamma positioning), which Pine Script cannot access. No TradingView
+// indicator can compute a true put wall. If a script tells you it has, it has
+// relabelled something else.
+//
+// The difference matters for how you trade the level: at a real put wall there
+// is size defending it. At the −1SD expected-move band there is nothing
+// defending it — it is a probability boundary, and it says "price has already
+// travelled most of what this session's volatility usually delivers," which is
+// an EXHAUSTION read, not a SUPPORT read.
+//
+// Both are useful to a reversal trader. They are just different claims.
+//
+// -----------------------------------------------------------------------------
+// THE MATHEMATICS, stated so it can be checked
+//
+//   sigma_annual   = VXN / 100                      (VXN is annualised IV, %)
+//   sigma_session  = sigma_annual / sqrt(252)       (252 trading days/yr)
+//   EM_1SD         = anchor_price * sigma_session
+//
+// Two band modes, because they answer different questions:
+//
+//   ANCHORED (default) — bands fixed at anchor ± EM, for the whole session.
+//     "Where does today's expected range sit?" Price reaching the edge is the
+//     exhaustion signal. This is the one that speaks to reversal entries.
+//
+//   DECAYING — bands at CURRENT price ± EM * sqrt(fraction of session left).
+//     "How much further can it go from here before the close?" Shrinks to zero
+//     at session end, which is correct: remaining variance scales with
+//     remaining time. Useful for target sanity, not for exhaustion.
+//
+// THREE APPROXIMATIONS, none of them fatal, all of them real:
+//   1. VXN is 30-DAY annualised IV. Converting it to a one-session move via
+//      /sqrt(252) assumes a flat term structure. Actual 1-day IV is usually
+//      higher than 30-day on event days and lower on quiet ones, so the band
+//      is too narrow into events and too wide in calm tape.
+//   2. VXN measures NDX (cash index). You trade NQ (futures). Closely related,
+//      not identical — basis and futures carry differ slightly.
+//   3. The 252-day convention assumes the session is one trading day of
+//      variance. If you anchor at 18:00 for a 23-hour session that is roughly
+//      right; if you anchor at the 09:30 RTH open it slightly overstates,
+//      since RTH is a fraction of the day's variance.
+//
+// LOOKAHEAD: request.security uses lookahead_off and gaps_off, and requests
+// VXN at the CHART's timeframe (not daily), so each bar sees only the VXN
+// value available at that bar. Safe for replay and for live.
+//
+// VXN STALENESS — matters for London. CBOE does not compute VXN around the
+// clock. Outside its calculation hours the value is frozen at the last print,
+// so a London-session band is built on the prior US session's IV. That is not
+// wrong, but it is stale, and `EM VXN Stale` publishes it as 1/0 so an agent
+// can discount the band rather than trust it blindly. VERIFY this on your own
+// chart before relying on London bands.
+//
+// AGENT SCRAPING: every number an agent needs is an explicitly TITLED plot, so
+// it lands in the study's own series (which is what the MCP reads). The single
+// most useful scalar is `EM Z (SD from anchor)` — how many standard deviations
+// price sits from the anchor right now. Labels are cosmetic; do not scrape them.
+// =============================================================================
+
+indicator("NQ Expected Move — VXN", "EM VXN", overlay = true, max_labels_count = 20)
+
+// ---------------------------------------------------------------- inputs
+grpS   = "Session"
+sessSpec = input.session("1800-1700", "Session (anchor–close)", group = grpS,
+     tooltip = "Default is the 18:00 NY anchored session-day. Use 0930-1600 for RTH only.")
+sessMins = input.int(1380, "Session length (minutes)", minval = 30, group = grpS,
+     tooltip = "1380 = 23h (18:00→17:00). 390 = RTH. Used for time-decay only.")
+
+grpV   = "Volatility source"
+ivSym  = input.symbol("CBOE:VXN", "IV index", group = grpV)
+tdays  = input.int(252, "Trading days per year", minval = 200, maxval = 365, group = grpV)
+staleN = input.int(20, "Bars unchanged ⇒ stale", minval = 3, group = grpV)
+
+grpB   = "Bands"
+mode   = input.string("Anchored", "Band mode", options = ["Anchored", "Decaying"], group = grpB,
+     tooltip = "Anchored = today's expected range (exhaustion read). Decaying = expected move remaining from here.")
+show2  = input.bool(true, "Show 2SD (exhaustion) band", group = grpB)
+showFill = input.bool(true, "Shade zones", group = grpB)
+showLbl  = input.bool(true, "Right-margin labels", group = grpB)
+
+// ------------------------------------------------- IV, causally requested
+// Same timeframe as the chart, gaps off, lookahead OFF. Requesting daily here
+// would hand back yesterday's close until today's daily bar completed, which
+// is both stale and a lookahead hazard depending on how it is used.
+vxn = request.security(ivSym, timeframe.period, close,
+     gaps = barmerge.gaps_off, lookahead = barmerge.lookahead_off)
+
+// staleness: CBOE does not publish VXN around the clock
+var int unchanged = 0
+unchanged := (not na(vxn) and not na(vxn[1]) and vxn == vxn[1]) ? unchanged + 1 : 0
+isStale = unchanged >= staleN
+
+// --------------------------------------------------------- session anchor
+inSess  = not na(time(timeframe.period, sessSpec))
+newSess = inSess and not inSess[1]
+
+var float anchorPx  = na
+var int   anchorTs  = na
+var float sigmaSess = na
+
+if newSess
+    anchorPx  := open
+    anchorTs  := time
+    // freeze sigma at the anchor for the ANCHORED band, so the day's expected
+    // range is a fixed reference rather than something that rewrites its own
+    // history every time VXN ticks.
+    sigmaSess := na(vxn) ? na : (vxn / 100.0) / math.sqrt(tdays)
+
+// live sigma, for the decaying band
+sigmaLive = na(vxn) ? na : (vxn / 100.0) / math.sqrt(tdays)
+
+// -------------------------------------------------- time left in session
+elapsedMin = na(anchorTs) ? na : (time - anchorTs) / 60000.0
+fracLeft   = na(elapsedMin) ? na : math.max(0.0, math.min(1.0, 1.0 - elapsedMin / sessMins))
+
+// ------------------------------------------------------- expected move
+// ANCHORED: full-session move around the session open, fixed once per day.
+// DECAYING: remaining move around current price, scaling with sqrt(time left).
+em1 = mode == "Anchored"
+     ? (na(sigmaSess) or na(anchorPx) ? na : anchorPx * sigmaSess)
+     : (na(sigmaLive) or na(fracLeft) ? na : close * sigmaLive * math.sqrt(fracLeft))
+
+basis = mode == "Anchored" ? anchorPx : close
+
+up1 = inSess and not na(em1) ? basis + em1     : na
+dn1 = inSess and not na(em1) ? basis - em1     : na
+up2 = inSess and not na(em1) ? basis + em1 * 2 : na
+dn2 = inSess and not na(em1) ? basis - em1 * 2 : na
+
+// how many SD price sits from the anchor — the single most useful scalar
+zScore = (na(em1) or em1 == 0 or na(basis)) ? na : (close - basis) / em1
+
+// ------------------------------------------------------------- plotting
+pAnchor = plot(inSess ? basis : na, "EM Anchor", color.new(color.gray, 40),
+     1, plot.style_linebr)
+pUp1 = plot(up1, "EM Upper 1SD", color.new(color.red, 0), 2, plot.style_linebr)
+pDn1 = plot(dn1, "EM Lower 1SD", color.new(color.green, 0), 2, plot.style_linebr)
+pUp2 = plot(show2 ? up2 : na, "EM Upper 2SD", color.new(color.maroon, 0), 2,
+     plot.style_linebr)
+pDn2 = plot(show2 ? dn2 : na, "EM Lower 2SD", color.new(color.teal, 0), 2,
+     plot.style_linebr)
+
+// shading: inside 1SD is the statistical "normal" zone; 1SD→2SD is the
+// stretched zone where his exhaustion/reversal reads live.
+fill(pUp1, pDn1, showFill ? color.new(color.blue, 94) : na, "Inside 1SD")
+fill(pUp1, pUp2, showFill and show2 ? color.new(color.red, 90) : na, "Upper stretch")
+fill(pDn1, pDn2, showFill and show2 ? color.new(color.green, 90) : na, "Lower stretch")
+
+// ------------------------------------- agent-readable scalars (titled plots)
+// display=display.data_window keeps them out of the price pane but still in
+// the study's series, which is what the MCP reads.
+plot(vxn,                          "EM VXN",              display = display.data_window)
+plot(isStale ? 1 : 0,              "EM VXN Stale",        display = display.data_window)
+plot(em1,                          "EM 1SD Points",       display = display.data_window)
+plot(zScore,                       "EM Z (SD from anchor)", display = display.data_window)
+plot(na(up1) ? na : up1 - close,   "EM Dist To Upper 1SD", display = display.data_window)
+plot(na(dn1) ? na : close - dn1,   "EM Dist To Lower 1SD", display = display.data_window)
+plot(na(up2) ? na : up2 - close,   "EM Dist To Upper 2SD", display = display.data_window)
+plot(na(dn2) ? na : close - dn2,   "EM Dist To Lower 2SD", display = display.data_window)
+plot(fracLeft,                     "EM Session Frac Left", display = display.data_window)
+
+// ---------------------------------------------------------------- labels
+var label lUp1 = na, var label lDn1 = na, var label lUp2 = na, var label lDn2 = na
+if showLbl and barstate.islast and inSess and not na(em1)
+    label.delete(lUp1), label.delete(lDn1), label.delete(lUp2), label.delete(lDn2)
+    stale = isStale ? "  ⚠stale IV" : ""
+    lUp1 := label.new(bar_index, up1, str.format("+1SD {0,number,#}  ({1,number,#} away){2}",
+         up1, up1 - close, stale), style = label.style_label_left,
+         color = color.new(color.red, 80), textcolor = color.red, size = size.small)
+    lDn1 := label.new(bar_index, dn1, str.format("−1SD {0,number,#}  ({1,number,#} away){2}",
+         dn1, close - dn1, stale), style = label.style_label_left,
+         color = color.new(color.green, 80), textcolor = color.green, size = size.small)
+    if show2
+        lUp2 := label.new(bar_index, up2, str.format("+2SD {0,number,#}  ({1,number,#} away)",
+             up2, up2 - close), style = label.style_label_left,
+             color = color.new(color.maroon, 85), textcolor = color.maroon, size = size.tiny)
+        lDn2 := label.new(bar_index, dn2, str.format("−2SD {0,number,#}  ({1,number,#} away)",
+             dn2, close - dn2), style = label.style_label_left,
+             color = color.new(color.teal, 85), textcolor = color.teal, size = size.tiny)
+
+// ---------------------------------------------------------------- alerts
+alertcondition(ta.crossover(high, up1),  "Reached +1SD", "NQ reached the +1SD expected move")
+alertcondition(ta.crossunder(low, dn1),  "Reached −1SD", "NQ reached the −1SD expected move")
+alertcondition(ta.crossover(high, up2),  "Reached +2SD", "NQ reached the +2SD exhaustion band")
+alertcondition(ta.crossunder(low, dn2),  "Reached −2SD", "NQ reached the −2SD exhaustion band")

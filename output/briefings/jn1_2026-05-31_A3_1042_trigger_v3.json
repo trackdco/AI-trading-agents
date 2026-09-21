@@ -1,0 +1,443 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "jn1-0531-A3",
+ "window": "NY_AM",
+ "session": "2026-05-31",
+ "decision_minute": "2026-06-01T10:42 ET",
+ "candle_start_3m": "10:39",
+ "candle_start_2m": "10:40",
+ "leak_check": "pass - replay truncated at 10:41:59, verified against replay_status. The 3m bar starting 10:39 and the 2m bar starting 10:40 both close AT 10:42. Every candle here is aggregated from committed bars and re-checked before emission.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-05-31_A3_1042_clean.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_poc",
+    "price": 30043.0
+   },
+   {
+    "level": "weekly_val",
+    "price": 29773.0
+   },
+   {
+    "level": "weekly_low",
+    "price": 29744.0
+   }
+  ],
+  "invalidation": {
+   "level": "defended_zone_day_fib_0382_daily_val_reclaim",
+   "price": 30454.0
+  },
+  "waiting_for": "rebalance up into the vwap_m1/day-fib-0.382/broken-defended-zone confluence (~30398-30454), 15m MA (~30460) as the floor on this rotational session, that stalls and rejects - no shorts at/below the current low",
+  "two_sided": true,
+  "condition_for_other_side": "longs re-license on displacement away from the defended weekly-VAH/session-low zone (~30291-30312) - a 2m/3m close back through vwap_m1 (~30398) with its own MA reclaiming - targeting a rebalance back to the broken zone/day-fib-0.382 (~30407-30454) and beyond to vwap/day-fib-0.618 if it extends",
+  "anticipated_resolution": {
+   "level": "rebalance_zone_vwap_m1_defended_zone",
+   "price": 30398.01,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close with a decisive body beyond the level in question - above the broken zone (~30450-30454) invalidates the short and reopens upside toward vwap/day-fib-0.618-0.705; below weekly VAH/session low (30291-30312) confirms continuation toward weekly POC/VAL",
+  "other_side_tripwire": {
+   "level": "vwap_m1",
+   "price": 30398.01,
+   "event": "displacement_from_defended_level"
+  },
+  "defended_level": {
+   "level": "weekly_vah",
+   "price": 30312.0,
+   "memory": "top of the completed prior-week (anchored 5-day) value area; today's 09:15-09:30 15m candle wicked to 30291.5, ~20pt below it, and closed back at 30343 within the same candle, body_ratio 0.05 - textbook absorption, no 15m close held below it",
+   "status": "holding"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "reasoning": "09:00-15 15m candle closed decisively (0.7 body) below the defended zone (~30450), displacing through vwap_m1/m2/daily VAL to session low 30291.5 - equilibrium failure (day-fib-0.5/VWAP) pointing toward weekly value below (POC 30043, VAL 29773). Price now sits at weekly VAH (30312), a multi-day floor; 09:15-30 candle wicked 20pt below, closed back 30343, body_ratio 0.05 - absorption, holding. Rotational (eff 0.075): two-sided, short into a rebalance-reject near vwap_m1/broken zone; longs only on displacement away from the floor."
+ },
+ "price_at_decision": 30422.75,
+ "signal_candle_3m": {
+  "start": "10:39",
+  "closed_at": "10:42",
+  "open": 30403.25,
+  "high": 30430.5,
+  "low": 30397.5,
+  "close": 30422.75,
+  "volume": 2827,
+  "minutes": 3
+ },
+ "signal_candle_2m": {
+  "start": "10:40",
+  "closed_at": "10:42",
+  "open": 30404.0,
+  "high": 30430.5,
+  "low": 30397.5,
+  "close": 30422.75,
+  "volume": 1891,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "signal_direction_2m_3m": "UP",
+ "pair_shape": "sequential",
+ "levels_closed_SCANNER": [
+  "own_ma_3m",
+  "daily_poc"
+ ],
+ "levels_closed_note": "this is the mechanical scanner's reading of which levels the candle closed through. Verify it against the level values below and correct it in your verdict if it does not hold.",
+ "higher_timeframe_at_candidate_levels": {
+  "daily_poc": {
+   "level": 30412.0,
+   "decision_minute": "2026-06-01 10:42",
+   "session_open": "2026-05-31 18:00",
+   "window_from": "09:42",
+   "window_min": 60,
+   "by_tf": {
+    "2m": {
+     "candles": 30,
+     "approach": "above",
+     "last_complete": "10:42",
+     "tests": 13,
+     "closes_above": 7,
+     "closes_below": 23,
+     "max_wick_above": 39.5,
+     "max_body_above": 31.75,
+     "max_wick_below": 55.25,
+     "max_body_below": 53.25,
+     "session_closes_above": 456,
+     "session_closes_below": 45,
+     "verdict": "closed BOTH sides (7 up / 23 down), approached from above"
+    },
+    "3m": {
+     "candles": 20,
+     "approach": "above",
+     "last_complete": "10:42",
+     "tests": 10,
+     "closes_above": 6,
+     "closes_below": 14,
+     "max_wick_above": 55.25,
+     "max_body_above": 42.75,
+     "max_wick_below": 60.25,
+     "max_body_below": 54.25,
+     "session_closes_above": 306,
+     "session_closes_below": 28,
+     "verdict": "closed BOTH sides (6 up / 14 down), approached from above"
+    },
+    "5m": {
+     "candles": 12,
+     "approach": "above",
+     "last_complete": "10:40",
+     "tests": 6,
+     "closes_above": 3,
+     "closes_below": 9,
+     "max_wick_above": 55.25,
+     "max_body_above": 23.5,
+     "max_wick_below": 53.0,
+     "max_body_below": 47.25,
+     "session_closes_above": 183,
+     "session_closes_below": 17,
+     "verdict": "closed BOTH sides (3 up / 9 down), approached from above"
+    },
+    "15m": {
+     "candles": 4,
+     "approach": "above",
+     "last_complete": "10:30",
+     "tests": 3,
+     "closes_above": 1,
+     "closes_below": 3,
+     "max_wick_above": 55.25,
+     "max_body_above": 1.25,
+     "max_wick_below": 106.0,
+     "max_body_below": 90.5,
+     "session_closes_above": 61,
+     "session_closes_below": 5,
+     "verdict": "closed BOTH sides (1 up / 3 down), approached from above"
+    }
+   }
+  },
+  "vwap": {
+   "level": 30429.43,
+   "decision_minute": "2026-06-01 10:42",
+   "session_open": "2026-05-31 18:00",
+   "window_from": "09:42",
+   "window_min": 60,
+   "by_tf": {
+    "2m": {
+     "candles": 30,
+     "approach": "above",
+     "last_complete": "10:42",
+     "tests": 8,
+     "closes_above": 3,
+     "closes_below": 27,
+     "max_wick_above": 37.82,
+     "max_body_above": 26.07,
+     "max_wick_below": 31.93,
+     "max_body_below": 25.43,
+     "session_closes_above": 445,
+     "session_closes_below": 56,
+     "verdict": "closed BOTH sides (3 up / 27 down), approached from above"
+    },
+    "3m": {
+     "candles": 20,
+     "approach": "below",
+     "last_complete": "10:42",
+     "tests": 7,
+     "closes_above": 2,
+     "closes_below": 18,
+     "max_wick_above": 37.82,
+     "max_body_above": 26.07,
+     "max_wick_below": 60.68,
+     "max_body_below": 47.93,
+     "session_closes_above": 297,
+     "session_closes_below": 37,
+     "verdict": "closed BOTH sides (2 up / 18 down), approached from below"
+    },
+    "5m": {
+     "candles": 12,
+     "approach": "below",
+     "last_complete": "10:40",
+     "tests": 5,
+     "closes_above": 0,
+     "closes_below": 12,
+     "max_wick_above": 37.82,
+     "max_body_above": 6.07,
+     "max_wick_below": 60.68,
+     "max_body_below": 52.18,
+     "session_closes_above": 176,
+     "session_closes_below": 24,
+     "verdict": "closed through above (0), body 6.1pt beyond"
+    },
+    "15m": {
+     "candles": 4,
+     "approach": "below",
+     "last_complete": "10:30",
+     "tests": 2,
+     "closes_above": 0,
+     "closes_below": 4,
+     "max_wick_above": 37.82,
+     "max_body_above": 0.0,
+     "max_wick_below": 123.43,
+     "max_body_below": 107.93,
+     "session_closes_above": 57,
+     "session_closes_below": 9,
+     "verdict": "HELD \u2014 2 test(s) from below, wicked 37.8pt above, body never through"
+    }
+   }
+  }
+ },
+ "levels_at_decision_CHART": {
+  "source": "data_get_study_values at 10:41:59 cursor",
+  "vwap": 30430.27,
+  "vwap_p1": 30505.5,
+  "vwap_m1": 30355.03,
+  "vwap_p2": 30580.74,
+  "vwap_m2": 30279.79,
+  "bb_basis_2m_last_completed_plot": 30380.13
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30429.43,
+   "vwap_p1": 30505.7,
+   "vwap_p2": 30581.97,
+   "vwap_p3": 30658.24,
+   "vwap_m1": 30353.16,
+   "vwap_m2": 30276.89,
+   "vwap_m3": 30200.61
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30380.12,
+   "bb_ma_3m": 30386.04,
+   "bb_ma_15m": 30434.7,
+   "bb_ma_60m": 30478.96
+  },
+  "day_range_fibs": {
+   "0.382": 30407.53,
+   "0.5": 30443.38,
+   "0.618": 30479.22,
+   "0.705": 30505.64
+  },
+  "session_high_so_far": 30595.25,
+  "session_low_so_far": 30291.5,
+  "daily_profile": {
+   "poc": 30412.0,
+   "val": 30320.0,
+   "vah": 30483.0,
+   "note": "DEVELOPING as-of 10:42"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30043.0,
+   "val": 29773.0,
+   "vah": 30326.0,
+   "high": 30595.25,
+   "low": 29744.0,
+   "anchor": "2026-05-25 18:00:00-04:00",
+   "note": "DEVELOPING as-of 10:42"
+  },
+  "prior_day": {
+   "poc": 30406.0,
+   "val": 30328.0,
+   "vah": 30439.0,
+   "high": 30536.0,
+   "low": 30216.5
+  }
+ },
+ "levels_above_price": [
+  "vwap 30429.43",
+  "bb_ma_15m 30434.7",
+  "prior_day_vah 30439.0",
+  "fib_0.5 30443.38",
+  "bb_ma_60m 30478.96",
+  "fib_0.618 30479.22",
+  "daily_vah 30483.0",
+  "fib_0.705 30505.64",
+  "vwap_p1 30505.7",
+  "prior_day_high 30536.0",
+  "vwap_p2 30581.97",
+  "session_high 30595.25",
+  "weekly_high 30595.25",
+  "vwap_p3 30658.24"
+ ],
+ "levels_below_price": [
+  "daily_poc 30412.0",
+  "fib_0.382 30407.53",
+  "prior_day_poc 30406.0",
+  "bb_ma_3m 30386.04",
+  "bb_ma_2m 30380.12",
+  "vwap_m1 30353.16",
+  "prior_day_val 30328.0",
+  "weekly_vah 30326.0",
+  "daily_val 30320.0",
+  "session_low 30291.5",
+  "vwap_m2 30276.89",
+  "prior_day_low 30216.5",
+  "vwap_m3 30200.61",
+  "weekly_poc 30043.0",
+  "weekly_val 29773.0",
+  "weekly_low 29744.0"
+ ],
+ "fills_this_window": 0,
+ "window_cap": {
+  "written_NY_AM": 2,
+  "status": "caps LIFTED for this run; fills beyond the written cap are tagged beyond_written_cap"
+ },
+ "fill_model_note": "limits are simulated by the orchestrator: touch-equals-fill.",
+ "entry_geometry_note": "the orchestrator validates entry arithmetic before simulating. For a LONG the limit sits BELOW current price and cancel_if_reaches ABOVE both; for a SHORT, mirrored.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "Would be falsified by outcome data on the ISM Manufacturing PMI (or Core PCE) showing a print materially away from consensus with a clear directional bearing on NQ or its mega-cap constituents, or by fresh headlines before the window closes.",
+  "reasoning": "Core PCE (5/28) and ISM Mfg PMI (10:00, 42 min before decision minute) are calendar rows only - no outcome values in the archive, so I cannot say whether either printed hot/cold or how it was absorbed. No scheduled events sit ahead of NY_AM to gate. Absent any usable outcome or headline, neutral is the correct read."
+ },
+ "open_position_state": null,
+ "pair_detail_SCANNER": {
+  "ma_leg": "own 3m MA closed at the bar starting 10:30 (+9m before the second leg - sequential, outside SEQ_CANDLES=3)",
+  "second_leg": "3m bar starting 10:39 (O 30403.25, C 30422.75) closed through the developing daily POC, completed 10:42",
+  "rejection_flag": "scanner also flags a rejection of vwap on this candle"
+ },
+ "tripwire_status_mechanical": "the standing thesis other_side_tripwire (2m/3m close back above vwap_m1 30398.01 with MA reclaim, displacement from the defended weekly-VAH floor) RESOLVED before this minute; 15m closes since the window open are 30321.5, 30352.0, 30381.75",
+ "screenshot_note_mechanical": "this chart carries NO position drawings - the orchestrator cleared them before capture so nothing on it can be mistaken for another candidate\u2019s trade. Replay is truncated at 10:41:59; the last bar closes AT 10:42.",
+ "context_extras": {
+  "nwog": {
+   "available": true,
+   "prior_friday_close": 30389.5,
+   "week_open": 30415.5,
+   "gap_pts": 26.0,
+   "filled": true,
+   "edges_touched_since_open": {
+    "lower": true,
+    "upper": true
+   }
+  },
+  "swept": {
+   "lows": [
+    {
+     "level": 30415.0,
+     "set": "Mon 08:20",
+     "swept_at": "09:12",
+     "closed_beyond": true,
+     "reclaimed": true
+    },
+    {
+     "level": 30433.0,
+     "set": "Mon 08:36",
+     "swept_at": "09:04",
+     "closed_beyond": true,
+     "reclaimed": true
+    },
+    {
+     "level": 30443.75,
+     "set": "Mon 04:32",
+     "swept_at": "08:08",
+     "closed_beyond": true,
+     "reclaimed": true
+    },
+    {
+     "level": 30450.25,
+     "set": "Sun 19:02",
+     "swept_at": "04:32",
+     "closed_beyond": true,
+     "reclaimed": true
+    }
+   ],
+   "highs": [
+    {
+     "level": 30456.0,
+     "set": "Mon 09:12",
+     "swept_at": "09:40",
+     "closed_beyond": false,
+     "reclaimed": true
+    },
+    {
+     "level": 30473.0,
+     "set": "Sun 18:48",
+     "swept_at": "19:04",
+     "closed_beyond": true,
+     "reclaimed": true
+    },
+    {
+     "level": 30488.75,
+     "set": "Mon 06:16",
+     "swept_at": "06:30",
+     "closed_beyond": true,
+     "reclaimed": true
+    },
+    {
+     "level": 30548.75,
+     "set": "Sun 21:38",
+     "swept_at": "21:52",
+     "closed_beyond": true,
+     "reclaimed": true
+    }
+   ]
+  },
+  "defended_levels": {
+   "floors": [],
+   "ceilings": [
+    {
+     "level": 30536.0,
+     "defended_by": [
+      "Fri"
+     ],
+     "memory": 1,
+     "tests_this_session": 216,
+     "closes_above": 194,
+     "held": false
+    },
+    {
+     "level": 30344.5,
+     "defended_by": [
+      "Thu"
+     ],
+     "memory": 1,
+     "tests_this_session": 101,
+     "closes_above": 491,
+     "held": false
+    }
+   ]
+  }
+ },
+ "context_extras_note": "nwog / swept lows-highs / defended_levels computed by scripts.context_extras as-of the decision minute. Mechanical, no editorial."
+}

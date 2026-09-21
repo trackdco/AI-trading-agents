@@ -1,0 +1,226 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "other_side_tripwire_resolved",
+ "window": "NY_AM",
+ "decision_minute": "2026-06-05T09:45 ET",
+ "leak_check": "pass - replay truncated at 09:44:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-04_NY_AM_0945_refire.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 29948.75,
+ "last_completed_2m_bar": {
+  "start": "09:42",
+  "closed_at": "09:44",
+  "open": 29949.25,
+  "high": 29973.0,
+  "low": 29937.75,
+  "close": 29948.75,
+  "volume": 5732,
+  "minutes": 2
+ },
+ "candle_grid_note": "This decision minute is 09:45, which is the close of the 3m candle. A 2m chart has no bar closing on an odd minute, so the last 2m bar that exists closes at 09:44. price_at_decision and every 2m field below are that 09:44 bar - they will not equal the 3m close, and the chart legend will read the 09:44 bar. Judge the 3m candle and the 09:44 2m candle; neither is fabricated.",
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "NY_AM",
+  "entries": "09:30-11:00 earliest entry 09:35",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30032.8,
+  "bb_upper_2m": 30102.17,
+  "bb_lower_2m": 29963.43,
+  "vwap": 30132.58,
+  "vwap_p1": 30223.69,
+  "vwap_m1": 30041.46,
+  "vwap_p2": 30314.81,
+  "vwap_m2": 29950.34,
+  "vwap_p3": 30405.93,
+  "vwap_m3": 29859.22,
+  "read_at": "chart cursor 09:44:59 - the 2m bar 09:42-09:44 is COMPLETE and closes at 09:44. The 15m candle closing 09:45 is the one that resolved the tripwire.",
+  "_news_candle": {
+   "_what_this_is": "the 1-minute candle in which the scheduled release printed. Stated as a level the same way session extremes and swept levels are. No instruction attached.",
+   "event": [
+    "Non-Farm Employment Change",
+    "Average Hourly Earnings m/m",
+    "Unemployment Rate"
+   ],
+   "event_time_et": "08:30",
+   "news_candle_ohlc": {
+    "open": 30116.0,
+    "high": 30151.75,
+    "low": 30092.0,
+    "close": 30096.0,
+    "volume": 1396
+   },
+   "volume_context": "1396 against 220, 239, 484 on the 3 preceding minutes",
+   "news_high": {
+    "price": 30151.75,
+    "taken_out_as_of_this_minute": false,
+    "first_taken_out_at": null
+   },
+   "news_low": {
+    "price": 30092.0,
+    "taken_out_as_of_this_minute": true,
+    "first_taken_out_at": "08:31"
+   },
+   "causality_note": "computed from bars strictly before 09:45. 'taken_out_as_of_this_minute' means exactly that - it is not a statement about whether the level gets taken out later."
+  },
+  "_session_calendar": {
+   "session_day_label": "2026-06-04",
+   "session_opens": "2026-06-04 18:00 ET (Thursday evening)",
+   "cash_session_traded": "2026-06-05 (Friday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30129.32,
+   "vwap_p1": 30223.02,
+   "vwap_p2": 30316.72,
+   "vwap_p3": 30410.42,
+   "vwap_m1": 30035.62,
+   "vwap_m2": 29941.92,
+   "vwap_m3": 29848.22
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30026.45,
+   "bb_ma_3m": 30041.71,
+   "bb_ma_15m": 30145.35,
+   "bb_ma_60m": 30235.5
+  },
+  "day_range_fibs": {
+   "0.382": 30117.17,
+   "0.5": 30175.38,
+   "0.618": 30233.58,
+   "0.705": 30276.49
+  },
+  "session_high_so_far": 30422.0,
+  "session_low_so_far": 29928.75,
+  "daily_profile": {
+   "poc": 30186.0,
+   "val": 30044.0,
+   "vah": 30235.0,
+   "note": "DEVELOPING as-of 09:45"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30677.0,
+   "val": 30385.0,
+   "vah": 30758.0,
+   "high": 30807.75,
+   "low": 29928.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 09:45"
+  },
+  "prior_day": {
+   "poc": 30484.0,
+   "val": 30304.0,
+   "vah": 30597.0,
+   "high": 30603.25,
+   "low": 30151.0
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.315,
+  "net_move_15m": -481.25,
+  "total_15m_travel": 1528.75,
+  "candles_15m_up": 22,
+  "candles_15m_down": 41,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "08:45",
+   "open": 30122.0,
+   "high": 30135.5,
+   "low": 30053.5,
+   "close": 30054.5,
+   "body_ratio": 0.82
+  },
+  {
+   "start": "09:00",
+   "open": 30054.25,
+   "high": 30071.5,
+   "low": 30031.75,
+   "close": 30039.5,
+   "body_ratio": 0.37
+  },
+  {
+   "start": "09:15",
+   "open": 30038.75,
+   "high": 30051.5,
+   "low": 30013.0,
+   "close": 30036.25,
+   "body_ratio": 0.06
+  },
+  {
+   "start": "09:30",
+   "open": 30035.75,
+   "high": 30100.5,
+   "low": 29928.75,
+   "close": 29932.75,
+   "body_ratio": 0.6
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "n/a - the day's scheduled releases have printed and nothing further is on the calendar",
+  "reasoning": "The 08:30 NFP / Average Hourly Earnings / Unemployment Rate trio has released. Nothing further is scheduled today, so no gate applies to NY_AM and there is no pending catalyst to lean on."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "daily_val",
+    "price": 30094.0
+   },
+   {
+    "level": "prior_day_low",
+    "price": 30151.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_low",
+   "price": 30013.0
+  },
+  "waiting_for": "displacement back through the 2m/3m MA (~30053-30066) off the defended weekly low, then a retest hold",
+  "two_sided": true,
+  "condition_for_other_side": "Shorts relicensed on a 15m decisive-body close below the weekly low (30013), confirming this defended level has failed; targets vwap_m3 (~29934) next.",
+  "anticipated_resolution": {
+   "level": "ma_cluster_2m_3m",
+   "price": 30053.08,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "Bounce confirms on displacement back through the 2m/3m MA off the weekly low with a retest hold; breakdown of this defended level is confirmed only on a 15m decisive-body close below 30013.",
+  "other_side_tripwire": {
+   "level": "weekly_low",
+   "price": 30013.0,
+   "event": "15m_decisive_close"
+  },
+  "defended_level": {
+   "level": "weekly_low",
+   "price": 30013.0,
+   "memory": "exact low of the anchored 5-day weekly profile; undercut the prior session reference (30052.25) to tag it precisely, confluent with VWAP-2 (~30011) and the 2m BB lower band (30013.45); the 09:15 15m candle wicked to it and closed back at 30036.25 (body_ratio 0.06), a clear rejection.",
+   "status": "holding"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "reasoning": "Short thesis's targets (daily VAL ~30122, weekly-low-so-far 30052.25) and its own acceptance rule (15m decisive close below daily VAL, printed 08:45) have both paid out. Price then tagged the anchored weekly low exactly (30013), confluent with VWAP-2 (30011) and the 2m BB lower band (30013.45); the 09:15 15m candle rejected it hard (body_ratio 0.06). Path efficiency 0.265 is rotational chop, not a flush - fading this edge over chasing more downside. Flipping long-leaning, waiting on displacement through the 2m/3m MA."
+ },
+ "what_happened_since_the_last_read": "Since your 09:30 read, stated as price facts only: between 09:30 and this decision minute the session traded a high of 30100.50 and a low of 29928.75. All levels in levels_at_decision_BUILD are recomputed as of this minute.",
+ "why_you_are_being_re-fired": "your v4 other_side_tripwire resolved: level weekly_low 30013.00, event 15m_decisive_close, side short. The 15m candle closing 09:45 closed at 29932.75, decisively below 30013.00 with body_ratio 0.60. Stated as the mechanical fact that triggered this re-read, not as a view on what it means."
+}

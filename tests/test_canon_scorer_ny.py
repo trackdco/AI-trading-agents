@@ -50,8 +50,25 @@ def _row(r) -> dict:
 
 
 def replay(span: str, profile) -> pd.DataFrame:
-    """Drive the live scorer over a span through the real protocol and return its book."""
+    """Drive the live scorer over a span through the real protocol and return its book.
+
+    CLOSE-AND-REVERSE (ANGUS 2026-07-30): the live feed's settlement view of a flipped
+    trade is the flip itself — exit at the opposing fill, P&L truncated there. The overlay
+    is merged onto the raw rows exactly as the broker's netting would produce them; entry
+    evaluation and scoring stay raw-feature-driven, untouched."""
     S = pd.read_parquet(ROOT / f"output/aikido_{span}.parquet").copy()
+    O = pd.read_parquet(ROOT / f"output/aikido_cr_{span}.parquet").set_index(
+        ["ts", "direction"])
+    if "cr_suppressed" in O.columns:
+        # rule 3 (one-per-level): the live runner never places these orders — they are
+        # not part of the feed the scorer sees.
+        sup = O[O.cr_suppressed].index
+        S = S[~pd.MultiIndex.from_arrays([S.ts, S.direction]).isin(sup)].copy()
+        O = O[~O.cr_suppressed]
+    idx = pd.MultiIndex.from_arrays([S.ts, S.direction])
+    hit = idx.isin(O.index)
+    for col, src in (("dollars_1lot", "cr_dollars_1lot"), ("exit_ts", "cr_exit_ts")):
+        S.loc[hit, col] = O.loc[idx[hit], src].to_numpy()
     S["fill"] = pd.to_datetime(S.fill_ts, format="mixed", utc=True)
     S["exit"] = pd.to_datetime(S.exit_ts, format="mixed", utc=True)
     S = S.sort_values("fill", kind="mergesort")   # stable: ties resolve to detection order
@@ -103,7 +120,7 @@ def test_live_scorer_reproduces_the_shipped_book(span, profile_name):
 @pytest.mark.parametrize("span", SPANS)
 def test_reference_net_is_reproduced(span):
     """The headline numbers in the funded_book docstring, from the LIVE path."""
-    expect = {"fit": 90_015, "holdout": 56_409}[span]
+    expect = {"fit": 82_543, "holdout": 48_211}[span]
     assert round(replay(span, LUCID).pl.sum()) == pytest.approx(expect, abs=1)
 
 
@@ -203,11 +220,11 @@ def test_soft_derisk_and_dd_ramp_each_halve_size():
 
 
 def test_scaled_profile_base_steps_with_buffer_and_caps():
-    assert LUCID.base_for(50_000.0) == 150.0, "lucid never scales"
-    assert SCALED600.base_for(3_000.0) == 150.0
-    assert SCALED600.base_for(4_999.0) == 150.0, "first step lands at +$5k, not +$3k"
-    assert SCALED600.base_for(5_000.0) == 225.0
-    assert SCALED600.base_for(7_000.0) == 300.0
+    assert LUCID.base_for(50_000.0) == 160.0, "lucid never scales"
+    assert SCALED600.base_for(3_000.0) == 160.0
+    assert SCALED600.base_for(4_999.0) == 160.0, "first step lands at +$5k, not +$3k"
+    assert SCALED600.base_for(5_000.0) == 235.0
+    assert SCALED600.base_for(7_000.0) == 310.0
     assert SCALED600.base_for(99_000.0) == 600.0, "hard cap"
 
 
@@ -218,9 +235,10 @@ def test_budget_and_soft_scale_with_the_base():
     small.start_day("2026-01-05", buffer=3_000.0)
     big = NYScorerV2(profile=SCALED600)
     big.start_day("2026-01-05", buffer=30_000.0)
-    assert big._base == 4 * small._base
-    assert big._budget == pytest.approx(4 * small._budget)
-    assert big._soft == pytest.approx(4 * small._soft)
+    assert small._base == SCALED600.base and big._base == SCALED600.cap
+    ratio = big._base / small._base                  # cap/base (600/160 at the $160 base)
+    assert big._budget == pytest.approx(ratio * small._budget)
+    assert big._soft == pytest.approx(ratio * small._soft)
 
 
 def test_evaluate_is_pure():
@@ -286,7 +304,9 @@ def test_ramp_ladder_is_two_steps_and_dormant_in_history():
     assert ramp_for(0.0) == 0.25
 
     # dormancy: both spans keep their minimum buffer clear of the outer step
-    for span, floor in (("fit", 1_621.0), ("holdout", 1_720.0)):
+    # Three-rule references at the $160 base (ANGUS 2026-07-31): floors $1,642 fit /
+    # $1,698 holdout — the ladder stays dormant on both validated spans.
+    for span, floor in (("fit", 1_642.0), ("holdout", 1_698.0)):
         B = fb.run(fb.load_book(span), "lucid")
         D = B.groupby("day").pl.sum()
         bal, line, mb = fb.START, fb.START - fb.TRAIL, 1e9

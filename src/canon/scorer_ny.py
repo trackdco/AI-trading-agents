@@ -72,13 +72,13 @@ ELITE_STRUCT = "broke"                  # the elite combo's structural event
 ELITE_PER_DAY = 1
 
 # ---- sizing spine (scripts/funded_book.py) ----------------------------------------------
-BUDGET_PER_BASE = 800.0 / 150.0         # $800 daily budget at the $150 base
+BUDGET_PER_BASE = 800.0 / 150.0         # budget RATIO anchored $800/$150 ($853.33 at $160)
 SOFT_FRAC = 280.0 / 800.0               # soft de-risk at 35% of that day's budget
 #: ANGUS 2026-07-30: a two-step de-risk ladder near the trailing line — half size from $1,000
 #: of remaining drawdown, half again from $500. Checked LOW-TO-HIGH, so the tightest step that
-#: applies wins. Both steps are dormant across all 19 months of history (min buffer $1,621 fit
-#: / $1,720 holdout), so this changes no measured number — it is insurance for a
-#: worse-than-history future, and the spine's $100 hard halt sits underneath it.
+#: applies wins. Both steps are dormant across all 19 months of history (min buffer $1,642 fit
+#: / $1,698 holdout at the $160 base), so this changes no measured number — it is insurance
+#: for a worse-than-history future, and the spine's $100 hard halt sits underneath it.
 RAMP_STEPS: tuple[tuple[float, float], ...] = ((500.0, 0.25), (1000.0, 0.5))
 RAMP_BUFFER = RAMP_STEPS[-1][0]         # the outermost step, for callers that want one number
 
@@ -109,8 +109,8 @@ class Profile:
         return min(self.cap, self.base + math.floor((buffer - self.after) / self.step) * self.per)
 
 
-LUCID = Profile("lucid", base=150.0, per=0.0, step=2000.0, after=3000.0, cap=150.0)
-SCALED600 = Profile("scaled600", base=150.0, per=75.0, step=2000.0, after=3000.0, cap=600.0)
+LUCID = Profile("lucid", base=160.0, per=0.0, step=2000.0, after=3000.0, cap=160.0)
+SCALED600 = Profile("scaled600", base=160.0, per=75.0, step=2000.0, after=3000.0, cap=600.0)
 PROFILES = {p.name: p for p in (LUCID, SCALED600)}
 
 

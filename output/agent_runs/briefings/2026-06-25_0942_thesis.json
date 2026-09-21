@@ -1,0 +1,69 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "thesis_stale_flagged_by_trigger",
+ "event_detail": "your 09:36 long's kill clause fired by its own terms: three consecutive 2m closes below 29290 (29286.5 / 29240.75 / 29251.5) \u2014 acceptance below the cluster \u2014 though the trigger notes the flip's other half (the cluster failing as RESISTANCE on a retest from below) has not printed: the bounce high since is only 29277.75. Your long position from the 29298 hold-test fill is OPEN with its mechanical stop at 29197 (the trade's own terms; it dies there, not by thesis).",
+ "window": "NY_AM (cap 2, 1 used). Minute 12 of the open; every bar since 09:30 is displacement-sized.",
+ "decision_minute": "2026-06-26T09:42 ET (session-day 2026-06-25)",
+ "leak_check": "pass \u2014 truncated at 09:41:59; last completed 2m bar starts 09:40",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/candidate_0940_cluster_fail.png",
+ "price_at_decision": 29251.5,
+ "prior_thesis_as_of_0936": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "daily_poc",
+    "price": 29369.0
+   },
+   {
+    "level": "vwap_mid",
+    "price": 29441.0
+   },
+   {
+    "level": "prior_day_val",
+    "price": 29465.0
+   }
+  ],
+  "invalidation": {
+   "level": "session_low_spring",
+   "price": 29181.5
+  },
+  "waiting_for": "rebalance into the reclaimed 29290-96 cluster that holds as support",
+  "two_sided": true,
+  "condition_for_other_side": "2m acceptance back below 29290 with the cluster failing as resistance on retest kills the spring and reopens shorts at weekly_low 29160.5"
+ },
+ "what_happened_since_0936": "The hold-test was bought at 29298 (fill), then failed: three closes below the cluster, low 29217.75 ON daily_val 29225 which held. The spring low 29181.5 has NOT been retested. The tape is a 29218-29350 whipsaw with no acceptance anywhere: five reversals in 12 minutes on 3000-6000 contracts per bar.",
+ "levels_at_0942": {
+  "vwap": {
+   "mid": 29438.0,
+   "m1": 29272.0,
+   "m2": 29106.0
+  },
+  "bb_ma": {
+   "tf_2m": 29280.0,
+   "tf_3m": 29284.0,
+   "tf_15m": 29352.0
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29540.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30081.0
+  },
+  "prior_day": {
+   "low": 29295.75,
+   "val": 29465.0
+  },
+  "weekly_low": 29160.5,
+  "session_low": 29181.5
+ },
+ "fib_source": "none",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ }
+}

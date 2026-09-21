@@ -1,0 +1,97 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "V5-D21-NYP1-0903",
+ "window": "NY_PRE 08:00-09:29 ET",
+ "session": "NY_PRE",
+ "decision_minute": "2026-06-22T09:03 ET",
+ "candle_start": "09:00 (2m and 3m)",
+ "timeframe": "2m and 3m",
+ "leak_check": "pass - truncated at 09:02:59; last completed 2m bar starts 09:00, and the 3m bar starting 09:00 completes AT 09:03, so both are genuinely closed",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d21_c2b_0903.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "thesis": {
+  "bias": "long",
+  "condition_for_other_side": "a 15m decisive-body close below the 3m-MA/daily-VAH stack (~30811-30846), well within reach of current price, licenses shorts back toward the 2m BB basis (30822.56) first, then the breakout cluster (prior-day-high 30770.75 / weekly VAH 30766) if it keeps going",
+  "reasoning": "...trend day, the 40pt roll-over is a rebalance not a reversal against a 500pt un-retraced push; long stands. (full text in the escalation row)"
+ },
+ "DECISION_MINUTE_INTEGRITY": "this candidate was previously adjudicated one minute EARLY because my clustering rounded a 3m decision minute down to the even 2m boundary. That adjudication is void. This briefing uses the 3m bar's TRUE completion minute, so every close quoted below had actually printed at the truncation point.",
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 30820.26,
+  "bb_ma_3m": 30807.06,
+  "bb_ma_15m": 30751.17,
+  "bb_ma_60m": null,
+  "day_range_fibs": null,
+  "session_high_so_far": null,
+  "session_low_so_far": null,
+  "daily_profile": {
+   "poc": 30727.0,
+   "val": 30563.0,
+   "vah": 30844.0,
+   "note": "DEVELOPING as-of 09:03"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30351.0,
+   "vah": 30766.0,
+   "note": "DEVELOPING as-of 09:03"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29923.0
+ },
+ "T17_REMINDER": "first target band is 1.0R-2.5R (WIDENED at the bottom from 1.5R). Compute R = |entry-stop| FIRST, take the NEAREST level inside the band, FIXED 1.5R only if none qualifies.",
+ "T20_REMINDER": "your limit must sit BETWEEN current price and where the move came FROM. Price has to come BACK to fill you. A limit needing further displacement is a breakout bet and is forbidden.",
+ "T25_REMINDER": "escalation now requires a SAME-CANDLE two-level break behind a named rejection. A sequential pair cannot escalate - the orchestrator's gate refuses it before spending budget.",
+ "fill_model_note": "limits are simulated: touch-equals-fill",
+ "waiting_for_status": "NOT satisfied. The thesis is LONG and wants a RETEST of the 3m-MA/daily-VAH stack (~30811-30846) holding as support. Price went 30780 -> 30869.75 without returning to it. Its own words: 'no chasing untested into the highs a second time'.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "signal_candle_2m": {
+  "start": "09:00",
+  "direction": "UP",
+  "open": 30801.0,
+  "high": 30869.75,
+  "low": 30801.0,
+  "close": 30856.75,
+  "volume": 1562,
+  "levels": "own 2m MA (30818.14) + developing daily VAH, same candle; opened on its low"
+ },
+ "signal_candle_3m": {
+  "start": "09:00",
+  "direction": "UP",
+  "open": 30801.0,
+  "close": 30851.5,
+  "closed_at": "09:03",
+  "levels": "own 3m MA + daily VAH, same candle"
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m",
+  "own_ma_3m",
+  "daily_vah"
+ ],
+ "what_was_rejected_QUESTION": "be honest about this. It is a continuation bar in an advance that ran 89pt in two minutes on the session's heaviest volume and opened on its low. If nothing was rejected, a two-level break is movement, not a trigger, and your contract says so.",
+ "levels_at_decision_CHART": {
+  "vwap": 30634.7,
+  "vwap_p1": 30755.59,
+  "vwap_m1": 30513.81,
+  "vwap_p2": 30876.48,
+  "vwap_m2": 30392.92,
+  "bb_2m_basis": 30818.14,
+  "bb_2m_upper": 30845.85,
+  "bb_2m_lower": 30790.43
+ },
+ "fills_this_window": 0,
+ "window_cap": 1
+}

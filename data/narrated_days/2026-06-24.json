@@ -1,0 +1,172 @@
+{
+  "trader_label": "Wednesday 24 June 2026",
+  "session_day": "2026-06-23",
+  "character": "Chop. Range-bound the whole session, failing to break either side. Two losses and one win; net about +2.1R. The most valuable day so far for PASS reasoning - three declined candidates in London alone, each for a different stated reason.",
+  "london_clock": "London local, NY+5. Confirmed by the POC: at his '9:49 London' the developing POC is 29,821.50 and his limit was 29,821.",
+
+  "pre_session": {
+    "read": "Chopping since New York yesterday, Asia chopped as well, topping out the range.",
+    "fork": "'One of two things is gonna happen. It's either gonna break this range and keep pushing to the upside, which will be a good thesis for New York - be more inclined to take some longs - or we're gonna break and just keep going lower.'",
+    "lean": "Rebalance to the 15m and 1h MAs, which are at the same level today for once.",
+    "gate": "'I'm not going to take anything until I see some higher time frame alignment that's going to show us going in one direction.'"
+  },
+
+  "decisions": [
+    {
+      "id": "LP1", "type": "pass", "window": "LONDON", "direction": "short",
+      "trader_time": "08:00 London / 03:00 NY (London open)",
+      "trigger": "3m closed through the VWAP+1 band and its BB MA",
+      "reason": "'But we're right at developing POC. I don't really wanna take a short here.'",
+      "hindsight": "'Haha, maybe I should have taken a short. We fuckin' dumped the next candle.'",
+      "value": "A pass he immediately regretted, stated as such. Keep it - the agent must learn the rule, not the outcome."
+    },
+    {
+      "id": "LP2", "type": "pass", "window": "LONDON", "direction": "long",
+      "trader_time": "08:36 London / 03:36 NY",
+      "trigger": "Touched the 15m MA, the 1h MA and the VWAP middle band; closed through the MA on both the 2m and the 3m",
+      "reason": "'We're choppy as fuck in the first hour', it rejected close to the moving average, 'and we're right at POC now. I'd rather POC be aligned with my trades rather than rely on my trade to break through it.'",
+      "value": "POC as obstacle vs POC as ally - the distinction is the pass."
+    },
+    {
+      "id": "LP3", "type": "pass", "window": "LONDON", "direction": "long",
+      "trader_time": "09:03 London / 04:03 NY",
+      "trigger": "3m closed through its moving average AND through POC - two levels, so it clears the R1 minimum",
+      "reason": "'Except VWAP+1 is right here. I don't really like taking trades where it has to break through something in order for my trade to work. I like a couple things to be broken through with some HEADROOM.'",
+      "value": "THE HEADROOM RULE. Two levels broken is necessary but not sufficient - the next level beyond entry must not be immediately in the way. This is a genuinely new constraint."
+    },
+
+    {
+      "id": "L1", "type": "take", "window": "LONDON", "direction": "short",
+      "trader_time": "09:49 London / 04:49 NY",
+      "trigger": {
+        "description": "Rejected VWAP+1, then closed through the BB MA and the developing POC, after rejecting the value area high",
+        "levels_verified": {"developing_poc": 29821.50, "vwap_p1": 29839.11, "developing_vah": 29868.50}
+      },
+      "entry": {"type": "limit_on_retest", "price": 29821.0,
+                "level": "developing POC 29,821.50",
+                "filled": true, "fill_ny": "04:52",
+                "trader_fill_time": "09:51 London"},
+      "stop": {
+        "price_initial_approx": 29850.0, "risk_pts": 29.0,
+        "rationale": "NOT above the candle that closed through the MA and POC, 'just because VWAP+1 is right above it - I want to give it a bit of headroom'. Placed instead at the top wick of the 3m candle before that one.",
+        "trader_said_25_then_29": "He estimated '25 point stop' when placing and later quoted the loss as '13 points instead of 29'. 29 is used."
+      },
+      "management": {
+        "trail": "At 10:00 London / 05:00 NY a big 3m candle wicked the 3m MA and traded down; he trailed the stop above that wick to 29,834.25 - 13.25pt from entry.",
+        "quote": "'I'm going to be very strict with how I trail this trade... I did want to be pretty aggressive with how I managed that trade.'"
+      },
+      "outcome": {"result": "stopped", "stop_hit_ny": "05:12", "loss_pts": 13.25, "r": -0.46,
+                  "note": "Verified: the untrailed 29pt stop would ALSO have been hit. His read - 'it looks as though if I didn't trail my stops I might have lost anyways' - is correct."}
+    },
+
+    {
+      "id": "PRE1", "type": "limit_placed_never_filled", "window": "NY_PRE",
+      "direction": "short", "ny_time": "08:33",
+      "trigger": {
+        "tf": 3, "candle_start_ny": "08:33", "candle_close_ny": "08:36",
+        "ohlc": [29841.25, 29844.25, 29806.75, 29806.75],
+        "closed_through": ["bb_ma_3m", "developing_POC"],
+        "rejected": ["vwap_p1"],
+        "levels_verified": {"bb_ma_3m": 29839.44, "developing_poc": 29821.50, "vwap_p1": 29844.27},
+        "note": "He said it 'closed through VWAP+1'; price was already below it and the candle's high 29,844.25 sits on VWAP+1 at 29,844.27 - so it REJECTED the band. Consistent with rejection counting toward the pair."
+      },
+      "thesis": "'We've been topping out this range all day and failing to break it. Price keeps rejecting off of the daily value area high.'",
+      "entry": {"type": "limit_on_retest", "price": 29821.0, "level": "developing POC",
+                "filled": false,
+                "verified": "Pre-market high after that candle was 29,814.25. Never reached."},
+      "stop": {"price": 29860.0, "rationale": "At the daily value area high (ours: 29,860.50 - exact), NOT the candle high, 'purely because that candle is basically at the same level as the three-minute moving average and VWAP+1. I want to give it some breathing room.'"},
+      "targets": [{"label": "daily value area low / bottom of the consolidation range", "price_ours": 29743.50}],
+      "outcome": {"result": "no_fill", "would_have_been": "1.99R", "trader_said": "that would have been a 2:1"},
+      "trader_reaction": "'I didn't get filled on the retest of the POC, but to be honest, I could care less. This wasn't a great trade anyway in the first place, so I'm not going to be mad about it.'",
+      "value": "SECOND no-fill in two days, and this one would have won. He is explicitly untroubled by it."
+    },
+
+    {
+      "id": "N1", "type": "take", "window": "NY_AM", "direction": "long",
+      "ny_time": "09:50", "result": "LOSS",
+      "context": "Market opened without breaking the range low. 'I think we're going to continue selling off. We didn't quite reach the Asia lows.' Then the Asia low was swept - 'if we're going to continue in this consolidation, we're probably going to come to the top of this range now.'",
+      "trigger": {
+        "tf": 2, "candle_start_ny": "09:50", "candle_close_ny": "09:52",
+        "ohlc": [29661.25, 29772.75, 29657.25, 29768.00],
+        "closed_through": ["developing_VAL", "vwap_m1", "bb_ma_2m", "vwap_mid"],
+        "levels_verified": {"developing_val": 29695.50, "vwap_m1": 29679.35, "bb_ma_2m": 29718.14, "vwap_mid": 29751.97},
+        "note": "Four levels in one candle."
+      },
+      "confidence": "'This is technically a valid trade, but I'm not too confident in it.'",
+      "entry": {"type": "limit_on_retest", "price": 29719.25,
+                "dictated_as": "'29,619.25' - a digit slip. 29,719.25 is the 2m MA (29,718.14/29,720.72) and is the only value consistent with his own stop, target and stated 1.6R.",
+                "level": "2m BB MA", "filled": true, "fill_ny": "09:55",
+                "trader_fill_time": "9:54 candle"},
+      "stop": {"price": 29657.25, "risk_pts": 62.0,
+               "rationale": "Below the displacement candle - and it is EXACTLY that candle's low (29,657.25).",
+               "touched": true, "hit_ny": "10:00"},
+      "targets": [{"label": "developing POC, overlapping VWAP+1 and the NY high",
+                   "price": 29820.25, "level_ours_poc": 29821.50, "hit": false}],
+      "outcome": {"r": -1.0, "planned_r": 1.63, "trader_stated": "roughly a 1.6 to 1"},
+      "trader_reaction": "'We got stopped out. No hard feelings... In hindsight, this 3-minute trade would have been really good, but I'm not going to be mad about it. It's just a choppy day.'"
+    },
+
+    {
+      "id": "N2", "type": "take", "window": "NY_AM", "direction": "long",
+      "ny_time": "10:24", "result": "WIN",
+      "context": "'Now we've taken out that low that was set at 9:48. There's a massive wick to the upside, VWAP+2 as well.' Same thesis as N1: bottoming the range, expecting a move to the top. At 10:22 the 2m touched VWAP-1 and left a big top wick on the MAs - he waited for closure through rather than anticipating.",
+      "trigger": {
+        "tf": 2, "candle_start_ny": "10:24", "candle_close_ny": "10:26",
+        "ohlc": [29647.50, 29702.00, 29639.50, 29675.50],
+        "closed_through": ["developing_VAL", "vwap_m1", "bb_ma_2m"],
+        "levels_verified": {"developing_val": 29675.50, "vwap_m1": 29657.62, "bb_ma_2m": 29667.81},
+        "note": "He calls the level the 'developing value area HIGH' but every number he quotes is the value area LOW (29,675.50 vs his 29,676 limit). Recorded as a naming slip, not a different level."
+      },
+      "patience_note": "'The 3-minute low-key left a massive top wick. I'd want to wait for closure through.' He checked the higher of his two timeframes before committing.",
+      "entry": {"type": "limit_on_retest", "price": 29676.0,
+                "level": "developing VAL 29,675.50 - 'that's the closest thing to my level'",
+                "filled": true, "fill_ny": "10:26"},
+      "stop": {"price": 29639.0, "risk_pts": 37.0,
+               "rationale": "Just below the 10:24 candle low (29,639.50).", "touched": false},
+      "management": "'We've touched the VWAP middle band. I'm moving my stops to break even here.'",
+      "targets": [{"label": "VWAP+1, a point inside", "price": 29808.5,
+                   "level_ours_at_hit": 29809.49, "hit": true, "hit_ny": "10:45",
+                   "trader_time": "10:44 candle"}],
+      "outcome": {"r": 3.58, "trader_stated": "3.6R"}
+    }
+  ],
+
+  "day_pnl_r": {"L1": -0.46, "N1": -1.0, "N2": 3.58, "net": 2.12,
+                "note": "Two losses and a win on a day he describes as horrible."},
+
+  "declared_rules": [
+    {"id": "R7", "rule": "HEADROOM. Two levels broken is the minimum, not the criterion. The next level beyond the entry must not be immediately in the way.",
+     "quote": "I don't really like taking trades where it has to break through something in order for my trade to work. I like a couple things to be broken through with some headroom."},
+    {"id": "R8", "rule": "POC should be ALIGNED with the trade, not an obstacle it has to break.",
+     "quote": "I'd rather POC be aligned with my trades rather than rely on my trade to break through it."},
+    {"id": "R9", "rule": "In chop, require higher-timeframe alignment before taking anything.",
+     "quote": "I'm not going to take anything until I see some higher time frame alignment that's going to show us going in one direction. There's no reason to trade like that for no reason."},
+    {"id": "R10", "rule": "LIMIT LIFETIME - answers the standing open question. A limit rests about 10 minutes maximum, and is CANCELLED if price reaches a structural level before filling it.",
+     "quote": "A limit will rest for maybe 10 minutes max. If it runs to a structural level and then fills me, I'm not very confident in that anymore... I would want it to get filled within a couple minutes. The limits get filled pretty quickly. If it hits some structural levels and then fills me, I'm more likely to lose.",
+     "worked_example": "On N2 he limited the retest of the value area low. 'If we were to come to the VWAP middle band before filling my limit order, I would close that limit order.'",
+     "implication": "A fill is only valid if it arrives QUICKLY and WITHOUT price first visiting the next structure. A late fill is a different, worse trade."},
+    {"id": "R11", "rule": "WINDOW SEMANTICS. The window governs ENTRIES only. Open trades are held to target.",
+     "quote": "You don't flatten trades when the window closes. My window would be realistically around 10:45. That doesn't mean I flatten trades. I just can't enter any trades after that. I can hold them until my targets get hit."},
+    {"id": "R12", "rule": "Trail aggressively in chop: to beyond the wick of a candle that rejects your level against you.",
+     "evidence": "L1 cut a 29pt loss to 13.25pt. Verified that the untrailed stop would also have been hit, so the trail cost nothing and saved 16pt."}
+  ],
+
+  "resolved_open_questions": [
+    {"from": "2026-06-22", "question": "How long does a limit rest before he pulls it, and does he ever chase?",
+     "answer": "~10 minutes maximum, and pulled early if price reaches a structural level before filling. He never chases - a late fill is treated as a lower-quality trade, not the same trade."},
+    {"from": "2026-06-23", "question": "How far does the NY_AM window really run?",
+     "answer": "Entries to ~10:45. Holding past it is fine and expected. Note: January's 10:51 entry is outside even this - flagged, not resolved."}
+  ],
+
+  "calibration_status": {
+    "matched_this_day": {
+      "developing_POC": "29,821.50 ours vs his 29,821 limit, quoted twice on the day",
+      "developing_VAH": "29,860.50 ours vs his 29,860 stop",
+      "developing_VAL": "29,675.50 ours vs his 29,676 limit",
+      "bb_ma_2m": "29,718-29,721 ours vs his 29,719.25 fill",
+      "vwap_p1": "29,809.49 ours vs his 29,808.5 take-profit",
+      "displacement_candle_lows": "29,657.25 and 29,639.50 - both stops sit exactly on them",
+      "verdict": "The developing daily profile is fully calibrated. Every level he named today reproduces."
+    }
+  }
+}

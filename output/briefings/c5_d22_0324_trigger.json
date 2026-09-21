@@ -1,0 +1,123 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "C5-D22-L2-0324",
+ "window": "LONDON 03:00-04:59 ET",
+ "session": "LONDON",
+ "decision_minute": "2026-06-23T03:24 ET",
+ "candle_start": "03:22 (2m)",
+ "timeframe": "2m",
+ "leak_check": "pass - truncated at 03:23:59; last completed 2m bar starts 03:22",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d22_c2_0324.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_low",
+    "price": 29923.0
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29735.88
+   }
+  ],
+  "invalidation": {
+   "level": "15m_ma_fib0382_confluence",
+   "price": 30259.3
+  },
+  "waiting_for": "rejection off the 2m/3m BB MA cluster (~30015-30039), wherever the bounce actually stalls, then closure back down through it, entered on the retest - trend day, 15m MA floor (289pt away) suspended",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed on a hold/rejection AT the weekly low 29,923 / VWAP-2 29,941 cluster - a reclaim back above the session low 29,950 and the 2m/3m MA basis",
+  "anticipated_resolution": {
+   "level": "weekly_low",
+   "price": 29923.0,
+   "expect": "break_down",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond the weekly low 29,923 with a decisive body; a wick-heavy absorption candle there means the low is defended, not broken",
+  "reasoning": "Overnight was a clean one-way 751pt collapse from the 18:02 high straight to the 02:59 low with zero 15m MA crosses all session - trend day, so the far 15m MA is one level among many, not a gate. Price sits just above the still-unbroken weekly low 29,923 / VWAP-2 29,941 cluster."
+ },
+ "price_at_decision": 29995.75,
+ "position_state": "FLAT. The 03:22 long was stopped one minute after entry. LONDON has 1 of 2 fills used and 95 minutes of window.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m",
+  "daily_poc"
+ ],
+ "levels_at_decision_CHART": {
+  "vwap": 30329.01,
+  "vwap_p1": 30544.86,
+  "vwap_m1": 30113.16,
+  "vwap_m2": 29897.32,
+  "vwap_m3": 29681.47,
+  "bb_2m_basis": 30008.58,
+  "bb_2m_upper": 30061.19,
+  "bb_2m_lower": 29955.96
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 30008.58,
+  "bb_ma_3m": 30011.3,
+  "bb_ma_15m": 30216.84,
+  "bb_ma_60m": 30505.6,
+  "day_range_fibs": {
+   "0.382": 30232.96,
+   "0.5": 30322.38,
+   "0.618": 30411.79,
+   "0.705": 30477.71
+  },
+  "session_high_so_far": 30701.25,
+  "session_low_so_far": 29943.5,
+  "daily_profile": {
+   "poc": 30032.0,
+   "val": 29944.0,
+   "vah": 30491.0,
+   "note": "DEVELOPING as-of 03:24"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30353.0,
+   "vah": 30732.0,
+   "note": "DEVELOPING as-of 03:24"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29923.0
+ },
+ "levels_for_target_selection": "BELOW the close: the 2m BB lower 29955.96, the session low 29943.5, the weekly low 29923.0, vwap_m2 29897.32, vwap_m3 29681.47. ABOVE: the 2m BB basis 30008.58, the session high 30034.75, the 2m BB upper 30061.19, vwap_m1 30113.16.",
+ "fills_this_window": 1,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill",
+ "signal_candle_2m": {
+  "start": "03:22",
+  "direction": "DOWN",
+  "open": 30033.5,
+  "high": 30033.5,
+  "low": 29995.0,
+  "close": 29995.75,
+  "volume": 550,
+  "levels": "own 2m MA (30008.58) + developing daily POC, same candle; opened ON its high"
+ },
+ "prior_bar": {
+  "03:20 2m": {
+   "open": 30008.5,
+   "high": 30034.75,
+   "close": 30033.0
+  }
+ },
+ "session_low_this_window": 29943.5,
+ "session_high_this_window": 30034.75,
+ "entry_geometry_note": "the orchestrator validates entry arithmetic before simulating. For a SHORT the limit sits ABOVE current price and cancel_if_reaches sits BELOW both the price and the limit."
+}

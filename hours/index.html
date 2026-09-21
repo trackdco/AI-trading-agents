@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Imperium Timesheets</title>
+<meta name="description" content="Clock on, clock off, and see everyone's hours. Imperium Detailing.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#050608">
+
+<!-- Added to a phone's home screen this opens without browser chrome, like an app. -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Hours">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700&family=Instrument+Sans:wght@400;500;600&display=swap">
+
+<link rel="stylesheet" href="tokens.css">
+
+<style>
+/* Imperium Detailing — timesheets.
+   On a phone in a driveway this has one job: start a shift, finish a shift.
+   Everything else is a record you scroll to. The palette is in tokens.css. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--body);
+  font: 400 var(--t-body)/1.55 var(--sans);
+  padding-bottom: calc(40px + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Two fixed layers light the page: a soft accent key light and a fine grain.
+   Neither scrolls and neither takes pointer events. The grain is what keeps the
+   near-black from reading as flat. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -25vh -20vw auto;
+  height: 130vh;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(54vw 44vh at 74% 2%, rgba(58, 143, 224, 0.20), transparent 68%),
+    radial-gradient(68vw 38vh at 10% 20%, rgba(31, 111, 192, 0.14), transparent 72%);
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.shell { position: relative; z-index: 2; }
+
+h1, h2, h3 { margin: 0; color: var(--ink); font-family: var(--display); font-weight: 700; }
+p { margin: 0 0 0.9em; }
+p:last-child { margin-bottom: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.tnum { font-variant-numeric: tabular-nums lining-nums; }
+[hidden] { display: none !important; }
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--measure) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* ------------------------------------------------------------------ head -- */
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: calc(18px + env(safe-area-inset-top)) 6px;
+}
+.head img { height: 30px; width: auto; display: block; }
+.head .name {
+  font-family: var(--display);
+  font-size: var(--t-3);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.head .who {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 6px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--body);
+  font: 500 var(--t-small) var(--sans);
+  cursor: pointer;
+}
+.head .who:hover { border-color: var(--accent); color: var(--ink); }
+.head .who .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex: none; }
+
+/* ------------------------------------------------------------- the clock -- */
+.clock {
+  position: relative;
+  margin-top: 16px;
+  padding: 28px 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: linear-gradient(180deg, var(--raise), #0a0c10);
+  overflow: hidden;
+  text-align: center;
+}
+/* While a shift runs the card is lit from inside and its top edge turns live. */
+.clock::before {
+  content: "";
+  position: absolute;
+  inset: -40% -20% auto;
+  height: 120%;
+  opacity: 0;
+  transition: opacity 600ms var(--ease);
+  background: radial-gradient(50% 48% at 50% 0%, rgba(74, 222, 128, 0.16), transparent 70%);
+  pointer-events: none;
+}
+.clock[data-running]::before { opacity: 1; }
+.clock::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  opacity: 0.5;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  transition: background 600ms var(--ease), opacity 600ms var(--ease);
+}
+.clock[data-running]::after {
+  background: linear-gradient(90deg, transparent, var(--live), transparent);
+  opacity: 0.85;
+}
+
+.clock .state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.clock .pip { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.clock[data-running] .pip { background: var(--live); }
+@media (prefers-reduced-motion: no-preference) {
+  .clock[data-running] .pip { animation: breathe 2s var(--ease) infinite; }
+  @keyframes breathe {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.55); }
+    50%      { box-shadow: 0 0 0 7px rgba(74, 222, 128, 0); }
+  }
+}
+
+.clock .elapsed {
+  margin: 10px 0 2px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(56px, 19vw, 86px);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.clock[data-running] .elapsed { color: #fff; text-shadow: 0 0 40px rgba(74, 222, 128, 0.22); }
+.clock .since { font-size: var(--t-small); color: var(--muted); min-height: 1.5em; }
+.clock .fields { margin-top: 16px; text-align: left; }
+
+/* The backdate control. Somebody who forgot to press Start still needs an honest
+   number, so the shift can begin in the past rather than being guessed later. */
+.backdate { margin-top: 12px; }
+.backdate .link {
+  min-height: 42px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: 500 var(--t-small) var(--sans);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px; }
+.chip {
+  min-height: 42px;
+  padding: 8px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--body);
+  font: 500 var(--t-small) var(--sans);
+  font-variant-numeric: tabular-nums lining-nums;
+  cursor: pointer;
+}
+.chip:hover { border-color: var(--accent); color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #04121f; font-weight: 600; }
+
+/* ---------------------------------------------------------------- inputs -- */
+label.lab {
+  display: block;
+  margin-bottom: 6px;
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+input, select, textarea {
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: var(--well);
+  color: var(--ink);
+  /* 16px floor, or iOS Safari zooms the page when a field takes focus. */
+  font: 400 var(--t-body)/1.4 var(--sans);
+  transition: border-color 160ms var(--ease), box-shadow 160ms var(--ease);
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(58, 143, 224, 0.2);
+}
+select {
+  appearance: none;
+  padding-right: 42px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%238e97a5' d='M0 1.4 1.4 0 6 4.6 10.6 0 12 1.4 6 8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 12px 8px;
+}
+
+/* --------------------------------------------------------------- buttons -- */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 62px;
+  margin-top: 16px;
+  padding: 12px 22px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--accent);
+  color: #04121f;
+  font: 600 var(--t-3)/1.2 var(--sans);
+  cursor: pointer;
+  transition: background 160ms var(--ease), transform 110ms var(--ease);
+}
+.btn:hover { background: #4b9ff0; }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn.stop { background: var(--live); color: #04210f; }
+.btn.stop:hover { background: #6ae89a; }
+
+.btn-2 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--body);
+  font: 500 var(--t-small) var(--sans);
+  cursor: pointer;
+}
+.btn-2:hover { border-color: var(--accent); color: var(--ink); }
+.btn-2.danger:hover { border-color: var(--warn); color: var(--warn); }
+.btn-2.go { border-color: var(--accent); color: var(--ink); }
+
+/* ----------------------------------------------------------------- stats -- */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.stat { padding: 14px 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--raise); }
+.stat .k {
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.stat .v {
+  margin-top: 4px;
+  font-family: var(--display);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.stat .v small { font-size: 15px; font-weight: 600; color: var(--muted); margin-left: 2px; }
+
+/* --------------------------------------------------------------- section -- */
+section { margin-top: 32px; }
+.sec-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.sec-head h2 { font-size: var(--t-2); line-height: 1.1; }
+.sec-head .aside { font-size: var(--t-small); color: var(--muted); }
+
+/* ---------------------------------------------------------------- shifts -- */
+.day { margin-bottom: 18px; }
+.day .date {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 7px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.day .date b {
+  color: var(--body);
+  text-transform: none;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 14px;
+  padding: 13px 2px;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+}
+.row .main { grid-column: 1; min-width: 0; }
+.row .person { color: var(--ink); font-weight: 600; }
+.row .times { font-size: var(--t-small); color: var(--muted); font-variant-numeric: tabular-nums lining-nums; }
+.row .job { font-size: var(--t-small); color: var(--body); overflow-wrap: anywhere; }
+.row .dur {
+  grid-column: 2;
+  text-align: right;
+  font-family: var(--display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+}
+.row[data-open] .dur { color: var(--live); }
+.row .acts { grid-column: 1 / -1; display: flex; gap: 8px; margin-top: 6px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .anim .row, .anim .stat { animation: rise 460ms var(--ease) both; }
+  .anim .stat:nth-child(2) { animation-delay: 70ms; }
+  .anim .stat:nth-child(3) { animation-delay: 140ms; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+}
+
+/* ----------------------------------------------------------------- admin -- */
+details.admin {
+  margin-top: 32px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--raise);
+  overflow: hidden;
+}
+details.admin > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 58px;
+  padding: 14px 18px;
+  font-family: var(--display);
+  font-size: var(--t-3);
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  list-style: none;
+}
+details.admin > summary::-webkit-details-marker { display: none; }
+details.admin > summary::after {
+  content: "+";
+  flex: none;
+  width: 28px; height: 28px;
+  display: grid; place-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  font-family: var(--sans);
+  font-size: 17px;
+  color: var(--accent);
+}
+details.admin[open] > summary::after { content: "\2212"; }
+.admin .panel { padding: 4px 18px 20px; }
+.admin h3 {
+  margin: 20px 0 8px;
+  font-family: var(--sans);
+  font-size: var(--t-micro);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.admin h3:first-child { margin-top: 6px; }
+.btn-wrap { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+
+.who-row, .staff-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--t-small);
+}
+.who-row b, .staff-row b { color: var(--ink); font-weight: 600; }
+.who-row .hrs {
+  margin-left: auto;
+  font-family: var(--display);
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.who-row .pay { min-width: 5.4em; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums lining-nums; }
+.staff-row .rate { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums lining-nums; }
+.add-staff { display: grid; grid-template-columns: 1fr 96px auto; gap: 8px; margin-top: 12px; align-items: end; }
+.add-staff .btn-2 { min-height: 50px; }
+
+/* ----------------------------------------------------------------- notes -- */
+.note {
+  margin-top: 14px;
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  background: var(--raise);
+  font-size: var(--t-small);
+  color: var(--body);
+}
+.note.bad { border-left-color: var(--warn); }
+
+/* The way through to the other page. Deliberately quiet: the clock is still the
+   thing to use, and this is the apology for the day nobody pressed anything. */
+.elsewhere { margin: 14px 0 0; font-size: var(--t-small); text-align: center; }
+.elsewhere a { color: var(--muted); text-decoration-color: var(--line-2); }
+.elsewhere a:hover { color: var(--accent); }
+.elsewhere em { font-style: normal; color: var(--body); }
+
+/* Says where the hours are actually going. Only shows when that is not the
+   shared timesheet, because that is the only time it matters. */
+.link-note {
+  display: block;
+  width: 100%;
+  margin: 0 0 18px;
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--warn);
+  border-radius: 10px;
+  background: var(--raise);
+  color: var(--body);
+  font: inherit;
+  font-size: var(--t-small);
+  text-align: left;
+  cursor: pointer;
+}
+.link-note b { color: var(--ink); }
+.link-note[data-tone="warn"] { border-left-color: var(--accent); cursor: default; }
+.empty { padding: 24px 4px; color: var(--muted); font-size: var(--t-small); }
+
+/* --------------------------------------------------------------- dialogs -- */
+dialog {
+  width: min(420px, calc(100vw - 32px));
+  padding: 22px;
+  border: 1px solid var(--line-2);
+  border-radius: 18px;
+  background: var(--raise);
+  color: var(--body);
+}
+dialog::backdrop { background: rgba(3, 4, 6, 0.78); }
+dialog h3 { font-size: var(--t-2); margin-bottom: 12px; }
+dialog .grid { display: grid; gap: 12px; }
+dialog .acts { display: flex; gap: 10px; margin-top: 18px; }
+dialog .acts .btn-2 { flex: 1; min-height: 50px; }
+dialog .ask-body { margin: 0; color: var(--muted); font-size: var(--t-small); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.people { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.people button {
+  min-height: 58px;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink);
+  font: 600 var(--t-body) var(--sans);
+  cursor: pointer;
+}
+.people button:hover, .people button[aria-pressed="true"] { border-color: var(--accent); background: rgba(58, 143, 224, 0.12); }
+
+/* ------------------------------------------------------------------ gate --
+   The code screen. A real keypad rather than a text box: on a phone it is one
+   thumb, no OS keyboard sliding up, and it reads like an app instead of a form. */
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--bg);
+}
+.gate::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 90%;
+  pointer-events: none;
+  background: radial-gradient(48vw 40vh at 50% 0%, rgba(58, 143, 224, 0.22), transparent 70%);
+}
+.gate[hidden] { display: none; }
+.gate-in { position: relative; width: 100%; max-width: 320px; text-align: center; }
+.gate-in img { height: 44px; width: auto; margin: 0 auto 14px; display: block; }
+.gate-in h1 { font-size: 34px; line-height: 1; letter-spacing: -0.01em; }
+.gate-sub { margin: 10px 0 0; font-size: var(--t-small); color: var(--muted); min-height: 1.5em; }
+.gate-sub.bad { color: var(--warn); }
+
+.dots { display: flex; justify-content: center; gap: 14px; margin: 22px 0 26px; }
+.dots i {
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  transition: background 160ms var(--ease), border-color 160ms var(--ease), transform 160ms var(--ease);
+}
+.dots i[data-on] { background: var(--accent); border-color: var(--accent); transform: scale(1.12); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .gate-in[data-wrong] { animation: nope 420ms var(--ease); }
+  @keyframes nope {
+    0%, 100% { transform: translateX(0); }
+    18% { transform: translateX(-9px); }
+    38% { transform: translateX(9px); }
+    58% { transform: translateX(-5px); }
+    78% { transform: translateX(3px); }
+  }
+}
+
+.pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.pad button {
+  min-height: 66px;
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  background: var(--raise);
+  color: var(--ink);
+  font: 600 26px var(--display);
+  font-variant-numeric: tabular-nums lining-nums;
+  cursor: pointer;
+  transition: background 120ms var(--ease), transform 90ms var(--ease);
+}
+.pad button:hover { background: #151922; }
+.pad button:active { transform: scale(0.96); }
+.pad button.soft { font: 500 15px var(--sans); color: var(--muted); background: transparent; }
+
+.foot-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.foot-row button {
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: 500 var(--t-micro) var(--sans);
+  cursor: pointer;
+}
+.foot-row button:hover { border-color: var(--accent); color: var(--ink); }
+
+footer.foot {
+  margin-top: 36px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-micro);
+  color: var(--muted);
+}
+</style>
+</head>
+
+<body>
+
+<div class="gate" id="gate">
+  <div class="gate-in" id="gateIn">
+    <img src="logo.webp" alt="Imperium Detailing" width="72" height="44">
+    <h1>Timesheets</h1>
+    <p class="gate-sub" id="gateSub">Enter your code</p>
+    <div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+    <div class="pad" id="pad">
+      <button type="button" data-k="1">1</button>
+      <button type="button" data-k="2">2</button>
+      <button type="button" data-k="3">3</button>
+      <button type="button" data-k="4">4</button>
+      <button type="button" data-k="5">5</button>
+      <button type="button" data-k="6">6</button>
+      <button type="button" data-k="7">7</button>
+      <button type="button" data-k="8">8</button>
+      <button type="button" data-k="9">9</button>
+      <button type="button" class="soft" data-k="clear">Clear</button>
+      <button type="button" data-k="0">0</button>
+      <button type="button" class="soft" data-k="back">Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="shell wrap" id="app" hidden>
+
+  <header class="head">
+    <img src="logo.webp" alt="Imperium Detailing" width="49" height="30">
+    <span class="name">Timesheets</span>
+    <button class="who" id="whoBtn" type="button"><span class="dot"></span><span id="whoName">Who are you?</span></button>
+  </header>
+
+  <button class="link-note" id="linkNote" type="button" hidden></button>
+
+  <!-- On a phone this is the whole page: one number, one button. -->
+  <div class="clock" id="clock">
+    <span class="state"><span class="pip"></span><span id="stateLabel">Not clocked on</span></span>
+    <div class="elapsed tnum" id="elapsed">0:00:00</div>
+    <div class="since" id="since">Pick your name to get started.</div>
+
+    <div class="fields" id="startFields">
+      <label class="lab" for="jobIn">Job or customer <span style="text-transform:none;letter-spacing:0">(optional)</span></label>
+      <input id="jobIn" type="text" placeholder="e.g. Huracán full detail, Kambah" autocomplete="off">
+    </div>
+
+    <button class="btn" id="mainBtn" type="button">Start shift</button>
+
+    <div class="backdate" id="backdate">
+      <button class="link" id="backLink" type="button">Forgot to press start?</button>
+      <div class="chips" id="backChips" hidden>
+        <button class="chip" data-back="15" type="button">15 min ago</button>
+        <button class="chip" data-back="30" type="button">30 min</button>
+        <button class="chip" data-back="45" type="button">45 min</button>
+        <button class="chip" data-back="60" type="button">1 hour</button>
+        <button class="chip" data-back="90" type="button">1.5 hours</button>
+        <button class="chip" data-back="120" type="button">2 hours</button>
+        <button class="chip" data-back="0" type="button">Now</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="elsewhere"><a href="log.html">Forgot to press start <em>and</em> stop? Log a whole day &rarr;</a></p>
+
+  <div class="stats" id="stats">
+    <div class="stat"><div class="k" id="kToday">Today</div><div class="v tnum" id="sToday">0<small>h</small></div></div>
+    <div class="stat"><div class="k" id="kWeek">This week</div><div class="v tnum" id="sWeek">0<small>h</small></div></div>
+    <div class="stat"><div class="k">On now</div><div class="v tnum" id="sOn">0</div></div>
+  </div>
+
+  <div id="status"></div>
+
+  <section>
+    <div class="sec-head">
+      <h2>Shifts</h2>
+      <span class="aside" id="shiftScope"></span>
+    </div>
+    <div id="shifts"><div class="empty">Loading&hellip;</div></div>
+  </section>
+
+  <details class="admin" id="adminBox">
+    <summary>Admin</summary>
+    <div class="panel">
+
+      <h3>Hours this pay week</h3>
+      <p style="margin:-6px 0 12px;color:var(--muted);font-size:14px">Pay weeks run Wednesday to Tuesday.</p>
+      <div id="weekTotals"><div class="empty">No shifts this pay week yet.</div></div>
+      <div class="btn-wrap">
+        <button class="btn-2" id="prevWeek" type="button">&larr; Previous week</button>
+        <button class="btn-2" id="nextWeek" type="button">Next week &rarr;</button>
+        <button class="btn-2 go" id="csvBtn" type="button">Download CSV</button>
+      </div>
+
+      <h3>The crew</h3>
+      <div id="staffList"><div class="empty">Nobody added yet.</div></div>
+      <div class="add-staff">
+        <div>
+          <label class="lab" for="newName">Name</label>
+          <input id="newName" type="text" placeholder="Name" autocomplete="off">
+        </div>
+        <div>
+          <label class="lab" for="newRate">$/hour</label>
+          <input id="newRate" type="number" inputmode="decimal" min="0" step="0.5" placeholder="27">
+        </div>
+        <button class="btn-2" id="addStaff" type="button">Add</button>
+      </div>
+
+      <h3>Anything missed</h3>
+      <p style="font-size:14px;color:var(--muted)">Add a job nobody clocked, or fix one that&rsquo;s wrong.</p>
+      <button class="btn-2" id="manualBtn" type="button">Add a past shift</button>
+
+    </div>
+  </details>
+
+  <footer class="foot">
+    Imperium Detailing. Times come from each phone&rsquo;s own clock, so keep them set
+    to automatic. <span id="storeNote"></span>
+    <div class="foot-row">
+      <span id="roleNote"></span>
+      <button id="signOut" type="button">Sign out</button>
+    </div>
+  </footer>
+</div>
+
+<!-- Who is on this phone. Saved to the device so it is asked once. -->
+<dialog id="whoDlg">
+  <h3>Who are you?</h3>
+  <div class="people" id="whoList"></div>
+  <div class="acts">
+    <button class="btn-2" id="whoCancel" type="button">Cancel</button>
+  </div>
+</dialog>
+
+<dialog id="editDlg">
+  <h3 id="editTitle">Edit shift</h3>
+  <div class="grid">
+    <div>
+      <label class="lab" for="eWho">Who</label>
+      <select id="eWho"></select>
+    </div>
+    <div>
+      <label class="lab" for="eDate">Date</label>
+      <input id="eDate" type="date">
+    </div>
+    <div class="two" id="eTimes">
+      <div><label class="lab" for="eStart">Start</label><input id="eStart" type="time"></div>
+      <div><label class="lab" for="eEnd">Finish</label><input id="eEnd" type="time"></div>
+    </div>
+    <!-- Shown instead of the times when the day was logged as a number of hours
+         because nobody clocked on. There are no real times to show. -->
+    <div id="eHoursWrap" hidden>
+      <label class="lab" for="eHours">Hours worked</label>
+      <input id="eHours" type="number" inputmode="decimal" min="0.25" max="20" step="0.25">
+    </div>
+    <div>
+      <label class="lab" for="eJob">Job or customer</label>
+      <input id="eJob" type="text" autocomplete="off">
+    </div>
+    <p id="eErr" style="margin:0;color:var(--warn);font-size:14px" hidden></p>
+  </div>
+  <div class="acts">
+    <button class="btn-2" id="eCancel" type="button">Cancel</button>
+    <button class="btn-2 go" id="eSave" type="button">Save</button>
+  </div>
+</dialog>
+
+<dialog id="timeDlg">
+  <h3>When did you start?</h3>
+  <div class="grid">
+    <div><label class="lab" for="tTime">Start time today</label><input id="tTime" type="time"></div>
+    <p style="margin:0;font-size:14px;color:var(--muted)">The clock will count from then, so the hours are right.</p>
+  </div>
+  <div class="acts">
+    <button class="btn-2" id="tCancel" type="button">Cancel</button>
+    <button class="btn-2 go" id="tSave" type="button">Use this time</button>
+  </div>
+</dialog>
+
+<!-- The browser's own confirm() box is blocked inside an embedded viewer, which
+     made Delete look broken. This asks in the page instead, so it works anywhere. -->
+<dialog id="askDlg">
+  <h3 id="askTitle">Are you sure?</h3>
+  <p class="ask-body" id="askBody"></p>
+  <div class="acts">
+    <button class="btn-2" id="askNo" type="button">Cancel</button>
+    <button class="btn-2 danger" id="askYes" type="button">Delete</button>
+  </div>
+</dialog>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "V5-D23-NYA2-0942",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-24T09:42 ET",
+ "candle_start": "09:38 (2m) / 09:39 (3m)",
+ "timeframe": "2m and 3m",
+ "leak_check": "pass - truncated at 09:41:59; last completed 2m bar starts 09:40, and the 3m bar starting 09:39 completes AT 09:42",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d23_c7_0942.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "prior_day_val",
+    "price": 29637.0
+   },
+   {
+    "level": "vwap_m2",
+    "price": 29649.34
+   },
+   {
+    "level": "weekly_low",
+    "price": 29577.25
+   }
+  ],
+  "invalidation": {
+   "level": "bb_ma_15m",
+   "price": 29799.6
+  },
+  "waiting_for": "a bounce into the 29730-29775 confluence (daily VAL 29731 / day fib 0.5 29738.62 / 2m-3m MA / VWAP 29774.60) that stalls and rolls over - not a full rebalance to the 15m MA at 29799.6, which is suspended on this trend-down day per T15.",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed on a hold/reclaim of the current confluence (2m BB lower 29697.86 / vwap_m1 29711.97 / 0.382 fib 29702.49) with price stabilizing back above VWAP 29774.60 and daily VAL 29731 - i.e., this being the fourth rotation, not the break. Price is essentially at this zone now, well within reach.",
+  "anticipated_resolution": {
+   "level": "support_confluence_29702",
+   "price": 29702.0,
+   "expect": "break_down",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close back above bb_ma_15m 29799.6 with a decisive body would mean the breakdown failed and rotation resumes.",
+  "reasoning": "Overnight was genuine two-way rotation and the third T22 fade at the range top paid, but this leg is different: VWAP and daily VAL broke on the session's heaviest volume, the 15m MA crossed down at 08:45 with a decisive body. Price is on the 2m-BB-lower/vwap_m1/0.382-fib confluence now, so I want a rejected bounce before shorting, not a chase."
+ },
+ "waiting_for_status": "NOT SATISFIED, AND THE REASON IS THE WHOLE POINT. The thesis wants 'a BOUNCE into the 29730-29775 confluence that STALLS AND ROLLS OVER' before shorting, and says so explicitly: 'I want a rejected bounce before shorting, NOT A CHASE.' What is in front of you is the opposite - a 131pt collapse in three minutes to 29,628, with price already 100-145pt BELOW that confluence. There is no bounce and nothing has stalled.",
+ "POSITION_STATE": "FLAT. NY_AM has a fresh cap of 2 and 78 minutes. The 09:34 candidate was passed on the T21 clock buffer, so nothing has been spent.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "signal_candle_3m": {
+  "start": "09:39",
+  "direction": "DOWN",
+  "open": 29760.75,
+  "close": 29629.75,
+  "closed_at": "09:42",
+  "levels": "own 3m MA + vwap_m1 + vwap_m2 + daily VAL + 60m MA, all in ONE candle; rejected the session VWAP",
+  "note": "a 131pt bear body. The supplementary scan also flags it rejection-first, off the 15m MA at 09:30 and vwap_p1 at 09:33 and 09:36. Volume 7,382 - the heaviest bar of the session."
+ },
+ "signal_candle_2m": {
+  "start": "09:38",
+  "direction": "DOWN",
+  "open": 29804.25,
+  "close": 29726.25,
+  "levels": "own 2m MA + VWAP + 15m MA + 60m MA, same candle; rejected the daily VAL"
+ },
+ "last_completed_2m_bar": {
+  "start": "09:40",
+  "open": 29726.75,
+  "high": 29741.5,
+  "low": 29628.0,
+  "close": 29629.75,
+  "volume": 5454
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_3m",
+  "own_ma_2m",
+  "vwap",
+  "vwap_m1",
+  "vwap_m2",
+  "daily_val",
+  "bb_ma_60m"
+ ],
+ "T20_IS_THE_TEST_HERE": "read the entry rule before you name a limit. The move came FROM 29,804.25 / 29,760.75 above. Price is 29,629.75. Your limit must sit BETWEEN price and that origin - price has to come BACK UP to fill you. A limit a few points above 29,629.75 is technically on the right side but it is 130-175pt below where the move started: it is not a retest OF anything, it is a bet that price keeps falling from the bottom of a vertical candle. His ruling, verbatim: 'What was this even a retest of? It was nothing. In this instance, where we're entering basically a VWAP-2 short, we're basically wanting it to break VWAP-2 to affirm our trade direction, which is not very smart... it basically shorted at the VWAP-2 band, and that is just very, very dumb.' NOTE WHERE VWAP-2 IS RIGHT NOW: 29,638.21, EIGHT POINTS ABOVE THE CLOSE.",
+ "what_he_wanted_instead": "'entry on the retest of the BB MA right after the candle that closed through the VWAP mid + MA, stop above that candle's high.' The 2m/3m MAs are at 29734.06 and 29749.45.",
+ "levels_at_decision_CHART": {
+  "vwap": 29766.53,
+  "vwap_p1": 29830.7,
+  "vwap_m1": 29702.37,
+  "vwap_m2": 29638.21,
+  "vwap_m3": 29574.05,
+  "bb_2m_basis": 29734.06,
+  "bb_2m_upper": 29821.7,
+  "bb_2m_lower": 29646.42
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29734.06,
+  "bb_ma_3m": 29749.45,
+  "bb_ma_15m": 29789.28,
+  "bb_ma_60m": 29756.15,
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "session_high_so_far": 29891.75,
+  "session_low_so_far": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29717.0,
+   "vah": 29856.0,
+   "note": "DEVELOPING as-of 09:42"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 29986.0,
+   "vah": 30955.0,
+   "note": "DEVELOPING as-of 09:42"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29577.25
+ },
+ "levels_below_for_target_selection": "vwap_m2 29638.21 is 8pt below and the 2m BB lower 29646.42 is ABOVE the close. Then prior-day VAL 29637.0, vwap_m3 29574.05, the weekly low 29577.25. Apply T17: R = |entry-stop| FIRST, then the NEAREST level inside 1.0R-2.5R; fixed 1.5R only if none qualifies.",
+ "T17_REMINDER": "the band is 1.0R-2.5R.",
+ "ENTRY_GEOMETRY": "the orchestrator validates your arithmetic: for a SHORT the limit sits ABOVE current price, and cancel_if_reaches BELOW both price and the limit, not already violated at placement.",
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

@@ -1,0 +1,124 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "R2-D25-L3-0406",
+ "window": "LONDON 03:00-04:59 ET",
+ "session": "LONDON",
+ "decision_minute": "2026-06-26T04:06 ET",
+ "candle_start": "04:03 (3m) / 04:04 (2m)",
+ "timeframe": "3m and 2m",
+ "leak_check": "pass - truncated at 04:05:59; last completed 2m bar starts 04:04 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/r2_d25_c1_0406.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. This briefing is authoritative. The chart is truncated at the cursor and carries NO trade drawings of any kind.",
+ "chart_note": "the weekly VP drawing is anchored to a different window - ignore it visually; correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger from his chart's own study series at the last bar; BB MAs/profiles/fibs from the build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_low",
+    "price": 29160.5
+   },
+   {
+    "level": "anchored_weekly_val",
+    "price": 29290.0
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_poc",
+   "price": 29655.0
+  },
+  "waiting_for": "rejection at the 0.5 day-range fib / BB-2m-upper confluence (~29527-29530), confirmed by a 15m closure back through a key MA stacked with another level - not a 15m-MA reclaim; the down-leg was a clean displacement so the 15m floor is suspended and it's just one level in the cluster now below price",
+  "two_sided": true,
+  "condition_for_other_side": "a 15m decisive-body close through the 29613-29655 confluence (0.618 fib / prior-day POC / approx 60m MA) licenses longs for a fill toward anchored-weekly POC (29710) / prior-day VAH (29884)",
+  "anticipated_resolution": {
+   "level": "day_range_fib_0.5-bb_2m_upper_confluence",
+   "price": 29528.0,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "a major level (weekly low, prior-day POC) is broken/reclaimed only on a 15m close beyond it with a decisive body - not a wick or a 1-2m poke",
+  "reasoning": "Overnight swept near the prior-day VAH/high (29892) then reversed in a clean 732pt one-way slide to a new weekly low (29160.5) - trend-day character on that leg, not rotational. The 3+hr grind back since is slower and still under the 0.5 fib/BB-2m-upper confluence (~29528) and prior-day POC (29655), so fading it back toward the weekly low. A 15m decisive close through 29613-29655 (0.618 fib/POC/60m MA cluster) flips this long toward anchored-weekly POC/prior-day VAH."
+ },
+ "waiting_for_status": "ARGUABLY SATISFIED - judge it. The thesis wanted a rejection at the 0.5-fib / BB-2m-upper confluence (~29527-29530) confirmed by a 15m closure back through a key MA stacked with another level. The London rally topped at 29562.75 (03:32) and again at 29557.75 on the 04:00 bar - both ABOVE that confluence - and has now closed back through the 2m MA and the VWAP together. But the 15m bar that would confirm it (04:00-04:15) is still open: it does not close for another nine minutes.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "signal_candle_3m": {
+  "start": "04:03",
+  "direction": "DOWN",
+  "open": 29503.75,
+  "close": 29477.25,
+  "closed_at": "04:06",
+  "levels": "own 3m MA + VWAP; sequential leg at 04:00",
+  "note": "the pair is sequential, not same-candle - the own-MA closure came on the 04:00 leg and this candle adds the VWAP"
+ },
+ "signal_candle_2m": {
+  "start": "04:04",
+  "direction": "DOWN",
+  "open": 29503.75,
+  "high": 29504.0,
+  "low": 29474.25,
+  "close": 29477.25,
+  "volume": 417,
+  "levels": "own 2m MA (29522.59) + VWAP (29492.63), sequential from the own-MA closure at 04:00"
+ },
+ "pair_shape": "sequential (+3m on the 3m, +4m on the 2m)",
+ "levels_closed": [
+  "own_ma_3m",
+  "own_ma_2m",
+  "vwap"
+ ],
+ "rejection_context": "the 04:00 2m bar ran to 29557.75 and closed 29502.50 - a 55pt bear body on 617 contracts, the heaviest bar since the window opened - reversing straight off the confluence. The two candles since have extended it and taken the VWAP.",
+ "prior_attempts_at_this_ceiling": "03:32 high 29562.75, 03:54 high 29544.00, 04:00 high 29557.75 - three touches of the 29527-29563 band in thirty-four minutes, none accepted above it.",
+ "levels_at_decision_CHART": {
+  "vwap": 29492.63,
+  "vwap_p1": 29680.2,
+  "vwap_m1": 29305.06,
+  "vwap_p2": 29867.77,
+  "vwap_m2": 29117.49,
+  "bb_2m_basis": 29522.59,
+  "bb_2m_upper": 29559.63,
+  "bb_2m_lower": 29485.54
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29522.59,
+  "bb_ma_3m": 29510.94,
+  "bb_ma_15m": 29384.59,
+  "day_range_fibs": {
+   "0.382": 29440.22,
+   "0.5": 29526.62,
+   "0.618": 29613.03,
+   "0.705": 29676.74
+  },
+  "day_high": 29892.75,
+  "day_low": 29160.5,
+  "london_high_so_far": 29562.75,
+  "daily_profile": {
+   "poc": 29355.0,
+   "val": 29161.0,
+   "vah": 29656.0,
+   "note": "DEVELOPING"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29709.13,
+   "val": 29325.0,
+   "vah": 30121.25,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "weekly_high": 30968.0
+ },
+ "levels_below_for_target_selection": "prior-day VAL 29465 is 12pt under the close; then the 2m BB lower 29485.54 is actually ABOVE it. Below: the 0.382 fib 29440.22, the 15m MA 29384.59, the developing daily POC 29355, the weekly VAL 29325, vwap_m1 29305.06, then the weekly low 29160.5. Apply T11: compute R = |entry-stop| FIRST, then the NEAREST level inside 1.5R-2.5R; a FIXED 1.5R if none qualifies.",
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

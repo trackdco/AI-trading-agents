@@ -1,0 +1,138 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM 09:30-11:00 ET (cap 2 fills)",
+ "decision_minute": "2026-06-26T09:30 ET (session-day 2026-06-25)",
+ "leak_check": "pass - truncated at 09:29:59; last completed 2m bar starts 09:28 (read from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d25_0930_nyam.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart now carries NO trade drawings at all - earlier NY_PRE briefings warned you about archived position boxes, and those have since been removed, so anything you think you see of that kind is not there.",
+ "chart_note": "the weekly VP drawing is anchored to a different window than this session-day; ignore it visually. Correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands read from his chart's own study series at the last bar (build parity today is 0.08pt); BB MAs/profiles/fibs from the research build.",
+ "day_character_note": "Re-judge the day's character - your rebalance rule depends on it. At 03:00 and again at 08:00 you called it ROTATIONAL and kept the 15m-MA floor in force. The cash open is the point where that judgement most often has to change.",
+ "price_at_decision": 29360.75,
+ "last_completed_2m_bar": {
+  "start": "09:28",
+  "open": 29338.0,
+  "high": 29367.25,
+  "low": 29317.75,
+  "close": 29360.75
+ },
+ "prior_thesis_as_of_0800": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "anchored_weekly_val",
+    "price": 29290.0
+   },
+   {
+    "level": "weekly_low",
+    "price": 29160.5
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_poc",
+   "price": 29655.0
+  },
+  "waiting_for": "rebalance back up to the 15m MA (~29420) before re-shorting, OR a 15m close with a decisive body through the 29305-29369 support zone",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed AT the anchored-weekly-VAL/weekly-low confluence (29160.5-29290) on a clear rejection there; or a reclaim and hold above the 29655-29710 cluster",
+  "anticipated_resolution": {
+   "level": "daily_poc_support_zone",
+   "price": 29355.0,
+   "expect": "break_down",
+   "act_on_resolution": true
+  }
+ },
+ "what_happened_since_0800": "Your read paid again, and your anticipated resolution is now RESOLVED. Price rebalanced to 29400.50 at 08:33 - into the daily-POC / 2m-BB-upper band and within 2pt of the 15m MA - was rejected there, and broke down through the 29305-29369 support zone. It bled to 29253.50 by 09:10 and printed 29211.25 at 09:18. Your FIRST target (anchored weekly VAL, 29290) has printed. Your SECOND target (weekly low 29160.5) has NOT - the low of the move was 29211.25, 50.75pt short. Since 09:18 price has rallied 149pt off that low back to 29360.75 in ten minutes, and is now back INSIDE the zone it broke down from, sitting on the 3m MA (29316) and just under the developing daily POC (29369). The cash open is two minutes away.",
+ "position_state": "FLAT. The NY_PRE window took one short (filled 08:36 at 29366), banked its first target at 29301.5, and the runner was stopped back at breakeven on this rally at 09:29. NY_PRE's cap is spent; NY_AM opens with a fresh cap of 2 fills. Nothing is carried into the cash open.",
+ "levels_at_0930_CHART": {
+  "vwap": 29451.03,
+  "vwap_p1": 29619.92,
+  "vwap_m1": 29282.14,
+  "vwap_p2": 29788.82,
+  "vwap_m2": 29113.25,
+  "bb_2m_basis": 29299.4,
+  "bb_2m_upper": 29355.83,
+  "bb_2m_lower": 29242.97
+ },
+ "levels_at_0930_BUILD": {
+  "bb_ma_2m": 29299.4,
+  "bb_ma_3m": 29316.49,
+  "bb_ma_15m": 29373.79,
+  "bb_ma_60m": {
+   "value": 29500.44,
+   "provenance": "rolling 60m series - the session-anchored 60m MA has too few bars this early; treat as approximate"
+  },
+  "day_range_fibs": {
+   "0.382": 29440.22,
+   "0.5": 29526.62,
+   "0.618": 29613.03,
+   "0.705": 29676.74
+  },
+  "day_high": 29892.75,
+  "day_low": 29160.5,
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29160.5,
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29524.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29278.0,
+   "vah": 30075.0,
+   "note": "DEVELOPING as-of 09:30"
+  }
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "15m_MA_crosses_so_far": [
+   {
+    "t": "05:00",
+    "dir": "DOWN",
+    "ma": 29408.19,
+    "close": 29399.5,
+    "body_ratio": 0.54
+   },
+   {
+    "t": "05:45",
+    "dir": "UP",
+    "ma": 29419.06,
+    "close": 29421.75,
+    "body_ratio": 0.48
+   },
+   {
+    "t": "08:15",
+    "dir": "UP",
+    "ma": 29417.15,
+    "close": 29420.5,
+    "body_ratio": 0.69
+   },
+   {
+    "t": "08:30",
+    "dir": "DOWN",
+    "ma": 29410.21,
+    "close": 29396.75,
+    "body_ratio": 0.31
+   }
+  ],
+  "session_shape": "opened the session at 29650 area, ran to the day high 29892.75 overnight, then a long one-way bleed of ~730pt into the 29160.5 weekly low, and since then a base between roughly 29210 and 29500. Day range so far 732.25pt.",
+  "note_on_the_low": "the session-day low 29160.5 IS the weekly low - this session made it."
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false,
+  "note": "nothing scheduled on the US calendar today; core PCE printed yesterday 08:30"
+ },
+ "what_to_emit": "your standard thesis JSON for the NY_AM window. Both of your prior targets are now resolved or stale - restate the bias from what is in front of you, not from momentum of the earlier call."
+}

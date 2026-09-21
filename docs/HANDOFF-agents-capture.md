@@ -6,6 +6,32 @@ ANGUS 2026-07-30, switching accounts at the weekly limit. Next session picks up 
 
 ## 0. RESUME HERE — mid-flight state (2026-07-30, end of session)
 
+> **UPDATE 2026-07-30 late (overnight run): DESK RUN 2 PHASE 1 IS COMPLETE AND GRADED.**
+> Full fit span, 763 trades on the three-rule canon: agent +488.7R vs mech +388.6R
+> (**delta +100.1R**, p = 0.003, 12/13 months green); funded lucid $95,194 vs $77,202
+> with maxDD $810 vs $1,268. Avg winner unchanged, avg loser cut −0.708→−0.576, +27 wins.
+> BUT pre-registered kill criterion 4 trips: the conviction shuffle FAILS (p = 0.978) —
+> the delta is policy shape (cut losers fast, refuse canon exits on runners), not
+> per-trade discrimination; lock1r_2r alone captures 92% of it at 3× the drawdown.
+> Read `docs/REPORT-desk-run-2.md` first. Grader: `scripts/grade_desk_run2.py`.
+> Journal/state: `runs/desk2/`.
+>
+> **ANGUS SHIP RULING 2026-07-31 (morning after): the agent layer SHIPS to live as-is.**
+> "95k with $800 dd is insanely good... remember its a fundd — it prevented lots more
+> losses than where it didnt capture winners fully, and thats completely fine." Frozen
+> v3 spec + desk-live semantics + the 763-row journal seeded as live memory
+> (`runs/live/journal.jsonl` — "live agents will have this 12 months of their own
+> decision making as a head start"). Pat handover row M carries the arming detail.
+> The shuffle caveat is documented, Angus ruled with it on the table: the funded risk
+> shape (maxDD $810 vs the distillate's $2,476) is the binding criterion for a fund.
+> **The one-shot HOLDOUT look remains UNSPENT and sealed** — shipped on fit + funded
+> evidence; the look stays available if ever wanted before live capital scales.
+>
+> **ANGUS 2026-07-31 (follow-up): SIZING BASE $150 → $160.** Shipped through all three
+> conformance-locked homes (funded_book PROFILES, scorer_ny LUCID/SCALED600, test pins).
+> New references: mech lucid $82,543 fit / $48,211 holdout; WITH the agent layer
+> $100,297 fit (worst day −$542, maxDD $878). Pat handover row N.
+
 The session ended inside an exit-mechanics lab Angus was driving live. Finish it FIRST, then
 run the agents test (§1 onward). The lab scripts were rescued from the ephemeral scratchpad
 into `scripts/`: `sweep_v8_partial.py`, `sweep_rr_floor.py`, `sweep_holdout_oneshot.py`,
@@ -15,35 +41,65 @@ into `scripts/`: `sweep_v8_partial.py`, `sweep_rr_floor.py`, `sweep_holdout_ones
 **Done and holdout-CONFIRMED:** `v8_partial_pct` 50→25 (see §7). Awaiting Angus's ship
 ruling only.
 
-**In flight when the session died — the rr_floor sweep** (structural target with a higher
-minimum R; Angus: "over 50% of trades hit 2r minimum... a structural target but minimum x r
-COULD be the course of action"). State:
-  * floor 2.5 COMPLETE (`output/rrfloor_sweep_fit_25.parquet`, committed): n 956→944 (12
-    trades VETOED — a higher floor is partly an ENTRY change), funded $88,893 vs $90,015,
-    meanR flat, win-days 120→115. **First data point: flat-to-negative.**
-  * floors 3.0 / 4.0 were still simulating — regenerate with
-    `python scripts/sweep_rr_floor.py` (~15 min) if wanted, but expect worse: the veto count
-    grows with the floor and 2.5 already lost money. The reach ladder (§7) caps the upside:
-    only 54-58% touch 2R, 40-42% touch 3R.
-  * Preliminary verdict to confirm or kill: **the target floor is already right at 2.0; the
-    PARTIAL is the live lever.** If 3.0/4.0 confirm, write the tombstone and move on.
+**TOMBSTONE — the rr_floor question (CLOSED 2026-07-30, fit-only, no holdout look spent).**
+Angus's idea ("a structural target but minimum x r COULD be the course of action") ran the
+full ladder through the real engine on the canon fills. Monotone worse at every step:
 
-**Angus's queued idea, not yet built — the fixed-R partial family:** X% partial at +1R (not
-at first structure), stop-to-BE variants, runner policies (V8 trail / hold to 2R / hold to
-structural target). Motivation: ~80% of canon trades touch +1R before the original stop in
-BOTH spans (95% touch +0.5R), so a 1R partial banks on 4 of 5 trades — and it is simpler to
-execute live (no structure detection on the partial leg). Grid it on fit, era-split, freeze
-ONE candidate (possibly jointly with the 25% partial), ONE holdout look.
+  floor   n(entries)  funded net   win-days   win meanR
+  2.0        956       $90,015       150        1.75     <- shipped, already right
+  2.5        944       $88,893       144        1.78
+  3.0        922       $86,248       139        1.82     maxDD worsens $1,603->$1,711
+  4.0        884       $81,463       136        1.89     WR 50%->47%
+
+Deeper floors DO pay more per winner (win meanR 1.75->1.89) but the reach ladder caps it
+(48% touch 2R in-trade, 23% touch 3R) and the veto contamination grows 12->34->72 entries —
+a higher floor is increasingly an ENTRY change wearing an exit costume. Funded net and
+win-day count fall monotonically. **The 2.0 floor was already right; the first-leg PARTIAL
+is the live lever.** Burden for ever reopening: a triple-era result at least as strong as
+this monotone ladder. Artifacts: `output/rrfloor_sweep_fit_{25,30,40}.parquet`.
+
+**CLOSED — the profit-taking family (2026-07-30, 25 arms, fit-only, ZERO additional holdout
+looks spent).** The full variable space ran through the real engine on the canon fills:
+static-R first legs (1.0/1.5/2.0/3.0R x 25/50%), structural-min-R floors (1.5/2.0 x
+25/50/75%), BE-at-partial, no-trail hold, hold-to-2R runners, no-target trail-only runner,
+plus the rr_floor ladder (tombstoned above). EVERY uniform variant loses funded to
+25%-at-structure ($93,310), and the mechanisms are measured: static/deep first legs tax the
+494 no-structure trades that run whole AND convert insured trades into full stop-outs
+(stops 407->471 at a 2R leg); min-R structural walks book BEYOND the floor and pay double;
+the no-target runner posts the best win meanR in the study (4.07) and the worst funded
+result ($55,008, maxDD $4,131) — the structural target is load-bearing. Uniform mechanics
+are exhausted BY MEASUREMENT; what remains is CONDITIONAL management — the agents' mandate.
+Artifacts: `output/fixedr_fit_*.parquet`; report via `scripts/sweep_fixed_r_report.py`.
 
 **HOLDOUT LEDGER — count every look.** Spent so far (each declared before looking):
-(1) time-segment state confirmation, (2) the 25%-partial referendum. The sealed holdout only
-stays meaningful if looks are rationed: freeze combined candidates and spend ONE look per
-family, never one per knob.
+(1) time-segment state confirmation, (2) the 25%-partial referendum, (3) the
+execution-semantics referendum (2026-07-30: flatten-only vs close-and-reverse, both arms
+defined from Angus's netting-broker question before computing — flatten-only $49,880 /
+close-and-reverse $59,407 vs shipped $56,409 on holdout). The sealed holdout only stays
+meaningful if looks are rationed: freeze combined candidates and spend ONE look per family,
+never one per knob.
 
-**Also open:** Angus has NOT yet ruled on shipping the 25% partial. If he ships it, re-run
-the funded references, update funded_book.py + conformance tests, and notify Pat
-(`v8_partial_pct` is engine config; HANDOVER-pat-arming already flags the related change I —
-the legacy 3-min cut must not fire).
+**ANGUS RULINGS (2026-07-30, this session):** (1) **base V8 stays shipped** — the 25%
+partial's +$3.3k funded is not worth 4pp of WR and 6 win-days ("the profit difference is
+negligible"). The holdout-passed 25% candidate and the 25%+BE-at-partial arm (51% WR / 148
+win-days / maxDD $1,586 / $92,833, era-stable in all four cells, NOT holdout-tested) stay
+documented as available, unshipped. No funded_book change, no Pat ping. (2) **The agents
+test proceeds** with the mandate: entries mechanical canon, in-trade management fully
+agent-discretionary — hold through the mechanical exit / take profits later / cut a green
+trade whose tape turned — inside hard guardrails (stops inviolate, no re-entry / size /
+direction changes, RR floors on named targets, partials only shrink, max 4 decisions,
+fail-closed verdicts fall back to the mechanical plan).
+
+**OPEN FINDING — the canon overlaps (measured 2026-07-30, Angus not yet ruled).** The
+uncapped book holds up to 8 simultaneous positions; 397 same-direction overlapping pairs on
+fit (sibling/scale-in fills) and 79 fit / 107 holdout trades (8% / 17%) filled AGAINST an
+open position — the reversal-flip class. No phantom P&L (linear instruments net at the
+broker; both commissions charged), and the flips are the best trades in the book (WR 52/60%,
+meanR +0.61/+0.63); banning them costs funded $90,015->$81,216 fit and $56,409->$42,550
+holdout (-25%, worse maxDD). TWO ACTIONS REGARDLESS OF RULING: (1) Pat's arming track must
+SPECIFY live handling of an opposing signal while in a position (net/flip vs block) or live
+diverges from the book; (2) the desk agent should receive "opposing canon signal fired" as
+an in-trade event — the book's strongest exit signal, currently consumed by nobody.
 
 ---
 
@@ -70,9 +126,15 @@ untouched, and this time there is a real holdout to demand that of.
 ## 1. State of the world (read once, trust it)
 
 - **The canon is shipped and law.** `docs/CANON.md` is the orientation doc;
-  `scripts/funded_book.py`'s docstring is the spec. Reference results: `lucid` fit
-  **+$90,015** / holdout **+$56,409**; `scaled600` fit **+$320,662** / holdout **+$188,325**;
-  every month green in both spans. The old canon is deleted — do not resurrect anything from
+  `scripts/funded_book.py`'s docstring is the spec. THREE execution rulings shipped
+  2026-07-30 (ANGUS; overlay `output/aikido_cr_{span}.parquet`, conformance green):
+  (1) two sessions — every pre position flattened at 09:30; (2) close-and-reverse — an
+  opposing fill flattens and reverses; (3) one-per-level — same-direction fills within
+  3pt/same-stop of an open position are suppressed (book 956→763 / 637→515). Reference
+  results: `lucid` fit **+$77,202** / holdout **+$44,844**; `scaled600` fit **+$271,653**
+  / holdout **+$141,389**; every month green in both spans. Holdout ledger: 5 looks
+  spent, all declared (state confirm; 25%-partial; CR/flatten-only; two-session;
+  one-per-level). The old canon is deleted — do not resurrect anything from
   git history.
 - **The live re-arm is Pat's parallel track** (`docs/HANDOVER-pat-arming.md`,
   `docs/ARMING-REFERENCE.md`). It does not block this work and this work must not touch it:

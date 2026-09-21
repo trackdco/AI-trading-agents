@@ -1,0 +1,227 @@
+{"type": "boot", "git_sha": "7cd273ba1e92389dc730a6e6e36b645ed21fef83", "armed": false, "entry": "ny_run"}
+{"type": "ny_day_start", "day": "2026-01-20", "buffer": 2000.0, "bar_ts": "2026-01-20 08:35:00+00:00"}
+{"type": "ny_day_start", "day": "2026-01-21", "buffer": 2000.0, "bar_ts": "2026-01-21 01:13:00+00:00"}
+{"type": "ny_day_start", "day": "2026-01-22", "buffer": 2000.0, "bar_ts": "2026-01-22 13:16:00+00:00"}
+{"type": "ny_day_start", "day": "2026-01-26", "buffer": 2000.0, "bar_ts": "2026-01-26 16:48:00+00:00"}
+{"type": "ny_day_start", "day": "2026-01-27", "buffer": 2000.0, "bar_ts": "2026-01-27 18:51:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-02", "buffer": 2000.0, "bar_ts": "2026-02-02 06:34:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-03", "buffer": 2000.0, "bar_ts": "2026-02-03 16:28:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-04", "buffer": 2000.0, "bar_ts": "2026-02-04 16:43:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-05", "buffer": 2000.0, "bar_ts": "2026-02-05 14:36:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-06", "buffer": 2000.0, "bar_ts": "2026-02-06 00:27:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-09", "buffer": 2000.0, "bar_ts": "2026-02-09 00:04:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-10", "buffer": 2000.0, "bar_ts": "2026-02-10 20:34:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-11", "buffer": 2000.0, "bar_ts": "2026-02-11 18:16:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-12", "buffer": 2000.0, "bar_ts": "2026-02-12 14:59:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-13", "buffer": 2000.0, "bar_ts": "2026-02-13 13:32:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-17", "buffer": 2000.0, "bar_ts": "2026-02-17 05:42:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-18", "buffer": 2000.0, "bar_ts": "2026-02-18 08:26:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-19", "buffer": 2000.0, "bar_ts": "2026-02-19 15:03:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-20", "buffer": 2000.0, "bar_ts": "2026-02-20 15:49:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-23", "buffer": 2000.0, "bar_ts": "2026-02-23 00:19:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-24", "buffer": 2000.0, "bar_ts": "2026-02-24 12:06:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-25", "buffer": 2000.0, "bar_ts": "2026-02-25 12:19:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-26", "buffer": 2000.0, "bar_ts": "2026-02-25 23:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-27", "buffer": 2000.0, "bar_ts": "2026-02-27 15:02:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-02", "buffer": 2000.0, "bar_ts": "2026-03-01 23:12:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-03", "buffer": 2000.0, "bar_ts": "2026-03-03 05:47:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-04", "buffer": 2000.0, "bar_ts": "2026-03-04 00:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-05", "buffer": 2000.0, "bar_ts": "2026-03-05 00:18:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-06", "buffer": 2000.0, "bar_ts": "2026-03-06 09:46:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-09", "buffer": 2000.0, "bar_ts": "2026-03-08 22:30:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-10", "buffer": 2000.0, "bar_ts": "2026-03-09 23:22:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-11", "buffer": 2000.0, "bar_ts": "2026-03-11 02:36:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-12", "buffer": 2000.0, "bar_ts": "2026-03-11 23:30:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-13", "buffer": 2000.0, "bar_ts": "2026-03-12 23:38:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-16", "buffer": 2000.0, "bar_ts": "2026-03-15 22:19:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-17", "buffer": 2000.0, "bar_ts": "2026-03-16 23:36:00+00:00"}
+{"type": "roll", "contract": "NQM26", "roll": "True", "session": "2026-03-18", "from": "NQH26", "bar_ts": "2026-03-18 00:20:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-18", "buffer": 2000.0, "bar_ts": "2026-03-18 00:20:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-19", "buffer": 2000.0, "bar_ts": "2026-03-18 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-20", "buffer": 2000.0, "bar_ts": "2026-03-19 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-23", "buffer": 2000.0, "bar_ts": "2026-03-22 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-24", "buffer": 2000.0, "bar_ts": "2026-03-23 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-25", "buffer": 2000.0, "bar_ts": "2026-03-24 22:01:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-26", "buffer": 2000.0, "bar_ts": "2026-03-25 22:38:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-27", "buffer": 2000.0, "bar_ts": "2026-03-26 22:18:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-30", "buffer": 2000.0, "bar_ts": "2026-03-29 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-31", "buffer": 2000.0, "bar_ts": "2026-03-30 22:06:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-01", "buffer": 2000.0, "bar_ts": "2026-03-31 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-02", "buffer": 2000.0, "bar_ts": "2026-04-01 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-03", "buffer": 2000.0, "bar_ts": "2026-04-03 00:27:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-06", "buffer": 2000.0, "bar_ts": "2026-04-05 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-07", "buffer": 2000.0, "bar_ts": "2026-04-06 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-08", "buffer": 2000.0, "bar_ts": "2026-04-07 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-09", "buffer": 2000.0, "bar_ts": "2026-04-08 22:29:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-10", "buffer": 2000.0, "bar_ts": "2026-04-09 22:01:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-13", "buffer": 2000.0, "bar_ts": "2026-04-12 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-14", "buffer": 2000.0, "bar_ts": "2026-04-13 22:01:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-15", "buffer": 2000.0, "bar_ts": "2026-04-14 22:09:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-16", "buffer": 2000.0, "bar_ts": "2026-04-15 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-17", "buffer": 2000.0, "bar_ts": "2026-04-16 23:11:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-20", "buffer": 2000.0, "bar_ts": "2026-04-19 22:01:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-21", "buffer": 2000.0, "bar_ts": "2026-04-20 22:49:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-22", "buffer": 2000.0, "bar_ts": "2026-04-21 22:30:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-23", "buffer": 2000.0, "bar_ts": "2026-04-22 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-24", "buffer": 2000.0, "bar_ts": "2026-04-23 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-27", "buffer": 2000.0, "bar_ts": "2026-04-26 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-28", "buffer": 2000.0, "bar_ts": "2026-04-27 22:06:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-29", "buffer": 2000.0, "bar_ts": "2026-04-28 22:35:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-30", "buffer": 2000.0, "bar_ts": "2026-04-29 22:05:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-01", "buffer": 2000.0, "bar_ts": "2026-04-30 22:04:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-04", "buffer": 2000.0, "bar_ts": "2026-05-03 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-05", "buffer": 2000.0, "bar_ts": "2026-05-04 22:04:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-06", "buffer": 2000.0, "bar_ts": "2026-05-05 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-07", "buffer": 2000.0, "bar_ts": "2026-05-06 23:31:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-08", "buffer": 2000.0, "bar_ts": "2026-05-07 22:01:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-11", "buffer": 2000.0, "bar_ts": "2026-05-10 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-12", "buffer": 2000.0, "bar_ts": "2026-05-11 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-13", "buffer": 2000.0, "bar_ts": "2026-05-12 22:14:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-14", "buffer": 2000.0, "bar_ts": "2026-05-13 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-15", "buffer": 2000.0, "bar_ts": "2026-05-14 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-18", "buffer": 2000.0, "bar_ts": "2026-05-17 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-19", "buffer": 2000.0, "bar_ts": "2026-05-18 22:02:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-20", "buffer": 2000.0, "bar_ts": "2026-05-19 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-21", "buffer": 2000.0, "bar_ts": "2026-05-20 22:07:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-22", "buffer": 2000.0, "bar_ts": "2026-05-21 22:08:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-25", "buffer": 2000.0, "bar_ts": "2026-05-24 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-26", "buffer": 2000.0, "bar_ts": "2026-05-25 22:01:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-27", "buffer": 2000.0, "bar_ts": "2026-05-26 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-28", "buffer": 2000.0, "bar_ts": "2026-05-27 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-29", "buffer": 2000.0, "bar_ts": "2026-05-28 22:01:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-01", "buffer": 2000.0, "bar_ts": "2026-05-31 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-02", "buffer": 2000.0, "bar_ts": "2026-06-01 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-03", "buffer": 2000.0, "bar_ts": "2026-06-02 22:02:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-04", "buffer": 2000.0, "bar_ts": "2026-06-03 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-05", "buffer": 2000.0, "bar_ts": "2026-06-04 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-08", "buffer": 2000.0, "bar_ts": "2026-06-07 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-09", "buffer": 2000.0, "bar_ts": "2026-06-08 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-10", "buffer": 2000.0, "bar_ts": "2026-06-09 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-11", "buffer": 2000.0, "bar_ts": "2026-06-10 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-12", "buffer": 2000.0, "bar_ts": "2026-06-11 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-15", "buffer": 2000.0, "bar_ts": "2026-06-14 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-16", "buffer": 2000.0, "bar_ts": "2026-06-15 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-17", "buffer": 2000.0, "bar_ts": "2026-06-16 22:00:00+00:00"}
+{"type": "roll", "contract": "NQU26", "roll": "True", "session": "2026-06-17", "from": "NQM26", "bar_ts": "2026-06-17 00:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-18", "buffer": 2000.0, "bar_ts": "2026-06-17 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-19", "buffer": 2000.0, "bar_ts": "2026-06-18 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-22", "buffer": 2000.0, "bar_ts": "2026-06-21 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-23", "buffer": 2000.0, "bar_ts": "2026-06-22 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-24", "buffer": 2000.0, "bar_ts": "2026-06-23 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-25", "buffer": 2000.0, "bar_ts": "2026-06-24 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-26", "buffer": 2000.0, "bar_ts": "2026-06-25 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-29", "buffer": 2000.0, "bar_ts": "2026-06-28 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-30", "buffer": 2000.0, "bar_ts": "2026-06-29 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-01", "buffer": 2000.0, "bar_ts": "2026-06-30 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-02", "buffer": 2000.0, "bar_ts": "2026-07-01 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-03", "buffer": 2000.0, "bar_ts": "2026-07-02 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-06", "buffer": 2000.0, "bar_ts": "2026-07-05 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-07", "buffer": 2000.0, "bar_ts": "2026-07-06 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-08", "buffer": 2000.0, "bar_ts": "2026-07-07 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-09", "buffer": 2000.0, "bar_ts": "2026-07-08 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-10", "buffer": 2000.0, "bar_ts": "2026-07-09 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-13", "buffer": 2000.0, "bar_ts": "2026-07-12 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-14", "buffer": 2000.0, "bar_ts": "2026-07-13 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-15", "buffer": 2000.0, "bar_ts": "2026-07-14 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-16", "buffer": 2000.0, "bar_ts": "2026-07-15 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-17", "buffer": 2000.0, "bar_ts": "2026-07-16 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-20", "buffer": 2000.0, "bar_ts": "2026-07-19 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-21", "buffer": 2000.0, "bar_ts": "2026-07-20 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-22", "buffer": 2000.0, "bar_ts": "2026-07-21 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-23", "buffer": 2000.0, "bar_ts": "2026-07-22 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-24", "buffer": 2000.0, "bar_ts": "2026-07-23 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-27", "buffer": 2000.0, "bar_ts": "2026-07-26 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-28", "buffer": 2000.0, "bar_ts": "2026-07-27 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-29", "buffer": 2000.0, "bar_ts": "2026-07-28 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-30", "buffer": 2000.0, "bar_ts": "2026-07-29 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-31", "buffer": 2000.0, "bar_ts": "2026-07-30 22:00:00+00:00"}
+{"type": "agent_day_read", "day": "2026-07-30", "which": "thesis", "text": "__ERROR__ list index out of range"}
+{"type": "agent_day_read", "day": "2026-07-31", "which": "thesis", "text": "__ERROR__ list index out of range"}
+{"type": "trigger_seen", "ts": "2026-07-31T08:30:00-04:00", "direction": "short", "entry_ref": 28503.0076, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T08:32:00-04:00", "direction": "short", "entry_ref": 28502.0625, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T08:33:00-04:00", "direction": "short", "entry_ref": 28502.0625, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T08:35:00-04:00", "direction": "short", "entry_ref": 28497.0625, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T09:07:00-04:00", "direction": "short", "entry_ref": 28500.2, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T09:08:00-04:00", "direction": "long", "entry_ref": 28500.2806, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T09:10:00-04:00", "direction": "long", "entry_ref": 28500.3173, "placed": false}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:7", "broker_ref": "dry:1", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:7", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:7", "broker_ref": "dry:2", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:7", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:7", "broker_ref": "dry:3", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:7", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:7", "broker_ref": "dry:4", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:7", "why": "pre_wall_behind", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:7", "broker_ref": "dry:5", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:7", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:7", "broker_ref": "dry:6", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:7", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:7", "broker_ref": "dry:7", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-31T09:27:00-04:00", "direction": "short", "entry_ref": 28564.875, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T09:28:00-04:00", "direction": "short", "entry_ref": 28564.875, "placed": false}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:7", "why": "pre_wall_behind", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-31T09:30:00-04:00", "direction": "long", "entry_ref": 28569.7973, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T09:31:00-04:00", "direction": "long", "entry_ref": 28573.5116, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T09:33:00-04:00", "direction": "long", "entry_ref": 28564.875, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T09:40:00-04:00", "direction": "short", "entry_ref": 28594.8354, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T09:41:00-04:00", "direction": "long", "entry_ref": 28531.5855, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T09:42:00-04:00", "direction": "short", "entry_ref": 28529.825, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T09:43:00-04:00", "direction": "short", "entry_ref": 28529.825, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T09:44:00-04:00", "direction": "short", "entry_ref": 28529.825, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T09:45:00-04:00", "direction": "short", "entry_ref": 28528.125, "placed": false}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:16", "broker_ref": "dry:8", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:17", "broker_ref": "dry:9", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:18", "broker_ref": "dry:10", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:16", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:17", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:18", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:16", "broker_ref": "dry:11", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:17", "broker_ref": "dry:12", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:18", "broker_ref": "dry:13", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:16", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:17", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:18", "why": "gold_wall_quality", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-31T10:00:00-04:00", "direction": "short", "entry_ref": 28396.55, "placed": false}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:16", "broker_ref": "dry:14", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:17", "broker_ref": "dry:15", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:18", "broker_ref": "dry:16", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:19", "broker_ref": "dry:17", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:16", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:17", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:18", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:19", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:16", "broker_ref": "dry:18", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:17", "broker_ref": "dry:19", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:18", "broker_ref": "dry:20", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:19", "broker_ref": "dry:21", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:16", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:17", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:18", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:19", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:16", "broker_ref": "dry:22", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:17", "broker_ref": "dry:23", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:18", "broker_ref": "dry:24", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:19", "broker_ref": "dry:25", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-31T10:20:00-04:00", "direction": "short", "entry_ref": 28193.6875, "placed": true}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:20", "broker_ref": "dry:26", "mode": "dryrun"}
+{"type": "scratch", "ref": "ny:2026-07-31:20", "why": "gold_wall_quality", "ts": "2026-07-31 14:21:00+00:00"}
+{"layer": "ny_execution", "type": "scratched", "ref": "ny:2026-07-31:20", "why": "gate:gold_wall_quality", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-31T10:21:00-04:00", "direction": "long", "entry_ref": 28191.8742, "placed": false}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:16", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:17", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:18", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:19", "why": "gold_wall_quality", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-31T10:22:00-04:00", "direction": "long", "entry_ref": 28189.3634, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T10:24:00-04:00", "direction": "long", "entry_ref": 28186.4409, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T10:25:00-04:00", "direction": "long", "entry_ref": 28184.1347, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T10:28:00-04:00", "direction": "long", "entry_ref": 28179.1742, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T10:30:00-04:00", "direction": "long", "entry_ref": 28182.2, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T10:43:00-04:00", "direction": "short", "entry_ref": 28245.5375, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T10:44:00-04:00", "direction": "long", "entry_ref": 28251.3407, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T10:45:00-04:00", "direction": "long", "entry_ref": 28257.7375, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T10:47:00-04:00", "direction": "long", "entry_ref": 28257.7375, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T10:48:00-04:00", "direction": "long", "entry_ref": 28252.6625, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T10:50:00-04:00", "direction": "long", "entry_ref": 28252.6625, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-31T10:55:00-04:00", "direction": "short", "entry_ref": 28341.7274, "placed": false}
+{"type": "price_scale", "which": "bars", "scale": 100.0}
+{"type": "price_scale", "which": "depth", "scale": 100.0}

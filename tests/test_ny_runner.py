@@ -146,7 +146,7 @@ def test_hard_drop_at_the_gold_window_end():
 def test_resize_follows_the_freshest_evaluation():
     r, _ = _runner()
     a = r.on_trigger(_trigger())[0]
-    assert a["verdict"]["conviction"] == 1.5 and a["size"] == 11    # score 6 -> 1.5x
+    assert a["verdict"]["conviction"] == 1.5 and a["size"] == 12    # score 6 -> 1.5x, base $160
     # soft de-risk trips: realized loss at the trigger -> size halves on the next bar
     r.lane.scorer._realized = -300.0                                # <= -280 soft
     acts = r.on_bar(_ts("09:46"), high=18_010.0, low=18_005.0)

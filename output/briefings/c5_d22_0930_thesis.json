@@ -1,0 +1,136 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM 09:30-11:00 ET (cap 2 fills)",
+ "decision_minute": "2026-06-23T09:30 ET (session-day 2026-06-22)",
+ "leak_check": "pass - truncated at 09:29:59; last completed 2m bar starts 09:28 (read from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d22_0930_nyam.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "price_at_decision": 29718.75,
+ "last_completed_2m_bar": {
+  "start": "09:28",
+  "open": 29690.25,
+  "high": 29721.75,
+  "low": 29675.75,
+  "close": 29718.75,
+  "volume": 3091
+ },
+ "position_state": "FLAT, and flat since the LONDON short closed at 03:54. The NY_PRE short was licensed and never filled.",
+ "window_state": {
+  "LONDON": "2 of 2 used, closed by time",
+  "NY_PRE": "0 of 1 used (the take never filled), closed by time",
+  "NY_AM": "0 of 2 used, opening now"
+ },
+ "levels_at_decision_CHART": {
+  "vwap": 30070.32,
+  "vwap_p1": 30367.54,
+  "vwap_m1": 29773.09,
+  "vwap_m2": 29475.86,
+  "vwap_m3": 29178.63,
+  "bb_2m_basis": 29723.5,
+  "bb_2m_upper": 29758.27,
+  "bb_2m_lower": 29688.73
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29723.5,
+  "bb_ma_3m": 29730.91,
+  "bb_ma_15m": 29823.24,
+  "bb_ma_60m": 30230.14,
+  "day_range_fibs": {
+   "0.382": 30067.49,
+   "0.5": 30188.5,
+   "0.618": 30309.51,
+   "0.705": 30398.73
+  },
+  "session_high_so_far": 30701.25,
+  "session_low_so_far": 29675.75,
+  "daily_profile": {
+   "poc": 29866.0,
+   "val": 29675.0,
+   "vah": 30261.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30343.0,
+   "vah": 30770.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29675.75
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "15m_MA_crosses_so_far": [
+   {
+    "t": "08:15",
+    "dir": "DOWN",
+    "ma": 29864.05,
+    "close": 29821.0,
+    "body_ratio": 0.58
+   }
+  ],
+  "hourly_closes": {
+   "03:00": 29969.75,
+   "04:00": 29909.0,
+   "05:00": 29827.25,
+   "06:00": 29886.25,
+   "07:00": 29818.0,
+   "08:00": 29873.25,
+   "09:00": 29735.0,
+   "09:30": 29718.75
+  },
+  "session_range_so_far": {
+   "high": 30701.25,
+   "low": 29675.75,
+   "span": 1025.5
+  },
+  "last_bar_note": "3,091 contracts, the heaviest of the session so far, closing near its high after a 46pt range"
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false,
+  "note": "the US calendar for this date is empty; nothing scheduled before 11:00 ET."
+ },
+ "what_to_emit": "your standard thesis JSON for this window.",
+ "prior_thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap_m2",
+    "price": 29563.08
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29278.04
+   }
+  ],
+  "invalidation": {
+   "level": "prior_weekly_low_29923_reclaim",
+   "price": 29923.0
+  },
+  "waiting_for": "rejection at the VWAP-1 / 2m-3m BB MA / 15m MA confluence (~29,843-29,891), wherever it actually stalls, then a closure back down through it, entered on the retest - trend day, so this cluster is the key level being watched, not a floor requirement",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed on a 15m decisive-body close back above the 29,843-29,891 confluence that reclaims the prior weekly low 29,923 - a rebalance, not a fresh short-covering wick",
+  "anticipated_resolution": {
+   "level": "confluence_15m_ma",
+   "price": 29875.3,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close above the 29,843-29,891 confluence with a decisive body reclaims the broken weekly low 29,923; a wick-heavy absorption candle there means the level held and the downtrend resumes",
+  "reasoning": "751pt one-way collapse broke the standing weekly low and pushed to a fresh weekly low 29,752 - that destination printed, so this is a fresh read. Price has spent five hours basing back into the VWAP-1 / 2m-3m / 15m MA confluence and sits on it now with no 15m close through either side yet."
+ },
+ "what_happened_since_the_last_read": "the confluence held for a while then gave way. Price broke down through the 29843-29891 zone and made a fresh session low of 29675.75, then bounced 43pt into the last bar. Price 29718.75 now sits on the 2m BB basis 29723.50 and 54pt below vwap_m1 29773.09.",
+ "window_clock_note": "entries in this window are barred for roughly the first five minutes after the cash open."
+}

@@ -1,0 +1,116 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "D22R-NYA2-1040",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-23T10:40 ET",
+ "candle_start": "10:36 (3m, closed 10:39) / 10:38 (2m, closed 10:40)",
+ "timeframe": "3m and 2m",
+ "leak_check": "pass - truncated at 10:39:59; last completed 2m bar starts 10:38 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d22r_c3_1040.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. Authoritative state is this briefing. Chart truncated at the cursor.",
+ "chart_note": "weekly VP drawing hidden; weekly levels numeric and DEVELOPING. No agent-drawn positions.",
+ "level_provenance": "VWAP+bands from his chart's own study series at the last bar; BB MAs/profiles/fibs from the build.",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "fib_0.382",
+    "price": 30030.87
+   },
+   {
+    "level": "weekly_val",
+    "price": 30343.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_low",
+   "price": 29923.0
+  },
+  "waiting_for": "rejection off the VWAP/0.382 fib confluence (~29994-30031), 15m closure back through the 2m/3m MA stacked with a retest of the reclaimed weekly low 29923, entered on the retest - trend-reversal leg, 15m-MA floor suspended",
+  "two_sided": true,
+  "condition_for_other_side": "a hard rejection at the VWAP/0.382 fib confluence (~29994-30031) relicenses shorts back toward the session low 29675.75 / day low 29616.5 - the day's dominant character all session has been one-way down",
+  "anticipated_resolution": {
+   "level": "session_vwap",
+   "price": 29994.4,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m decisive-body close back below the reclaimed weekly low 29923 invalidates; until then the reclaim holds",
+  "reasoning": "09:30 short's invalidation hit exactly as pre-registered: the 09:45-10:00 15m closed 29926 (body 0.79) decisively above weekly low 29923. The bounce off 29675.75 has run 314pt, cleared the 15m MA, and is testing VWAP for the first time since the collapse. Reversal leg, not rotational chop, so the floor is suspended and I wait for a retest. A hard rejection at VWAP/0.382 relicenses the downside.",
+  "as_of": "10:02 re-fire"
+ },
+ "candidate_source": "SUPPLEMENTARY rejection-first scan. two_level_check does not see this shape (it only pairs a rejection with a closure in the SAME candle); this is rejection-first: a key level was rejected on an earlier candle, then the own BB MA was closed through.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "rejection_sequence": "Price rallied into the session VWAP and was turned away TWICE: the 10:20-10:22 bars printed a high of 30022.00 against VWAP ~29992 and closed back below it; then the 10:34-10:36 push reached 29998.25, again closing back under. That is the VWAP/0.382-fib confluence rejection your standing thesis named as the trigger to relicense shorts.",
+ "signal_candle_3m": {
+  "start": "10:36",
+  "direction": "DOWN",
+  "closed_at": "10:39",
+  "close": 29922.5,
+  "own_ma": 29923.92,
+  "note": "closed down through its own 3m MA"
+ },
+ "signal_candle_2m": {
+  "start": "10:38",
+  "direction": "DOWN",
+  "open": 29986.5,
+  "high": 29988.75,
+  "low": 29893.0,
+  "close": 29901.5,
+  "own_ma": 29970.33,
+  "note": "a 95.75pt bar closing down through its own 2m MA and the 2m BB lower band"
+ },
+ "pair_shape": "rejection_first",
+ "levels_closed": [
+  "own_ma_3m",
+  "own_ma_2m",
+  "bb_2m_lower"
+ ],
+ "levels_at_decision_CHART": {
+  "vwap": 29990.81,
+  "vwap_p1": 30250.13,
+  "vwap_m1": 29731.48,
+  "vwap_m2": 29472.15,
+  "bb_2m_basis": 29970.33,
+  "bb_2m_upper": 30030.75,
+  "bb_2m_lower": 29909.9
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_3m": 29930.85,
+  "bb_ma_15m": 29833.22,
+  "day_range_fibs": {
+   "0.382": 30030.87,
+   "0.5": 30158.88,
+   "0.618": 30286.88,
+   "0.705": 30381.25
+  },
+  "day_high": 30701.25,
+  "day_low": 29616.5,
+  "daily_profile": {
+   "poc": 29866.0,
+   "val": 29675.0,
+   "vah": 30261.0,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_low": 29923.0,
+  "session_low": 29616.5,
+  "rally_high": 30022.0
+ },
+ "stop_guidance_note": "The signal candle is oversized (95.75pt) and its origin sits AT the VWAP/BB-upper cluster it just rejected. Your contract's origin-proximity clause applies: do not place the stop at the displacement candle's extreme, which would sit right on the VWAP band - clear the whole cluster.",
+ "levels_below_for_target_selection": "weekly_low 29923.00 (just broken back below), bb_2m_lower 29909.90, daily_poc 29866, bb_ma_15m 29833.22, vwap_m1 29731.48, session_low 29616.50. Apply T11: R = |entry-stop| first, then the NEAREST level inside 1.5R-2.5R; FIXED 1.5R if none qualifies.",
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

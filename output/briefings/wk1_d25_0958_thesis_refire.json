@@ -1,0 +1,180 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "escalation",
+ "window": "NY_AM",
+ "decision_minute": "2026-06-26T09:58 ET",
+ "leak_check": "pass - replay truncated at 09:57:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/wk1_d25_0958.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 29443.0,
+ "last_completed_2m_bar": {
+  "start": "09:56",
+  "closed_at": "09:58",
+  "open": 29322.75,
+  "high": 29454.0,
+  "low": 29311.75,
+  "close": 29443.0,
+  "volume": 5243,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null,
+  "fills_today": 4
+ },
+ "window_state": {
+  "window": "NY_AM",
+  "opens": "09:30",
+  "closes": "11:00",
+  "fills_this_window": 2,
+  "cap": "LIFTED for this run (written cap 2)"
+ },
+ "levels_at_decision_CHART": {
+  "read_at": "2026-06-26T09:58 ET, from the chart's own study series",
+  "bb_ma_2m": 29302.99,
+  "vwap": 29416.32,
+  "vwap_m1": 29254.66,
+  "vwap_p1": 29577.99,
+  "svp_hd_REGULAR_HOURS_0930_1600": {
+   "poc": 29327.0,
+   "vah": 29474.0,
+   "val": 29222.0,
+   "note": "REGULAR-HOURS profile of the previous cash session; everything else is 18:00-anchored."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 29415.82,
+   "vwap_p1": 29578.32,
+   "vwap_p2": 29740.82,
+   "vwap_p3": 29903.33,
+   "vwap_m1": 29253.31,
+   "vwap_m2": 29090.81,
+   "vwap_m3": 28928.31
+  },
+  "bb_ma": {
+   "bb_ma_2m": 29302.99,
+   "bb_ma_3m": 29307.79,
+   "bb_ma_15m": 29370.67,
+   "bb_ma_60m": 29504.55
+  },
+  "day_range_fibs": {
+   "0.382": 29440.22,
+   "0.5": 29526.62,
+   "0.618": 29613.03,
+   "0.705": 29676.74
+  },
+  "session_high_so_far": 29892.75,
+  "session_low_so_far": 29160.5,
+  "daily_profile": {
+   "poc": 29327.0,
+   "val": 29221.0,
+   "vah": 29476.0,
+   "note": "DEVELOPING as-of 09:58"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29432.0,
+   "vah": 29915.0,
+   "high": 30701.25,
+   "low": 29160.5,
+   "anchor": "2026-06-22 18:00:00-04:00",
+   "note": "DEVELOPING as-of 09:58"
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.113,
+  "net_move_15m": -299.0,
+  "total_15m_travel": 2636.0,
+  "candles_15m_up": 23,
+  "candles_15m_down": 41,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "09:00",
+   "open": 29317.25,
+   "high": 29322.0,
+   "low": 29249.0,
+   "close": 29279.0,
+   "body_ratio": 0.52
+  },
+  {
+   "start": "09:15",
+   "open": 29278.25,
+   "high": 29367.25,
+   "low": 29211.25,
+   "close": 29360.75,
+   "body_ratio": 0.53
+  },
+  {
+   "start": "09:30",
+   "open": 29362.5,
+   "high": 29371.75,
+   "low": 29181.5,
+   "close": 29342.25,
+   "body_ratio": 0.11
+  },
+  {
+   "start": "09:45",
+   "open": 29343.5,
+   "high": 29454.0,
+   "low": 29235.5,
+   "close": 29443.0,
+   "body_ratio": 0.46
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "N/A - no dated event or driver in play as of this minute; would need a named catalyst to falsify.",
+  "reasoning": "No red-folder release printed or scheduled today per the as-of calendar, and no FOMC event. No dated catalyst on NQ or a heavy constituent to lean on this minute."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "daily_val",
+    "price": 29225.0
+   },
+   {
+    "level": "weekly_low_vwap_m2_confluence",
+    "price": 29160.5
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_val",
+   "price": 29458.0
+  },
+  "waiting_for": "The daily-POC/15m-MA confluence (29,369-29,374) is being retested right now, off the fresh 29,211 sweep low - need a stall-and-rollover there, not a break above it, before shorts are licensed. Do not chase the current 29,361 print or the 29,211 low directly.",
+  "two_sided": true,
+  "condition_for_other_side": "A hold/reclaim at the weekly-low / VWAP-2 confluence (29,113-29,211), without a fresh new low, licenses longs back toward the 15m MA/daily POC (29,369-29,374) and weekly VAL (29,458).",
+  "anticipated_resolution": {
+   "level": "daily_poc_15m_ma_confluence",
+   "price": 29369.0,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "Short confirmed on a 15m decisive-body close below daily VAL (29,225); short thesis invalidated on a 15m decisive-body close above weekly VAL (29,458).",
+  "flush": false,
+  "flush_direction": null,
+  "reasoning": "Round trip: rallied to session high 29,892.75 near weekly POC/VAH, then fully reversed below weekly VAL, and NY_PRE already banked +1.3R shorting this same ~29,367 daily-POC zone. Since then price swept a fresh low at 29,211 (below the earlier 29,305 wick) and reclaimed hard to 29,361 - back into that same daily POC/15m MA confluence. Not a flush (0.152 efficiency, 22u/40d, rotational), so this bounce reads as a rebalance to fade, not a reversal to chase; longs re-license only on a hold at the weekly low/VWAP-2 confluence.",
+  "emitted_at": "2026-06-26T09:30 ET (NY_AM window_open)"
+ },
+ "what_happened_since_the_last_read": "Your 09:30 thesis was short with invalidation at weekly_val 29458.0. Two shorts have been taken and both stopped out for -1.00R each. Price is 29443.00 at this minute.",
+ "why_you_are_being_re-fired": "Tier 2 returned thesis_stale on the candidate at this minute and the orchestrator is re-firing you before its verdict is used. Its escalation object, verbatim and unedited:\n\n  level: \"weekly_low_vwap_m2_confluence\"\n  direction: \"long\"\n  why_thesis_cannot_accommodate: \"Thesis is short-biased; longs licensed only via condition_for_other_side (hold/reclaim at 29,113-29,211 without a fresh new low). That condition just fired with a clean same-candle 4-level break to 29,443, 15pt from invalidation (weekly_val 29,458) - needs a re-read, not a silent pass.\"\n\nRe-read the chart at this minute and emit your thesis. Re-affirming your standing view is a complete and expected answer; so is accommodating. Nothing here is a recommendation."
+}
