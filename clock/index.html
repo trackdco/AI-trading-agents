@@ -85,7 +85,7 @@ a { color: var(--imperium); text-underline-offset: 3px; }
 :focus-visible { outline: 2px solid var(--imperium); outline-offset: 3px; border-radius: 6px; }
 .tnum { font-variant-numeric: tabular-nums lining-nums; }
 [hidden] { display: none !important; }
-button { font: inherit; cursor: pointer; }
+button { font: inherit; cursor: pointer; touch-action: manipulation; }
 
 .wrap {
   width: 100%;
@@ -133,6 +133,18 @@ button { font: inherit; cursor: pointer; }
 }
 .head .who:hover, .head .who:active { border-color: var(--imperium); color: var(--ivory); }
 .head .who .pip { width: 7px; height: 7px; border-radius: 50%; background: var(--slate); flex: none; transition: background var(--move); }
+.head .lock {
+  flex: none;
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--slate);
+  transition: border-color var(--snap), color var(--snap);
+}
+.head .lock svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.head .lock:hover, .head .lock:active { border-color: var(--imperium); color: var(--ivory); }
 body[data-running] .head .who .pip { background: var(--amber); box-shadow: 0 0 0 3px var(--amber-glow); }
 
 /* Says where the hours are going, but only when that is not the shared sheet. */
@@ -237,7 +249,8 @@ body[data-running] .dial .arc { opacity: 1; }
 }
 body[data-running] .state { color: var(--amber); }
 
-.read {
+.read { display: block; }
+.read .strips {
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -604,9 +617,10 @@ h3.sub:first-child { margin-top: 2px; }
   inset: 0;
   z-index: 60;
   display: grid;
-  place-items: center;
+  place-items: start center;
   padding: 24px;
   background: var(--graphite);
+  overflow: hidden auto;      /* a phone on its side must still reach the 0 */
 }
 .gate::before {
   content: "";
@@ -617,7 +631,7 @@ h3.sub:first-child { margin-top: 2px; }
   background: radial-gradient(46vw 38vh at 50% 0%, rgba(255, 176, 32, 0.13), transparent 70%);
 }
 .gate[hidden] { display: none; }
-.gate-in { position: relative; width: 100%; max-width: 318px; text-align: center; }
+.gate-in { position: relative; width: 100%; max-width: 318px; margin-block: auto; text-align: center; }
 .gate-in img { height: 40px; width: auto; margin: 0 auto 13px; display: block; }
 .gate-in h1 { font-size: 32px; line-height: 1; letter-spacing: 0.01em; }
 .gate-sub { margin: 9px 0 0; font-size: var(--t-small); color: var(--slate); min-height: 1.5em; }
@@ -674,6 +688,8 @@ dialog .ask-body { margin: 0; color: var(--slate); font-size: var(--t-small); }
   transition: border-color var(--snap), background var(--snap);
 }
 .people button:hover, .people button[aria-pressed="true"] { border-color: var(--amber); background: rgba(255, 176, 32, 0.1); }
+.people button small { display: block; margin-top: 3px; font: 500 var(--t-micro) var(--sans); color: var(--amber); }
+.people-note { margin: 12px 0 0; font-size: var(--t-small); color: var(--slate); }
 
 /* The day-logger lives in a sheet rather than its own page: it is a two-tap
    correction, not a destination. */
@@ -727,6 +743,11 @@ dialog .ask-body { margin: 0; color: var(--slate); font-size: var(--t-small); }
   .dial-wrap { width: min(42vh, 200px); margin-top: 6px; }
   .read { font-size: clamp(32px, 9vh, 44px); }
   .stats { margin-top: 18px; }
+  .gate-in img { display: none; }
+  .gate-in h1 { font-size: 24px; }
+  .dots { margin: 10px 0 12px; }
+  .pad { gap: 8px; }
+  .pad button { min-height: 46px; }
 }
 
 /* ================================================================= motion = */
@@ -782,6 +803,9 @@ dialog .ask-body { margin: 0; color: var(--slate); font-size: var(--t-small); }
     <img src="logo.webp" alt="Imperium Detailing" width="43" height="26">
     <span class="wordmark">Clock</span>
     <button class="who" id="whoBtn" type="button"><span class="pip"></span><span id="whoName">Who are you?</span></button>
+    <button class="lock" id="lockBtn" type="button" aria-label="Lock the app">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    </button>
   </header>
 
   <button class="strip" id="linkNote" type="button" hidden></button>
@@ -801,7 +825,7 @@ dialog .ask-body { margin: 0; color: var(--slate); font-size: var(--t-small); }
                   transform="rotate(-90 120 120)" stroke-dasharray="552.9" stroke-dashoffset="552.9"></circle>
         </svg>
         <div class="readout">
-          <span class="state" id="stateLabel">Not on the clock</span>
+          <span class="state" id="stateLabel" aria-live="polite">Not on the clock</span>
           <div class="read tnum" id="read" role="timer" aria-live="off"></div>
         </div>
       </div>
@@ -879,7 +903,6 @@ dialog .ask-body { margin: 0; color: var(--slate); font-size: var(--t-small); }
       <p style="font-size:14px;color:var(--slate)">Add a shift nobody clocked, or fix one that&rsquo;s wrong.</p>
       <div class="btn-wrap">
         <button class="btn" id="manualBtn" type="button">Add a past shift</button>
-        <button class="btn" id="signOut" type="button">Sign out</button>
       </div>
 
       <h3 class="sub">Where the hours go</h3>
@@ -890,7 +913,7 @@ dialog .ask-body { margin: 0; color: var(--slate); font-size: var(--t-small); }
 
   <div id="status"></div>
 
-  <nav class="tabs" id="tabs" aria-label="Sections">
+  <nav class="tabs" id="tabs" aria-label="Sections" style="--tabs: 2">
     <button type="button" data-tab="clock" aria-selected="true">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
       Clock
@@ -899,7 +922,7 @@ dialog .ask-body { margin: 0; color: var(--slate); font-size: var(--t-small); }
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
       Timesheet
     </button>
-    <button type="button" data-tab="admin" aria-selected="false">
+    <button type="button" data-tab="admin" aria-selected="false" hidden>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="10" cy="17" r="2"/></svg>
       Admin
     </button>
@@ -909,7 +932,8 @@ dialog .ask-body { margin: 0; color: var(--slate); font-size: var(--t-small); }
 <dialog id="whoDlg">
   <h3>Who are you?</h3>
   <div class="people" id="whoList"></div>
-  <div class="acts"><button class="btn" id="whoCancel" type="button">Cancel</button></div>
+  <p class="people-note">A shift that is already running keeps running whoever is picked.</p>
+  <div class="acts"><button class="btn" id="whoCancel" type="button">Just looking</button></div>
 </dialog>
 
 <dialog id="editDlg">

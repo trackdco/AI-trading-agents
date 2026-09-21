@@ -29,6 +29,7 @@
   const POLL_MS = CFG.POLL_MS || 20000;
   const FULL_DAY_H = 8;                 // what the arc treats as a full sweep
   const QUEUE_KEY = 'imp.clock.queue';
+  const CACHE_KEY = 'imp.clock.last';    // the last crew list and shifts seen
 
   const $ = id => document.getElementById(id);
   const SVG = 'http://www.w3.org/2000/svg';
@@ -50,6 +51,7 @@
   let linkOk = true;
   let queue = [];                       // writes waiting for signal
   let wasRunning = false;               // so the dial only ignites on a change
+  let askedWho = false;                 // the name is asked once per unlock
 
   const isAdmin = () => role === 'admin';
 
@@ -75,7 +77,7 @@
   function dayLabel(key, long) {
     const [y, m, d] = key.split('-').map(Number);
     const today = dayKey(new Date());
-    const yest = dayKey(new Date(Date.now() - 864e5));
+    const yest = dayKey(CFG.addDays(new Date(), -1));
     if (key === today) return 'Today';
     if (key === yest) return 'Yesterday';
     return new Date(y, m - 1, d).toLocaleDateString('en-AU', long
@@ -127,7 +129,9 @@
       el.appendChild(b);
     }
     box.appendChild(el);
-    if (kind !== 'bad' && !action) setTimeout(() => { if (box.firstChild === el) box.innerHTML = ''; }, 4200);
+    // An Undo waits longer than a plain note, but not forever: it must not be
+    // sitting there for the next person who picks the phone up.
+    if (kind !== 'bad') setTimeout(() => { if (box.firstChild === el) box.innerHTML = ''; }, action ? 12000 : 4200);
   }
 
   /* ================================================================ stores ==
@@ -160,6 +164,7 @@
           staff = s.docs.map(d => ({ id: d.id, ...d.data() }))
             .sort((a, b) => String(a.name).localeCompare(String(b.name)));
           render();
+          maybeAskWho();
         });
         db.collection('shifts').orderBy('start', 'desc').limit(500).onSnapshot(s => {
           shifts = s.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -193,18 +198,35 @@
         const res = await fetch(url + '?action=load&t=' + Date.now());
         if (!res.ok) throw new Error('http ' + res.status);
         const out = await res.json();
+        // doGet answers {ok:false, error} when the script throws. Treating
+        // that as an empty sheet would blank the dial mid-shift and let a
+        // queued delete "land" against a list that was never read.
+        if (!out || out.ok === false || !Array.isArray(out.staff) || !Array.isArray(out.shifts)) {
+          throw new Error((out && out.error) || 'bad reply');
+        }
         linkOk = true;
-        return { staff: out.staff || [], shifts: out.shifts || [] };
+        try { localStorage.setItem(CACHE_KEY, JSON.stringify({ staff: out.staff, shifts: out.shifts, at: Date.now() })); } catch {}
+        return { staff: out.staff, shifts: out.shifts };
       } catch (err) {
         linkOk = false;
         throw err;
       }
+    }
+    /* What the sheet said last time. Without this a phone opened behind a
+       garage has no names to pick from, and the queue has nothing to hold. */
+    function lastSeen() {
+      try {
+        const c = JSON.parse(localStorage.getItem(CACHE_KEY));
+        if (c && Array.isArray(c.staff) && Array.isArray(c.shifts)) return c;
+      } catch {}
+      return null;
     }
     return {
       mode: 'sheets',
       note: 'Hours sync to the shared Google Sheet.',
       post,
       fetchAll,
+      lastSeen,
       async init() { const d = await fetchAll(); staff = d.staff; shifts = d.shifts; },
     };
   }
@@ -226,8 +248,11 @@
         await new Promise(r => setTimeout(r, 500 * (i + 1)));
       }
       /* Stay pointed at the sheet rather than quietly starting a second,
-         private timesheet on this phone. The queue holds anything typed while
-         it is down, and the strip says so. */
+         private timesheet on this phone. Start from what the sheet said last
+         time, so there are names to pick and a running shift still shows; the
+         queue holds anything typed while it is down, and the strip says so. */
+      const c = s.lastSeen();
+      if (c) { staff = c.staff; shifts = c.shifts; }
       linkOk = false;
       return s;
     }
@@ -269,13 +294,35 @@
     saveQueue();
   }
 
+  /* Every write bumps this. A poll that started before a write finished must
+     not land its older snapshot on top afterwards — the dial would go dark for
+     twenty seconds and the crew would tap Start again. */
+  let epoch = 0;
+
   /* Read the sheet, layer anything still waiting on top, draw. */
   async function refresh() {
+    if (flushing) return;                // flush is already re-reading
+    const at = epoch;
     const d = await store.fetchAll();
+    if (at !== epoch) return;            // something was written meanwhile; stale
     staff = d.staff;
     shifts = d.shifts;
     replayQueue();
     render();
+    maybeAskWho();
+  }
+
+  /* Did this write actually land? Presence of the id is not enough for an
+     update — a finish that failed still leaves the start row there — so the
+     two fields that decide pay are compared too. */
+  function landedOnSheet(op, data) {
+    const list = op.kind === 'staff' ? data.staff : data.shifts;
+    const row = list.find(x => String(x.id) === String(op.value.id));
+    if (op.remove) return !row;
+    if (!row) return false;
+    if (op.kind === 'staff') return true;
+    const same = (a, b) => String(a || '') === String(b || '');
+    return same(row.start, op.value.start) && same(row.end, op.value.end);
   }
 
   let flushing = false;
@@ -283,23 +330,32 @@
     if (flushing || !queue.length || mode !== 'sheets') return;
     flushing = true;
     try {
-      while (queue.length) {
+      let guard = 0;
+      while (queue.length && guard++ < 50) {
         const op = queue[0];
+        /* A rejected fetch here is not proof of no signal: the write can have
+           landed and the redirect reply been a Google error page the browser
+           refused. Either way the sheet is asked, and that read is what decides. */
         try {
           await store.post({ action: op.remove ? 'remove' : 'upsert', kind: op.kind, value: op.value });
-        } catch {
-          linkOk = false;
-          break;                           // no signal; it keeps for later
-        }
-        // The reply cannot be trusted, so ask the sheet what is actually there.
+        } catch {}
         let data;
         try { data = await store.fetchAll(); } catch { linkOk = false; break; }
-        const list = op.kind === 'staff' ? data.staff : data.shifts;
-        const landed = list.some(x => String(x.id) === String(op.value.id)) === !op.remove;
-        if (!landed) { linkOk = false; break; }   // stays queued, retried next tick
 
-        queue.shift();
+        /* Dequeue by identity, never by position. While that POST was in the
+           air the crew may have tapped Finish (or Undo), which replaces this op
+           in the queue: shifting index 0 would throw the replacement away
+           unsent. If the op is gone, it was superseded; move on to what is. */
+        const at = queue.indexOf(op);
+        if (at < 0) {
+          staff = data.staff; shifts = data.shifts; replayQueue();
+          continue;
+        }
+        if (!landedOnSheet(op, data)) { linkOk = false; break; }   // retried next tick
+
+        queue.splice(at, 1);
         saveQueue();
+        epoch++;
         staff = data.staff;
         shifts = data.shifts;
         replayQueue();
@@ -307,6 +363,7 @@
     } finally {
       flushing = false;
       render();
+      maybeAskWho();
     }
   }
 
@@ -315,6 +372,7 @@
     if (!change) return;
     if (mode === 'sheets') {
       enqueue(change);
+      epoch++;
       render();
       flush();
     } else {
@@ -401,7 +459,11 @@
 
   function openWho() {
     $('whoList').innerHTML = staff.length
-      ? staff.map(s => `<button type="button" data-me="${s.id}" aria-pressed="${s.id === me}">${esc(s.name)}</button>`).join('')
+      ? staff.map(s => {
+          const open = shifts.find(x => x.staffId === s.id && !x.end);
+          return `<button type="button" data-me="${s.id}" aria-pressed="${s.id === me}">${esc(s.name)}` +
+            (open ? `<small>on the clock since ${clock(new Date(open.start))}</small>` : '') + '</button>';
+        }).join('')
       : '<p style="grid-column:1/-1;margin:0;color:var(--slate);font-size:14px">Nobody on the crew yet. Add names under Admin.</p>';
     $('whoDlg').showModal();
   }
@@ -476,7 +538,7 @@
   }
   function renderDay() {
     const recent = [];
-    for (let i = 0; i < 7; i++) recent.push(dayKey(new Date(Date.now() - i * 864e5)));
+    for (let i = 0; i < 7; i++) recent.push(dayKey(CFG.daysAgo(i)));
     const older = !!dDay && !recent.includes(dDay);
     $('days').innerHTML = recent.map(k => {
       const [y, m, d] = k.split('-').map(Number);
@@ -575,7 +637,7 @@
     const start = new Date(`${date}T${st}`);
     let end = en ? new Date(`${date}T${en}`) : null;
     // A finish before the start means the shift ran past midnight.
-    if (end && end <= start) end = new Date(end.getTime() + 864e5);
+    if (end && end <= start) end.setDate(end.getDate() + 1);
     if (end && end - start > 20 * 3600000) return err('That shift is over 20 hours. Check the times.');
 
     const value = {
@@ -596,20 +658,24 @@
     .slice().sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
 
   async function exportCsv() {
-    const from = weekStart(weekOffset), to = new Date(from.getTime() + 7 * 864e5);
+    if (!isAdmin()) return;
+    const from = weekStart(weekOffset), to = CFG.weekEnd(weekOffset);
     const rows = weekShifts(from, to);
     if (!rows.length) return toast('No shifts in that week to export.', 'bad');
 
     const cell = v => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
+    // A note beginning with = + - @ is a formula to Excel. A leading space
+    // keeps it text and is invisible; only the free-text columns need it.
+    const text = v => { const s = String(v == null ? '' : v); return /^[=+\-@\t\r]/.test(s) ? ' ' + s : s; };
     const now = Date.now();
     const lines = [['Date', 'Who', 'Start', 'Finish', 'Hours', 'Rate', 'Pay', 'Job'].map(cell).join(',')];
     for (const s of rows) {
       const h = hoursOf(s, now), rate = rateOf(s.staffId), d = new Date(s.start);
       lines.push([
-        d.toLocaleDateString('en-AU'), s.staffName || '',
+        d.toLocaleDateString('en-AU'), text(s.staffName || ''),
         loggedHours(s) ? 'logged' : clock(d),
         loggedHours(s) ? 'logged' : s.end ? clock(new Date(s.end)) : 'still on',
-        h.toFixed(2), rate ? rate.toFixed(2) : '', rate ? (h * rate).toFixed(2) : '', s.job || '',
+        h.toFixed(2), rate ? rate.toFixed(2) : '', rate ? (h * rate).toFixed(2) : '', text(s.job || ''),
       ].map(cell).join(','));
     }
     const csv = lines.join('\r\n');
@@ -670,10 +736,11 @@
     const shape = text.replace(/\d/g, '#');
     if (shape !== readShape) {
       readShape = shape;
-      read.innerHTML = [...text].map(ch => /\d/.test(ch)
+      // The strips are a picture of a counter; a screen reader gets a label.
+      read.innerHTML = '<span class="strips" aria-hidden="true">' + [...text].map(ch => /\d/.test(ch)
         ? '<span class="dg"><span class="roll">' +
           '0123456789'.split('').map(d => `<i>${d}</i>`).join('') + '</span></span>'
-        : `<span class="sep">${ch}</span>`).join('');
+        : `<span class="sep">${ch}</span>`).join('') + '</span>';
     }
     const strips = read.querySelectorAll('.dg .roll');
     let i = 0;
@@ -686,6 +753,10 @@
     const open = myOpen();
     const ms = open ? now - Date.parse(open.start) : 0;
     setRead(hms(ms));
+    const label = !open ? 'Not on the clock'
+      : ms < 60000 ? 'Just started, on the clock'
+      : spoken(ms / 3600000) + ' on the clock';
+    if ($('read').getAttribute('aria-label') !== label) $('read').setAttribute('aria-label', label);
     const p = Math.min(1, ms / (FULL_DAY_H * 3600000));
     $('arc').setAttribute('stroke-dashoffset', String(ARC_LEN * (1 - p)));
     for (const el of document.querySelectorAll('[data-el]')) {
@@ -695,13 +766,22 @@
   }
 
   /* ================================================================= views == */
+  function syncTabs() {
+    const order = isAdmin() ? ['clock', 'sheet', 'admin'] : ['clock', 'sheet'];
+    $('tabs').style.setProperty('--tabs', String(order.length));
+    $('tabs').style.setProperty('--tab', String(Math.max(0, order.indexOf(tab))));
+    for (const b of $('tabs').children) {
+      b.setAttribute('aria-selected', String(b.dataset.tab === tab));
+      if (b.dataset.tab === 'admin') b.hidden = !isAdmin();
+    }
+  }
+
   function showTab(name) {
+    if (name === 'admin' && !isAdmin()) name = 'clock';   // never, whatever is on screen
     if (name === tab) return;
     const cur = $('v-' + tab), next = $('v-' + name);
     tab = name;
-    const order = isAdmin() ? ['clock', 'sheet', 'admin'] : ['clock', 'sheet'];
-    $('tabs').style.setProperty('--tab', String(Math.max(0, order.indexOf(name))));
-    for (const b of $('tabs').children) b.setAttribute('aria-selected', String(b.dataset.tab === name));
+    syncTabs();
 
     cur.setAttribute('data-leaving', '');
     setTimeout(() => {
@@ -791,7 +871,7 @@
       link.dataset.tone = 'bad';
       link.innerHTML = waiting
         ? `<b>No signal.</b> ${waiting} change${waiting === 1 ? '' : 's'} saved on this phone, waiting to sync. Tap to retry.`
-        : '<b>Not connected to the timesheet.</b> Tap to try again.';
+        : '<b>No signal.</b> Showing what the timesheet last said. Anything you do is kept and sent later. Tap to retry.';
     } else if (mode === 'sheets' && waiting) {
       link.hidden = false;
       link.dataset.tone = 'warn';
@@ -807,10 +887,7 @@
     }
     $('storeNote').textContent = store ? store.note : '';
 
-    // Admin is a whole tab, so it is removed rather than merely hidden.
-    const adminTab = $('tabs').querySelector('[data-tab="admin"]');
-    adminTab.hidden = !isAdmin();
-    $('tabs').style.setProperty('--tabs', isAdmin() ? '3' : '2');
+    syncTabs();
 
     renderShifts(now);
     if (isAdmin()) { renderWeek(now); renderStaff(); }
@@ -855,9 +932,9 @@
   }
 
   function renderWeek(now) {
-    const from = weekStart(weekOffset), to = new Date(from.getTime() + 7 * 864e5);
+    const from = weekStart(weekOffset), to = CFG.weekEnd(weekOffset);
     const fmt = t => t.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' });
-    $('weekRange').textContent = `${fmt(from)} – ${fmt(new Date(to.getTime() - 864e5))}`;
+    $('weekRange').textContent = `${fmt(from)} – ${fmt(CFG.addDays(to, -1))}`;
 
     const rows = weekShifts(from, to);
     const per = new Map();
@@ -899,19 +976,28 @@
     for (let i = 0; i < dots.length; i++) dots[i].toggleAttribute('data-on', i < entry.length);
   }
 
+  /* The code is asked for on every launch. It is kept in sessionStorage, which
+     survives switching to another app and back but not a fresh open, so the
+     lock screen is what the crew see first. A running shift is not touched by
+     any of this: it lives in the sheet, and the dial picks it straight back up
+     once the right name is chosen. */
   function setRole(next) {
     role = next;
     try {
-      if (next) localStorage.setItem('imp.role', next);
-      else localStorage.removeItem('imp.role');
+      if (next) sessionStorage.setItem('imp.role', next);
+      else sessionStorage.removeItem('imp.role');
     } catch {}
     $('gate').hidden = !!next;
     $('app').hidden = !next;
     if (!next) {
+      askedWho = false;
       entry = ''; paintDots();
       $('gateSub').textContent = 'Enter your code';
       $('gateSub').className = 'gate-sub';
-    } else if (tab === 'admin' && !isAdmin()) {
+      for (const d of document.querySelectorAll('dialog[open]')) d.close();
+      toast('');                            // an Undo must not outlive the person
+    }
+    if (tab === 'admin' && !isAdmin()) {
       tab = 'clock';
       $('v-admin').hidden = true;
       $('v-clock').hidden = false;
@@ -946,8 +1032,14 @@
     }, 620);
   }
 
+  /* Asked once per unlock, whoever was picked last time: phones get handed
+     around, and "it stayed as the last person" was the complaint. The last name
+     is still highlighted, so the common case is one tap. Waits for the crew
+     list if it has not arrived yet. */
   function maybeAskWho() {
-    if (!me && role && staff.length && !$('whoDlg').open) openWho();
+    if (askedWho || !role || !staff.length || document.querySelector('dialog[open]')) return;
+    askedWho = true;
+    openWho();
   }
 
   /* ================================================================ wiring == */
@@ -964,7 +1056,7 @@
   $('csvBtn').addEventListener('click', exportCsv);
   $('prevWeek').addEventListener('click', () => { weekOffset--; render(); });
   $('nextWeek').addEventListener('click', () => { weekOffset = Math.min(0, weekOffset + 1); render(); });
-  $('signOut').addEventListener('click', () => setRole(null));
+  $('lockBtn').addEventListener('click', () => setRole(null));
 
   $('askYes').addEventListener('click', () => closeAsk(true));
   $('askNo').addEventListener('click', () => closeAsk(false));
@@ -1039,7 +1131,7 @@
     loadQueue();
     try {
       me = localStorage.getItem('imp.me');
-      const saved = localStorage.getItem('imp.role');
+      const saved = sessionStorage.getItem('imp.role');
       if (saved === 'staff' || saved === 'admin') role = saved;
     } catch {}
     $('gate').hidden = !!role;
@@ -1047,6 +1139,11 @@
     paintDots();
     setRead('0:00:00');
     setInterval(tick, 1000);
+    render();                              // so nothing admin-only is tappable while the sheet loads
+
+    // The shell is cached, so the app opens with no signal at all. The queue
+    // is no use if the page that holds it cannot load in a dead spot.
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
     store = await pickStore();
     mode = store.mode;
