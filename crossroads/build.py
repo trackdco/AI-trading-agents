@@ -537,5 +537,46 @@ def build():
         raise SystemExit(f"{len(set(bad))} broken links")
     print(f"built {len(pages)} pages")
 
+
+# ---------------------------------------------------------------- portable copy
+def portable(outdir):
+    """Writes a copy of the built site with relative links, so it can be opened
+    from a folder on a computer (double-click index.html) with no web server."""
+    import shutil
+    out = Path(outdir)
+    if out.exists():
+        shutil.rmtree(out)
+    out.mkdir(parents=True)
+    shutil.copytree(ROOT / "assets", out / "assets")
+    css = (ROOT / "styles.css").read_text(encoding="utf-8").replace('url("/assets/', 'url("assets/')
+    (out / "styles.css").write_text(css, encoding="utf-8")
+    shutil.copy(ROOT / "site.js", out / "site.js")
+    shutil.copy(ROOT / "favicon.svg", out / "favicon.svg")
+
+    def relink(html_text, depth):
+        prefix = "../" * depth
+        def fix(m):
+            attr, path = m.group(1), m.group(2)
+            if path == "/":
+                return f'{attr}="{prefix}index.html"'
+            if path.endswith("/"):
+                return f'{attr}="{prefix}{path[1:]}index.html"'
+            return f'{attr}="{prefix}{path[1:]}"'
+        html_text = re.sub(r'\b(href|src|content)="(/[^"]*)"', lambda m: fix(m) if not m.group(2).startswith("//") else m.group(0), html_text)
+        html_text = re.sub(r'<link rel="preload"[^>]*>\n', "", html_text)  # a font preload needs a web server
+        html_text = re.sub(r'srcset="([^"]+)"', lambda m: 'srcset="' + ", ".join(
+            (prefix + c.strip()[1:]) if c.strip().startswith("/") else c.strip() for c in m.group(1).split(",")) + '"', html_text)
+        return html_text
+
+    for p in ROOT.rglob("index.html"):
+        rel = p.relative_to(ROOT)
+        depth = len(rel.parts) - 1
+        text = p.read_text(encoding="utf-8")
+        (out / rel).parent.mkdir(parents=True, exist_ok=True)
+        (out / rel).write_text(relink(text, depth), encoding="utf-8")
+    print(f"portable copy in {out}")
+
 if __name__ == "__main__":
     build()
+    if len(sys.argv) > 2 and sys.argv[1] == "--portable":
+        portable(sys.argv[2])
