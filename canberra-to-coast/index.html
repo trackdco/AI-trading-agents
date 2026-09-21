@@ -11,132 +11,146 @@
 <meta property="og:description" content="Colorbond fences, gates and repairs across Canberra. Free quotes, fixed prices, 5-star reviews.">
 <meta property="og:image" content="https://www.canberratocoast.net/share.jpg">
 <meta property="og:url" content="https://www.canberratocoast.net/">
-<meta name="theme-color" content="#1A2747">
+<meta name="theme-color" content="#22252A">
 <link rel="icon" href="icon-64.png" sizes="64x64" type="image/png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preload" as="font" type="font/woff2" href="fonts/big-shoulders-display-normal-500to900.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/hanken-grotesk-normal-400to800.woff2" crossorigin>
 <link rel="preload" as="image" href="black-fence-pines.webp" media="(min-width:641px)">
 <link rel="preload" as="image" href="sunset-fence.webp" media="(max-width:640px)">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap">
+<style>@font-face{font-family:'Big Shoulders Display';font-style:normal;font-weight:500 900;font-display:swap;src:url(fonts/big-shoulders-display-normal-500to900.woff2) format('woff2')}
+@font-face{font-family:'Hanken Grotesk';font-style:italic;font-weight:400;font-display:swap;src:url(fonts/hanken-grotesk-italic-400.woff2) format('woff2')}
+@font-face{font-family:'Hanken Grotesk';font-style:normal;font-weight:400 800;font-display:swap;src:url(fonts/hanken-grotesk-normal-400to800.woff2) format('woff2')}
+</style>
 <style>
 :root{
-  --bg:#FFFFFF; --band:#F3F4F0; --ink:#1D2126; --muted:#5B6068; --head:#1A2747;
-  --btn:#1A2747; --btn-hover:#111B33; --btn-ink:#FFFFFF;
-  --green:#6B8F4E; --green-text:#456A2E; --star:#F2B01E;
-  --line:#E2E5DE; --line-2:#C9CEC4; --field:#FFFFFF; --rib:rgba(26,39,71,.14);
-  --draft-bg:#FFF4D6; --draft-ink:#5A4300;
-  --sans:Archivo,'Helvetica Neue',Arial,sans-serif;
-  --wrap:1120px; --gut:clamp(16px,4vw,32px);
+  --bone:#F3F0E9; --bone-2:#E8E4DA; --char:#22252A; --char-2:#2B2F35;
+  --green:#3F6B2E; --green-2:#8BC162; --gold:#E9B430; --navy:#1A2747;
+  --bg:#F3F0E9; --fg:#1C1F23; --mute:#5A5F66; --rule:rgba(28,31,35,.14); --rule-2:rgba(28,31,35,.32);
+  --btn:#3F6B2E; --btn-ink:#FFFFFF; --btn-hover:#345A26; --card:#FFFFFF; --field:#FFFFFF;
+  --display:'Big Shoulders Display','Roboto Condensed','Arial Narrow',sans-serif;
+  --body:'Hanken Grotesk','Helvetica Neue',Arial,sans-serif;
+  --wrap:1200px; --gut:clamp(18px,4.5vw,40px); --pad:clamp(72px,10vw,128px);
   color-scheme:light dark;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#13171D; --band:#1A2027; --ink:#E9ECEF; --muted:#A7B0BB; --head:#F2F5F8;
-    --btn:#2F5FA8; --btn-hover:#3B70C0; --btn-ink:#FFFFFF;
-    --green:#86AB68; --green-text:#A5C98A; --line:rgba(255,255,255,.12); --line-2:rgba(255,255,255,.3);
-    --field:#1A2027; --rib:rgba(255,255,255,.12); --draft-bg:#3A3010; --draft-ink:#F3E2B0;
+    --bg:#17191D; --fg:#ECE9E2; --mute:#A9AEB5; --rule:rgba(236,233,226,.14); --rule-2:rgba(236,233,226,.32);
+    --btn:#8BC162; --btn-ink:#1C1F23; --btn-hover:#9DD072; --card:#22252A; --field:#22252A; --char:#0F1114; --char-2:#181B1F;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#13171D; --band:#1A2027; --ink:#E9ECEF; --muted:#A7B0BB; --head:#F2F5F8;
-  --btn:#2F5FA8; --btn-hover:#3B70C0; --btn-ink:#FFFFFF;
-  --green:#86AB68; --green-text:#A5C98A; --line:rgba(255,255,255,.12); --line-2:rgba(255,255,255,.3);
-  --field:#1A2027; --rib:rgba(255,255,255,.12); --draft-bg:#3A3010; --draft-ink:#F3E2B0;
+  --bg:#17191D; --fg:#ECE9E2; --mute:#A9AEB5; --rule:rgba(236,233,226,.14); --rule-2:rgba(236,233,226,.32);
+  --btn:#8BC162; --btn-ink:#1C1F23; --btn-hover:#9DD072; --card:#22252A; --field:#22252A; --char:#0F1114; --char-2:#181B1F;
 }
+.dark{--bg:var(--char);--fg:#F3F0E9;--mute:#B4B9BF;--rule:rgba(243,240,233,.14);--rule-2:rgba(243,240,233,.34);--btn:var(--green-2);--btn-ink:#1C1F23;--btn-hover:#9DD072;--card:var(--char-2);--field:var(--char-2);background:var(--bg);color:var(--fg);position:relative}
+.dark::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.08;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:clip}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+html{scroll-behavior:smooth;scroll-padding-top:96px;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 1.0625rem/1.65 var(--body);-webkit-font-smoothing:antialiased;overflow-x:clip}
 body.pad{padding-bottom:92px}
 img{max-width:100%;height:auto;display:block}
-h1,h2,h3{margin:0;color:var(--head);letter-spacing:-.02em;line-height:1.05;text-wrap:balance}
-h1{font-size:clamp(2.15rem,5.6vw,4rem);font-weight:700;font-stretch:88%;color:#fff}
-h2{font-size:clamp(1.75rem,3.4vw,2.5rem);font-weight:700;font-stretch:90%}
-h3{font-size:1.2rem;font-weight:600;letter-spacing:-.01em;line-height:1.2}
+h1,h2,h3{margin:0}
+h2{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(2.5rem,5.2vw,4.4rem);line-height:.92;letter-spacing:.005em;text-wrap:balance}
+h3{font-size:1.2rem;font-weight:700;line-height:1.25}
 p{margin:0}
 a{color:inherit}
 .wrap{width:min(var(--wrap),100% - 2*var(--gut));margin-inline:auto}
-section{padding-block:clamp(48px,7vw,88px)}
-.band{background:var(--band)}
-.lede{color:var(--muted);max-width:60ch;font-size:1.125rem;margin-top:12px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:12px 22px;border-radius:10px;background:var(--btn);color:var(--btn-ink);font-weight:600;font-size:1.02rem;text-decoration:none;border:1.5px solid transparent;cursor:pointer;font-family:inherit;transition:background .15s}
-.btn:hover{background:var(--btn-hover)}
-.btn.ghost{background:transparent;color:inherit;border-color:currentColor}
-.btn.ghost:hover{background:rgba(127,127,127,.12)}
-.btn.small{min-height:44px;padding:8px 16px;font-size:.95rem}
+section{padding-block:var(--pad)}
+.head{display:grid;gap:16px;max-width:780px}
+.lede{font-size:clamp(1.05rem,1.4vw,1.25rem);color:var(--mute);max-width:58ch;text-wrap:pretty}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:12px 24px;border-radius:8px;background:var(--btn);color:var(--btn-ink);font-weight:700;font-size:1rem;letter-spacing:.01em;text-decoration:none;border:1.5px solid transparent;cursor:pointer;font-family:inherit;transition:transform .2s,background .2s,border-color .2s}
+.btn:hover{background:var(--btn-hover);transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:inherit;border-color:var(--rule-2)}
+.btn.ghost:hover{background:rgba(127,127,127,.12);border-color:currentColor}
+.btn.small{min-height:44px;padding:8px 18px;font-size:.95rem}
 .btn svg{width:20px;height:20px;flex:none}
-:focus-visible{outline:3px solid var(--green);outline-offset:3px}
-.skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--head);color:#fff;padding:10px 14px;border-radius:8px;text-decoration:none}
+:focus-visible{outline:3px solid var(--green-2);outline-offset:3px}
+.skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--char);color:#F3F0E9;padding:10px 14px;border-radius:8px;text-decoration:none}
 .skip:focus{top:12px}
-.rib{height:14px;background:repeating-linear-gradient(90deg,var(--rib) 0 3px,transparent 3px 13px)}
-.draft{background:var(--draft-bg);color:var(--draft-ink);font-size:.86rem;text-align:center;padding:8px var(--gut)}
+.draft{font-size:.8rem;text-align:center;padding:6px var(--gut);background:var(--green-2);color:#1C1F23}
 
-/* header */
-.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--bg);border-bottom:1px solid var(--line)}
-.nav{display:flex;align-items:center;gap:14px;min-height:68px}
+/* header: transparent over the hero, solid once you scroll */
+.top{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:40;color:#F3F0E9;transition:background .35s,box-shadow .35s}
+.top::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(rgba(8,10,14,.6),rgba(8,10,14,0));transition:opacity .35s}
+.top.scrolled{background:rgba(34,37,42,.94);backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(243,240,233,.12)}
+.top.scrolled::before{opacity:0}
+.nav{display:flex;align-items:center;gap:16px;min-height:74px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto;min-width:0}
-.brand img{height:40px;width:auto;flex:none}
-.brand b{font-weight:700;font-stretch:90%;letter-spacing:-.01em;font-size:.98rem;color:var(--head);line-height:1.05;white-space:nowrap}
-.brand b span{color:var(--green-text)}
-.phone{font-weight:600;text-decoration:none;color:var(--head);white-space:nowrap;display:inline-flex;align-items:center;gap:8px}
-.phone svg{width:18px;height:18px;color:var(--green-text)}
-.nav .btn{flex:none;white-space:nowrap}
+.brand img{height:42px;width:auto;flex:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+.brand b{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:1.15rem;line-height:.95;color:#F3F0E9;white-space:nowrap}
+.brand b span{color:var(--green-2)}
+.phone{font-weight:700;text-decoration:none;color:#F3F0E9;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;font-size:1.05rem}
+.phone svg{width:18px;height:18px;color:var(--green-2)}
+.nav .btn{flex:none;white-space:nowrap;background:var(--green-2);color:#1C1F23}
+.nav .btn:hover{background:#9DD072}
 .nav .btn .short{display:none}
-@media(max-width:640px){.phone{display:none}.nav .btn .long{display:none}.nav .btn .short{display:inline}.nav{min-height:62px;gap:10px}.brand{gap:8px;overflow:hidden}.brand img{height:30px}.brand b{font-size:.9rem}}
+@media(max-width:640px){.phone{display:none}.nav .btn .long{display:none}.nav .btn .short{display:inline}.nav{min-height:64px;gap:10px}.brand{gap:8px;overflow:hidden}.brand img{height:32px}.brand b{font-size:1rem}}
 @media(max-width:340px){.brand b{display:none}}
 
 /* hero */
-.hero{position:relative;display:grid;align-items:end;min-height:min(86svh,760px);padding:0;isolation:isolate;color:#fff;background:#1A2747}
-.hero picture,.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
-.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgba(8,13,26,.9) 0%,rgba(8,13,26,.55) 38%,rgba(8,13,26,.12) 70%,rgba(8,13,26,.05) 100%)}
-.hero-text{max-width:720px;padding-block:clamp(36px,6vw,72px);display:grid;gap:18px}
-.hero-text p{font-size:clamp(1.05rem,1.6vw,1.25rem);max-width:54ch;color:rgba(255,255,255,.92);text-wrap:pretty}
-.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
-.cta .btn{min-height:56px;padding-inline:26px;font-size:1.05rem}
-.cta .btn.ghost{color:#fff;border-color:rgba(255,255,255,.75);background:rgba(255,255,255,.08);backdrop-filter:blur(4px)}
-.cta .btn.ghost:hover{background:rgba(255,255,255,.18)}
-@keyframes rise{from{opacity:.3;transform:translateY(14px)}}
-.hero-text>*{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
-.hero-text>p{animation-delay:.1s}.hero-text>.cta{animation-delay:.2s}
-@media(max-width:560px){.cta{display:grid}.hero{min-height:min(88svh,720px)}.hero-text{padding-bottom:28px}}
-@media(prefers-reduced-motion:reduce){.hero-text>*{animation:none}html{scroll-behavior:auto}}
+.hero{min-height:min(92svh,860px);display:grid;align-items:end;isolation:isolate;overflow:hidden;padding:0}
+.hero picture,.hero img.bg{position:absolute;left:0;right:0;top:-8%;height:116%;width:100%;object-fit:cover;z-index:-2}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgba(8,10,14,.92) 0%,rgba(8,10,14,.6) 36%,rgba(8,10,14,.12) 68%,rgba(8,10,14,.05) 100%)}
+.hero-in{padding-block:clamp(130px,20vw,200px) clamp(64px,8vw,96px);display:grid;gap:22px;max-width:920px;position:relative;z-index:1}
+.kicker{font-weight:600;color:#F3F0E9;font-size:1.02rem;display:flex;align-items:center;gap:12px;text-shadow:0 1px 8px rgba(8,10,14,.6)}
+.kicker::before{content:"";width:10px;height:10px;background:var(--green-2);transform:rotate(45deg);flex:none}
+h1{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(2.9rem,8.6vw,7.2rem);line-height:.9;letter-spacing:.005em;color:#F3F0E9;text-wrap:balance}
+.line{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+.line>span{display:block}
+.rule{width:110px;height:5px;background:var(--green-2);transform-origin:left}
+.sub{font-size:clamp(1.1rem,1.7vw,1.35rem);max-width:54ch;color:rgba(243,240,233,.9);text-wrap:pretty}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+.cta .btn{min-height:58px;padding-inline:28px;font-size:1.05rem}
+.cta .btn.ghost{color:#F3F0E9;border-color:rgba(243,240,233,.6);background:rgba(243,240,233,.06);backdrop-filter:blur(6px)}
+.cta .btn.ghost:hover{background:rgba(243,240,233,.16)}
+.ribs{position:absolute;left:0;right:0;bottom:-1px;height:26px;z-index:2;background:repeating-linear-gradient(90deg,var(--char) 0 5px,transparent 5px 16px)}
+@media(max-width:560px){.cta{display:grid}.hero{min-height:min(94svh,820px)}}
+html.js .hero .line>span{transform:translateY(112%)}
+html.js .rule{transform:scaleX(0)}
+html.js.ready .hero .line>span{transform:none;transition:transform .9s cubic-bezier(.2,.75,.1,1)}
+html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,.75,.1,1)}
+@media(prefers-reduced-motion:reduce){html.js .hero .line>span,html.js .rule{transform:none!important;transition:none!important}html{scroll-behavior:auto}.btn:hover{transform:none}}
 
-/* trust bar */
-.trust{padding-block:0;border-bottom:1px solid var(--line)}
-.trust ul{list-style:none;margin:0;padding:18px 0;display:grid;grid-template-columns:repeat(2,1fr);gap:14px 20px}
-@media(min-width:820px){.trust ul{grid-template-columns:repeat(4,1fr);padding:22px 0}}
-.trust li{display:flex;gap:11px;align-items:center;font-weight:600;color:var(--head);font-size:.98rem;line-height:1.25}
-.trust svg{width:24px;height:24px;flex:none;color:var(--green)}
-.trust li.star svg{color:var(--star)}
-.trust small{display:block;font-weight:400;color:var(--muted);font-size:.85rem;margin-top:2px}
+/* trust strip */
+.trust{padding-block:0}
+.trust ul{list-style:none;margin:0;padding:clamp(30px,4vw,48px) 0;display:grid;grid-template-columns:repeat(2,1fr);gap:26px 20px}
+@media(min-width:820px){.trust ul{grid-template-columns:repeat(4,1fr);gap:24px}}
+.trust li{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;border-left:2px solid var(--green-2);padding-left:16px}
+.trust b{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(2.3rem,3.8vw,3.4rem);line-height:.9;color:#F3F0E9;font-variant-numeric:tabular-nums}
+.trust span{font-weight:700;line-height:1.25;font-size:.98rem}
+.trust small{display:block;font-weight:400;color:var(--mute);font-size:.86rem;margin-top:2px}
 
-/* services */
-.cards{display:grid;gap:24px 18px;grid-template-columns:repeat(2,1fr);margin-top:30px}
-@media(min-width:900px){.cards{grid-template-columns:repeat(4,1fr);gap:22px}}
-.card{display:grid;gap:10px;text-decoration:none;color:inherit;align-content:start}
-.card img{aspect-ratio:4/3;object-fit:cover;width:100%;border-radius:8px;background:var(--band)}
-.card h3{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.card h3 svg{width:18px;height:18px;flex:none;color:var(--green-text);opacity:.9}
-.card p{color:var(--muted);font-size:.98rem}
-.also{margin-top:26px;color:var(--muted)}
-@media(max-width:440px){.cards{grid-template-columns:1fr;gap:18px}.card{grid-template-columns:112px 1fr;grid-template-rows:auto auto;column-gap:14px;row-gap:4px;align-items:start}.card img{grid-row:1/3;aspect-ratio:1}.card p{font-size:.93rem}}
+/* services: photo tiles */
+.tiles{display:grid;gap:14px;grid-template-columns:repeat(2,1fr);margin-top:44px}
+@media(min-width:900px){.tiles{grid-template-columns:repeat(4,1fr);gap:18px}}
+.tile{position:relative;display:block;aspect-ratio:4/5;border-radius:10px;overflow:hidden;text-decoration:none;color:#F3F0E9;background:var(--char)}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.2,.7,.1,1)}
+.tile:hover img,.tile:focus-visible img{transform:scale(1.06)}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(8,10,14,.94) 0%,rgba(8,10,14,.5) 42%,rgba(8,10,14,0) 72%)}
+.tile .cap{position:absolute;left:0;right:0;bottom:0;padding:18px;z-index:1;display:grid;gap:6px}
+.tile h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(1.5rem,2.4vw,2.1rem);line-height:.95;letter-spacing:.01em;color:#F3F0E9}
+.tile p{font-size:.9rem;color:rgba(243,240,233,.84);line-height:1.45;text-wrap:pretty}
+.tile .arrow{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;background:var(--green-2);color:#1C1F23;display:grid;place-items:center;z-index:1;opacity:0;transform:translate(8px,-8px);transition:opacity .3s,transform .3s}
+.tile .arrow svg{width:20px;height:20px}
+.tile:hover .arrow,.tile:focus-visible .arrow{opacity:1;transform:none}
+.also{margin-top:28px;color:var(--mute)}
+@media(max-width:480px){.tile .cap{padding:12px}.tile p{font-size:.82rem}}
 
-/* gallery */
-.gallery{display:grid;gap:10px;grid-template-columns:repeat(2,1fr);grid-auto-rows:160px;margin-top:30px}
-@media(min-width:700px){.gallery{grid-template-columns:repeat(3,1fr);grid-auto-rows:200px}}
-@media(min-width:1000px){.gallery{grid-template-columns:repeat(4,1fr);grid-auto-rows:236px;gap:12px}}
-.gallery figure{margin:0;min-width:0}
-.gallery button{all:unset;display:block;width:100%;height:100%;cursor:zoom-in;border-radius:8px;overflow:hidden;background:var(--band)}
+/* gallery: swipe strip on phones, editorial grid on wider screens */
+.gallery{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px var(--gut) 24px;margin-top:40px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.gallery::-webkit-scrollbar{display:none}
+.gallery figure{margin:0;flex:0 0 min(76vw,340px);aspect-ratio:4/5;scroll-snap-align:start}
+.gallery button{all:unset;display:block;width:100%;height:100%;border-radius:10px;overflow:hidden;cursor:zoom-in;background:var(--bone-2)}
 .gallery button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
-.gallery img{width:100%;height:100%;object-fit:cover}
-.gallery figure:nth-child(1){grid-column:1/3;grid-row:1}
-.gallery figure:nth-child(2){grid-column:1;grid-row:2/4}
-.gallery figure:nth-child(3){grid-column:2;grid-row:2}
-.gallery figure:nth-child(4){grid-column:2;grid-row:3}
-.gallery figure:nth-child(5){grid-column:2;grid-row:4}
-.gallery figure:nth-child(6){grid-column:1;grid-row:4}
-.gallery figure:nth-child(7){grid-column:1;grid-row:5}
-.gallery figure:nth-child(8){grid-column:2;grid-row:5}
+.gallery img{width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.2,.7,.1,1)}
+.gallery button:hover img{transform:scale(1.04)}
+.swipe{color:var(--mute);font-size:.9rem;padding-inline:var(--gut);margin-top:-8px}
 @media(min-width:700px){
+  .gallery{display:grid;overflow:visible;width:min(var(--wrap),100% - 2*var(--gut));margin-inline:auto;padding:0;gap:12px;grid-template-columns:repeat(3,1fr);grid-auto-rows:220px;scroll-snap-type:none}
+  .gallery figure{aspect-ratio:auto;flex:none}
+  .swipe{display:none}
   .gallery figure:nth-child(1){grid-column:1/3;grid-row:1}
   .gallery figure:nth-child(2){grid-column:3;grid-row:1/3}
   .gallery figure:nth-child(3){grid-column:1;grid-row:2}
@@ -147,6 +161,7 @@ section{padding-block:clamp(48px,7vw,88px)}
   .gallery figure:nth-child(8){grid-column:1;grid-row:3/5}
 }
 @media(min-width:1000px){
+  .gallery{grid-template-columns:repeat(4,1fr);grid-auto-rows:250px;gap:14px}
   .gallery figure:nth-child(1){grid-column:1/3;grid-row:1}
   .gallery figure:nth-child(2){grid-column:3;grid-row:1/3}
   .gallery figure:nth-child(3){grid-column:4;grid-row:1}
@@ -157,177 +172,202 @@ section{padding-block:clamp(48px,7vw,88px)}
   .gallery figure:nth-child(8){grid-column:2;grid-row:2/4}
 }
 
-/* why */
-.reasons{display:grid;gap:28px 40px;margin-top:30px}
-@media(min-width:700px){.reasons{grid-template-columns:1fr 1fr}}
-.reason{display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:start}
-.reason svg{width:34px;height:34px;color:var(--green);margin-top:2px}
-.reason p{color:var(--muted);margin-top:4px}
+/* why: sticky heading, ruled list */
+.split{display:grid;gap:40px}
+@media(min-width:900px){.split{grid-template-columns:1fr 1.25fr;gap:72px;align-items:start}.split-head{position:sticky;top:120px}}
+.reasons{list-style:none;margin:0;padding:0;display:grid}
+.reasons li{display:grid;grid-template-columns:44px 1fr;gap:18px;padding:28px 0;border-top:1px solid var(--rule)}
+.reasons li:last-child{border-bottom:1px solid var(--rule)}
+.reasons svg{width:36px;height:36px;color:var(--green-2);margin-top:2px}
+.reasons h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(1.6rem,2.6vw,2.2rem);letter-spacing:.01em;line-height:.95;color:#F3F0E9}
+.reasons p{color:var(--mute);margin-top:8px;max-width:52ch;text-wrap:pretty}
 
 /* reviews */
-.quotes{display:grid;gap:18px;margin-top:30px}
-@media(min-width:800px){.quotes{grid-template-columns:repeat(3,1fr);gap:24px}}
-.quotes blockquote{margin:0;padding:22px 22px 20px;background:var(--bg);border:1px solid var(--line);border-radius:12px;display:grid;gap:12px;align-content:start}
-.stars{display:flex;gap:2px;color:var(--star)}
+.quotes{display:grid;gap:22px;margin-top:44px}
+@media(min-width:860px){.quotes{grid-template-columns:repeat(3,1fr);gap:28px}.quotes blockquote:nth-child(2){transform:translateY(36px)}}
+.quotes blockquote{margin:0;padding:34px 26px 24px;background:var(--card);border:1px solid var(--rule);border-radius:12px;display:grid;gap:14px;align-content:start;position:relative}
+.quotes blockquote::before{content:"\201C";position:absolute;top:2px;right:22px;font-family:var(--display);font-weight:800;font-size:6.5rem;line-height:1;color:var(--green);opacity:.16}
+.stars{display:flex;gap:2px;color:var(--gold)}
 .stars svg{width:18px;height:18px}
 .quotes p{font-size:1rem;text-wrap:pretty}
-.quotes footer{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.9rem;color:var(--muted)}
-.quotes footer b{color:var(--ink);font-weight:600}
-.glink{display:inline-flex;gap:8px;align-items:center;margin-top:24px;font-weight:600;color:var(--head)}
-.glink svg{width:18px;height:18px}
+.quotes footer{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.9rem;color:var(--mute)}
+.quotes footer b{color:var(--fg);font-weight:700}
+.glink{display:inline-flex;gap:10px;align-items:center;margin-top:30px;font-weight:700;color:var(--fg);text-decoration:none;border-bottom:2px solid var(--green);padding-bottom:2px}
+.glink svg{width:18px;height:18px;transition:transform .25s}
+.glink:hover svg{transform:translateX(4px)}
+@media(min-width:860px){.glink{margin-top:66px}}
 
-/* how */
-.steps{list-style:none;margin:30px 0 0;padding:0;display:grid;gap:24px;counter-reset:s}
-@media(min-width:800px){.steps{grid-template-columns:repeat(3,1fr);gap:32px}}
-.steps li{counter-increment:s;display:grid;gap:8px;padding-top:16px;border-top:3px solid var(--head)}
-.steps li::before{content:counter(s);font-weight:700;font-size:2.4rem;line-height:1;color:var(--green-text);font-stretch:88%;letter-spacing:-.02em}
-.steps p{color:var(--muted)}
+/* how it works */
+.steps{list-style:none;margin:48px 0 0;padding:0;display:grid;gap:30px;position:relative}
+.steps li{display:grid;gap:12px;position:relative}
+.steps .n{font-family:var(--display);font-weight:800;font-size:2.4rem;line-height:1;color:var(--green-2);width:68px;height:68px;display:grid;place-items:center;background:var(--char);border:2px solid var(--green-2);border-radius:50%;position:relative;z-index:1;padding-top:3px}
+.steps h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(1.6rem,2.6vw,2.2rem);line-height:.95;letter-spacing:.01em;color:#F3F0E9;margin-top:6px}
+.steps p{color:var(--mute);max-width:36ch;text-wrap:pretty}
+.track,.trackbg{display:none}
+@media(min-width:800px){
+  .steps{grid-template-columns:repeat(3,1fr);gap:40px}
+  .trackbg,.track{display:block;position:absolute;left:34px;right:34px;top:33px;height:2px}
+  .trackbg{background:var(--rule)}
+  .track{background:var(--green-2);transform-origin:left}
+}
 
-/* areas */
-.areagrid{display:grid;gap:22px 32px;margin-top:30px}
+/* areas: suburb ticker + grouped list */
+.ticker{margin-top:44px;display:grid;gap:12px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.row{display:flex;width:max-content;animation:tick 70s linear infinite}
+.row.rev{animation-direction:reverse;animation-duration:84s}
+.row span{font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:clamp(1.7rem,3.4vw,2.8rem);letter-spacing:.02em;color:var(--fg);padding:0 14px 0 26px;white-space:nowrap;display:flex;align-items:center;gap:26px;line-height:1.1}
+.row span::after{content:"";width:9px;height:9px;background:var(--green);transform:rotate(45deg);flex:none}
+@keyframes tick{to{transform:translateX(-50%)}}
+.ticker:hover .row{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){.row{animation:none;flex-wrap:wrap;width:auto}.row.rev{display:none}.ticker{mask-image:none;-webkit-mask-image:none}}
+.areagrid{display:grid;gap:26px 32px;margin-top:48px}
 @media(min-width:640px){.areagrid{grid-template-columns:1fr 1fr}}
 @media(min-width:1000px){.areagrid{grid-template-columns:repeat(3,1fr)}}
-.areagrid h3{font-size:1.05rem;margin-bottom:6px}
-.areagrid p{color:var(--muted);line-height:1.7;text-wrap:pretty}
-.areas .note{margin-top:26px;font-weight:600}
+.areagrid h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:1.5rem;letter-spacing:.02em;margin-bottom:6px;color:var(--green)}
+.areagrid p{color:var(--mute);line-height:1.7;text-wrap:pretty}
+.note{margin-top:30px;font-weight:700}
 
 /* quote form */
-.quote-grid{display:grid;gap:28px}
-@media(min-width:900px){.quote-grid{grid-template-columns:1fr 1.25fr;gap:56px;align-items:start}}
-.qtext{display:grid;gap:14px;align-content:start}
-.qtext p{color:var(--muted);text-wrap:pretty}
-.qtext .call{display:inline-flex;gap:10px;align-items:center;font-weight:700;font-size:1.35rem;color:var(--head);text-decoration:none;margin-top:6px}
-.qtext .call svg{width:24px;height:24px;color:var(--green-text)}
-.form{display:grid;gap:14px;padding:clamp(18px,3vw,28px);border:1px solid var(--line);border-radius:14px;background:var(--bg)}
-.form label{display:grid;gap:6px;font-weight:600;font-size:.95rem}
-.form input,.form select,.form textarea{font:inherit;font-weight:400;min-height:50px;padding:10px 14px;border-radius:8px;border:1.5px solid var(--line-2);background:var(--field);color:inherit;width:100%}
+.quote{isolation:isolate;overflow:hidden}
+.quote .bgimg{position:absolute;left:0;right:0;top:-10%;height:120%;width:100%;object-fit:cover;z-index:-2;opacity:.6}
+.quote::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(28,31,36,.97) 0%,rgba(28,31,36,.86) 55%,rgba(28,31,36,.7) 100%)}
+.quote-grid{display:grid;gap:34px;position:relative;z-index:1}
+@media(min-width:900px){.quote-grid{grid-template-columns:1fr 1.2fr;gap:64px;align-items:start}}
+.qtext{display:grid;gap:16px;align-content:start}
+.qtext p{color:var(--mute);text-wrap:pretty;max-width:46ch}
+.qtext .call{display:inline-flex;gap:12px;align-items:center;font-family:var(--display);font-weight:800;font-size:clamp(2rem,3.4vw,2.8rem);color:#F3F0E9;text-decoration:none;margin-top:8px;line-height:1}
+.qtext .call svg{width:28px;height:28px;color:var(--green-2)}
+.form{--fg:#1C1F23;--mute:#5A5F66;--rule-2:rgba(28,31,35,.32);--field:#FFFFFF;--btn:#3F6B2E;--btn-ink:#FFFFFF;--btn-hover:#345A26;background:var(--bone);color:var(--fg);border-radius:14px;padding:clamp(20px,3vw,32px);display:grid;gap:14px;box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
+.form label{display:grid;gap:6px;font-weight:700;font-size:.95rem}
+.form input,.form select,.form textarea{font:inherit;font-weight:400;min-height:50px;padding:10px 14px;border-radius:8px;border:1.5px solid var(--rule-2);background:var(--field);color:var(--fg);width:100%}
 .form textarea{min-height:110px;resize:vertical}
-.form input:focus,.form select:focus,.form textarea:focus{outline:3px solid var(--green);outline-offset:1px;border-color:var(--head)}
-.form .row{display:grid;gap:14px}
-@media(min-width:560px){.form .row{grid-template-columns:1fr 1fr}}
+.form input:focus,.form select:focus,.form textarea:focus{outline:3px solid var(--green-2);outline-offset:1px;border-color:var(--green)}
+.form .row2{display:grid;gap:14px}
+@media(min-width:560px){.form .row2{grid-template-columns:1fr 1fr}}
 .form .btn{margin-top:4px;min-height:56px}
-.form small{color:var(--muted);font-weight:400}
-.form .err{color:#B42318;font-weight:600}
+.form small{color:var(--mute);font-weight:400}
+.form .err{color:#B42318;font-weight:700}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.thanks{padding:26px;border-radius:14px;background:var(--band);display:grid;gap:10px}
-.thanks h3{font-size:1.5rem}
+.thanks{padding:28px;border-radius:14px;background:var(--bone);color:#1C1F23;display:grid;gap:10px}
+.thanks h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:2rem;line-height:1}
+.thanks a{color:var(--green);font-weight:700}
 
 /* footer */
-.site{background:var(--band);border-top:1px solid var(--line);padding-block:44px 28px}
-.fgrid{display:grid;gap:26px}
+.site{padding-block:56px 28px;border-top:1px solid var(--rule)}
+.fgrid{display:grid;gap:28px}
 @media(min-width:800px){.fgrid{grid-template-columns:1.3fr 1fr 1fr 1fr;gap:32px}}
 .logo-tile{background:#fff;padding:14px 18px;border-radius:10px;display:inline-block;max-width:280px}
 .logo-tile img{width:240px}
-.fgrid h3{font-size:.95rem;margin-bottom:8px}
-.fgrid p,.fgrid a{color:var(--muted);text-decoration:none;font-size:.98rem;line-height:1.75}
-.fgrid a:hover{color:var(--ink)}
-.fine{margin-top:30px;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 24px;font-size:.85rem;color:var(--muted)}
+.fgrid h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:1.3rem;letter-spacing:.03em;margin-bottom:8px;color:var(--green-2)}
+.fgrid p,.fgrid a{color:var(--mute);text-decoration:none;font-size:.98rem;line-height:1.75}
+.fgrid a:hover{color:#F3F0E9}
+.fine{margin-top:34px;padding-top:16px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:8px 24px;font-size:.85rem;color:var(--mute)}
 
 /* sticky call bar (phones) */
-.stickybar{position:fixed;left:0;right:0;bottom:0;z-index:50;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px var(--gut) calc(10px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .3s}
+.stickybar{position:fixed;left:0;right:0;bottom:0;z-index:50;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px var(--gut) calc(10px + env(safe-area-inset-bottom,0px));background:rgba(34,37,42,.96);backdrop-filter:blur(12px);border-top:1px solid rgba(243,240,233,.14);transform:translateY(110%);transition:transform .35s cubic-bezier(.2,.7,.1,1)}
 .stickybar.on{transform:none}
-.stickybar .btn{min-height:50px}
+.stickybar .btn{min-height:50px;background:var(--green-2);color:#1C1F23}
+.stickybar .btn.ghost{background:transparent;color:#F3F0E9;border-color:rgba(243,240,233,.5)}
 @media(min-width:900px){.stickybar{display:none}body.pad{padding-bottom:0}}
 
 /* lightbox */
-.lb{border:0;padding:0;background:transparent;max-width:min(96vw,1200px);max-height:96vh;width:auto;color:#fff}
-.lb::backdrop{background:rgba(8,13,26,.9)}
+.lb{border:0;padding:0;background:transparent;max-width:min(96vw,1200px);max-height:96vh;width:auto;color:#F3F0E9}
+.lb::backdrop{background:rgba(8,10,14,.92)}
 .lb figure{margin:0;display:grid;gap:10px;justify-items:center}
 .lb img{max-height:82vh;max-width:94vw;width:auto;height:auto;border-radius:8px;object-fit:contain}
 .lb figcaption{font-size:.95rem;text-align:center;padding-inline:48px}
-.lb button{position:fixed;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:30px;line-height:1;cursor:pointer;display:grid;place-items:center}
-.lb button:hover{background:rgba(255,255,255,.3)}
+.lb button{position:fixed;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:0;background:rgba(243,240,233,.16);color:#F3F0E9;font-size:30px;line-height:1;cursor:pointer;display:grid;place-items:center}
+.lb button:hover{background:rgba(243,240,233,.3)}
 .lb .prev{left:10px}.lb .next{right:10px}
 .lb .close{top:10px;right:10px;transform:none;font-size:26px}
 </style>
 </head>
 <body>
-
+<script>document.documentElement.classList.add("js");</script>
 <a class="skip" href="#quote">Skip to the quote form</a>
-<header class="top">
+<header class="top" id="topbar">
+  
   <div class="wrap nav">
-    <a class="brand" href="#top" aria-label="Canberra to Coast Fencing, back to top"><img src="mark-240.png" width="240" height="87" alt=""><b><span>Canberra</span> to Coast<br>Fencing</b></a>
+    <a class="brand" href="#hero" aria-label="Canberra to Coast Fencing, back to top"><img src="mark-240.png" width="240" height="87" alt=""><b><span>Canberra</span> to Coast<br>Fencing</b></a>
     <a class="phone" href="tel:0401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>0401 619 496</a>
     <a class="btn small" href="#quote"><span class="long">Get a free quote</span><span class="short">Free quote</span></a>
   </div>
 </header>
 
-<main id="top">
-<section class="hero">
+<main>
+<section class="hero dark" id="hero">
   <picture>
     <source media="(max-width:640px)" srcset="sunset-fence.webp">
-    <img src="black-fence-pines.webp" width="1360" height="1020" alt="A long black Colorbond fence with a timber plinth, built by Canberra to Coast Fencing" fetchpriority="high">
+    <img class="bg" src="black-fence-pines.webp" width="1360" height="1020" alt="A long black Colorbond fence with a timber plinth, built by Canberra to Coast Fencing" fetchpriority="high">
   </picture>
   <div class="wrap">
-    <div class="hero-text">
-      <h1>Colorbond fencing across Canberra, done properly.</h1>
-      <p>New fences, replacements, gates and repairs. Damian quotes every job himself, turns up when he says he will, and leaves your yard clean.</p>
-      <div class="cta">
+    <div class="hero-in">
+      <p class="kicker" data-hero>Colorbond specialists for Canberra and Queanbeyan</p>
+      <h1><span class="line"><span>Colorbond fencing</span></span><span class="line"><span>across Canberra.</span></span><span class="line"><span>Done properly.</span></span></h1>
+      <div class="rule" aria-hidden="true"></div>
+      <p class="sub" data-hero>New fences, replacements, gates and repairs. Damian quotes every job himself, turns up when he says he will, and leaves your yard clean.</p>
+      <div class="cta" data-hero>
         <a class="btn" href="#quote">Get a free quote</a>
         <a class="btn ghost" href="tel:0401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>Call 0401 619 496</a>
       </div>
     </div>
   </div>
+  <div class="ribs" aria-hidden="true"></div>
 </section>
-<div class="rib" aria-hidden="true"></div>
 
-<section class="trust" aria-label="Why you can trust us">
-  <ul class="wrap">
-    <li class="star"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><div>5.0 on Google<small>20+ five-star reviews</small></div></li>
-    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5l8-3z"/><path d="M9 12l2 2 4-4"/></svg><div>Fully insured<small>ABN registered business</small></div></li>
-    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><div>Free on-site quotes<small>Fixed price, no surprises</small></div></li>
-    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><div>Locally owned<small>Damian is on every job</small></div></li>
+<section class="trust dark" aria-label="Why you can trust us">
+  <ul class="wrap" data-reveal="stagger">
+    <li><b data-count="5.0">5.0</b><span>Google rating<small>from 20+ reviews</small></span></li>
+    <li><b data-count="20" data-suffix="+">20+</b><span>Five-star reviews<small>and counting</small></span></li>
+    <li><b>Insured</b><span>Fully insured<small>ABN registered business</small></span></li>
+    <li><b>Free</b><span>On-site quotes<small>Fixed price, no surprises</small></span></li>
   </ul>
 </section>
 
 <section class="services" id="services">
   <div class="wrap">
-    <h2>What we do</h2>
-    <p class="lede">Colorbond is all we do, so we do it well. Every job gets a fixed quote before we start.</p>
-    <div class="cards">
-      <a class="card" href="#quote"><img src="black-fence-pines-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="New black Colorbond fence with a timber plinth"><h3>New Colorbond fences<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></h3><p>Boundary and privacy fences in any Colorbond colour, with a timber or steel plinth to suit the block.</p></a>
-      <a class="card" href="#quote"><img src="green-fence-garden-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Green Colorbond fence replacing an old fence in an established garden"><h3>Fence replacements<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></h3><p>We pull down the tired old paling or Colorbond fence, cart it away and put up new.</p></a>
-      <a class="card" href="#quote"><img src="cream-gates-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Cream Colorbond double gates matching the fence"><h3>Gates<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></h3><p>Single and double gates to match your fence, hung straight and latching properly.</p></a>
-      <a class="card" href="#quote"><img src="charcoal-stepped-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Charcoal Colorbond fence stepped along a sloping driveway"><h3>Repairs<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></h3><p>Storm damage, leaning posts, rusted or dented sheets. Fixed fast, matched to what you have.</p></a>
+    <div class="head" data-reveal><h2>What we do</h2><p class="lede">Colorbond is all we do, so we do it well. Every job gets a fixed quote before we start.</p></div>
+    <div class="tiles" data-reveal="stagger">
+      <a class="tile" href="#quote"><img src="black-fence-pines-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="New black Colorbond fence with a timber plinth"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><div class="cap"><h3>New Colorbond fences</h3><p>Boundary and privacy fences in any Colorbond colour, with a timber or steel plinth to suit the block.</p></div></a>
+      <a class="tile" href="#quote"><img src="green-fence-garden-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Green Colorbond fence replacing an old fence in an established garden"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><div class="cap"><h3>Fence replacements</h3><p>We pull down the tired old paling or Colorbond fence, cart it away and put up new.</p></div></a>
+      <a class="tile" href="#quote"><img src="cream-gates-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Cream Colorbond double gates matching the fence"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><div class="cap"><h3>Gates</h3><p>Single and double gates to match your fence, hung straight and latching properly.</p></div></a>
+      <a class="tile" href="#quote"><img src="charcoal-stepped-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Charcoal Colorbond fence stepped along a sloping driveway"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><div class="cap"><h3>Repairs</h3><p>Storm damage, leaning posts, rusted or dented sheets. Fixed fast, matched to what you have.</p></div></a>
     </div>
     <p class="also">We also do glass pool fencing and rural fencing. Just ask when you call.</p>
   </div>
 </section>
 
-<section class="band">
-  <div class="wrap projects" id="projects">
-    <h2>Recent jobs</h2>
-    <p class="lede">Real fences from real backyards around Canberra. No stock photos. Tap one to see it bigger.</p>
-    <div class="gallery">
-      <figure class="wide"><button type="button" data-src="black-fence-ute.webp" data-cap="Black Colorbond fence with a timber plinth on a rural block"><img src="black-fence-ute-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Black Colorbond fence with a timber plinth on a rural block, work ute alongside"></button></figure>
-      <figure class="tall"><button type="button" data-src="sunset-fence.webp" data-cap="Dark Colorbond boundary fence in a new estate at sunset"><img src="sunset-fence-800.webp" width="600" height="800" loading="lazy" decoding="async" alt="Dark Colorbond boundary fence in a new estate at sunset"></button></figure>
-      <figure><button type="button" data-src="grey-fence-deck.webp" data-cap="Grey Colorbond fence on a sleeper retaining wall beside a deck"><img src="grey-fence-deck-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Grey Colorbond fence on a sleeper retaining wall beside a deck"></button></figure>
-      <figure><button type="button" data-src="charcoal-stepped.webp" data-cap="Charcoal Colorbond fence stepped along a gravel driveway"><img src="charcoal-stepped-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Charcoal Colorbond fence stepped along a gravel driveway"></button></figure>
-      <figure class="tall"><button type="button" data-src="sunset-slope.webp" data-cap="Boundary fence stepping down a sloping block at sunset"><img src="sunset-slope-800.webp" width="600" height="800" loading="lazy" decoding="async" alt="Boundary fence stepping down a sloping block at sunset"></button></figure>
-      <figure><button type="button" data-src="cream-gates.webp" data-cap="Cream Colorbond fence and matching double gates on a paved courtyard"><img src="cream-gates-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Cream Colorbond fence and matching double gates on a paved courtyard"></button></figure>
-      <figure><button type="button" data-src="green-fence-garden.webp" data-cap="Green Colorbond fence above a stone garden wall"><img src="green-fence-garden-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Green Colorbond fence above a stone garden wall"></button></figure>
-      <figure class="tall"><button type="button" data-src="posts-trailer.webp" data-cap="Posts set and ready for panels, trailer on site"><img src="posts-trailer-800.webp" width="600" height="800" loading="lazy" decoding="async" alt="Steel posts set in the ground ready for panels, with the Canberra to Coast Fencing trailer on site"></button></figure>
-    </div>
+<section class="projects" id="projects">
+  <div class="wrap"><div class="head" data-reveal><h2>Recent jobs</h2><p class="lede">Real fences from real backyards around Canberra. No stock photos. Tap one to see it bigger.</p></div></div>
+  <div class="gallery" data-reveal="stagger">
+    <figure><button type="button" data-src="black-fence-ute.webp" data-cap="Black Colorbond fence with a timber plinth on a rural block"><img src="black-fence-ute-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Black Colorbond fence with a timber plinth on a rural block, work ute alongside"></button></figure>
+    <figure><button type="button" data-src="sunset-fence.webp" data-cap="Dark Colorbond boundary fence in a new estate at sunset"><img src="sunset-fence-800.webp" width="600" height="800" loading="lazy" decoding="async" alt="Dark Colorbond boundary fence in a new estate at sunset"></button></figure>
+    <figure><button type="button" data-src="grey-fence-deck.webp" data-cap="Grey Colorbond fence on a sleeper retaining wall beside a deck"><img src="grey-fence-deck-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Grey Colorbond fence on a sleeper retaining wall beside a deck"></button></figure>
+    <figure><button type="button" data-src="charcoal-stepped.webp" data-cap="Charcoal Colorbond fence stepped along a gravel driveway"><img src="charcoal-stepped-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Charcoal Colorbond fence stepped along a gravel driveway"></button></figure>
+    <figure><button type="button" data-src="sunset-slope.webp" data-cap="Boundary fence stepping down a sloping block at sunset"><img src="sunset-slope-800.webp" width="600" height="800" loading="lazy" decoding="async" alt="Boundary fence stepping down a sloping block at sunset"></button></figure>
+    <figure><button type="button" data-src="cream-gates.webp" data-cap="Cream Colorbond fence and matching double gates on a paved courtyard"><img src="cream-gates-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Cream Colorbond fence and matching double gates on a paved courtyard"></button></figure>
+    <figure><button type="button" data-src="green-fence-garden.webp" data-cap="Green Colorbond fence above a stone garden wall"><img src="green-fence-garden-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Green Colorbond fence above a stone garden wall"></button></figure>
+    <figure><button type="button" data-src="posts-trailer.webp" data-cap="Posts set and ready for panels, trailer on site"><img src="posts-trailer-800.webp" width="600" height="800" loading="lazy" decoding="async" alt="Steel posts set in the ground ready for panels, with the Canberra to Coast Fencing trailer on site"></button></figure>
+  </div>
+  <p class="swipe">Swipe for more</p>
+</section>
+
+<section class="why dark" id="why">
+  <div class="wrap split">
+    <div class="split-head head" data-reveal><h2>Why people pick Damian</h2><p class="lede">Twenty-odd five-star reviews say the same four things.</p></div>
+    <ul class="reasons" data-reveal="stagger">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg><div><h3>You deal with the owner</h3><p>Damian quotes the job, builds it and answers the phone. There is no sales rep in between.</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg><div><h3>The quote is the price</h3><p>Clear and fixed before we start. Customers say the quote was spot on, and the invoice matched it.</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg><div><h3>Turns up when he says</h3><p>On time for the quote and on time for the job. Nearly every review mentions it.</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg><div><h3>Leaves it clean</h3><p>Old fence gone, offcuts gone, yard tidy when we drive off.</p></div></li>
+    </ul>
   </div>
 </section>
 
-<section class="why">
+<section class="reviews" id="reviews">
   <div class="wrap">
-    <h2>Why people pick Damian</h2>
-    <div class="reasons">
-      <div class="reason"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg><div><h3>You deal with the owner</h3><p>Damian quotes the job, builds it and answers the phone. There is no sales rep in between.</p></div></div>
-      <div class="reason"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg><div><h3>The quote is the price</h3><p>Clear and fixed before we start. Customers say the quote was spot on, and the invoice matched it.</p></div></div>
-      <div class="reason"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg><div><h3>Turns up when he says</h3><p>On time for the quote and on time for the job. Nearly every review mentions it.</p></div></div>
-      <div class="reason"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg><div><h3>Leaves it clean</h3><p>Old fence gone, offcuts gone, yard tidy when we drive off.</p></div></div>
-    </div>
-  </div>
-</section>
-
-<section class="band">
-  <div class="wrap reviews" id="reviews">
-    <h2>What customers say</h2>
-    <p class="lede">Real Google reviews, word for word.</p>
-    <div class="quotes">
+    <div class="head" data-reveal><h2>What customers say</h2><p class="lede">Real Google reviews, word for word.</p></div>
+    <div class="quotes" data-reveal="stagger">
       <blockquote>
         <div class="stars" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg></div>
         <p>I've just had a 26 metre fence installed on a shared boundary by Damian from Canberra to Coast Fencing. The fence looks amazing and he was so super friendly and easy to deal with. Extremely competitive price and excellent product. Would highly recommend.</p>
@@ -348,22 +388,26 @@ section{padding-block:clamp(48px,7vw,88px)}
   </div>
 </section>
 
-<section class="how" id="how">
+<section class="how dark" id="how">
   <div class="wrap">
-    <h2>How it works</h2>
-    <ol class="steps">
-      <li><h3>Call or send the form</h3><p>Tell us roughly how many metres, the colour you like and your suburb. Photos help.</p></li>
-      <li><h3>Damian measures up and quotes</h3><p>He comes out, checks the boundary and the levels, and gives you a fixed price. Usually within a few days.</p></li>
-      <li><h3>Fence goes up</h3><p>Most home fences take a day or two. We take the old one away and leave it tidy.</p></li>
+    <div class="head" data-reveal><h2>How it works</h2><p class="lede">Three steps. No paperwork marathon.</p></div>
+    <ol class="steps" data-reveal="stagger">
+      <div class="trackbg" aria-hidden="true"></div><div class="track" aria-hidden="true"></div>
+      <li><span class="n" aria-hidden="true">1</span><h3>Call or send the form</h3><p>Tell us roughly how many metres, the colour you like and your suburb. Photos help.</p></li>
+      <li><span class="n" aria-hidden="true">2</span><h3>Damian measures up and quotes</h3><p>He comes out, checks the boundary and the levels, and gives you a fixed price. Usually within a few days.</p></li>
+      <li><span class="n" aria-hidden="true">3</span><h3>Fence goes up</h3><p>Most home fences take a day or two. We take the old one away and leave it tidy.</p></li>
     </ol>
   </div>
 </section>
 
-<section class="band areas" id="areas">
+<section class="areas" id="areas">
+  <div class="wrap"><div class="head" data-reveal><h2>Where we work</h2><p class="lede">All of Canberra, plus Queanbeyan and Jerrabomberra. South Coast jobs by arrangement.</p></div></div>
+  <div class="ticker" aria-hidden="true">
+    <div class="row"><span>Gungahlin</span><span>Amaroo</span><span>Bonner</span><span>Moncrieff</span><span>Ngunnawal</span><span>Palmerston</span><span>Harrison</span><span>Belconnen</span><span>Bruce</span><span>Kaleen</span><span>Evatt</span><span>Lawson</span><span>Latham</span><span>Melba</span><span>Macquarie</span><span>Gungahlin</span><span>Amaroo</span><span>Bonner</span><span>Moncrieff</span><span>Ngunnawal</span><span>Palmerston</span><span>Harrison</span><span>Belconnen</span><span>Bruce</span><span>Kaleen</span><span>Evatt</span><span>Lawson</span><span>Latham</span><span>Melba</span><span>Macquarie</span></div>
+    <div class="row rev"><span>Kambah</span><span>Greenway</span><span>Wanniassa</span><span>Calwell</span><span>Theodore</span><span>Banks</span><span>Bonython</span><span>Gordon</span><span>Fadden</span><span>Braddon</span><span>Dickson</span><span>Lyneham</span><span>O'Connor</span><span>Kingston</span><span>Narrabundah</span><span>Fyshwick</span><span>Queanbeyan</span><span>Jerrabomberra</span><span>Kambah</span><span>Greenway</span><span>Wanniassa</span><span>Calwell</span><span>Theodore</span><span>Banks</span><span>Bonython</span><span>Gordon</span><span>Fadden</span><span>Braddon</span><span>Dickson</span><span>Lyneham</span><span>O'Connor</span><span>Kingston</span><span>Narrabundah</span><span>Fyshwick</span><span>Queanbeyan</span><span>Jerrabomberra</span></div>
+  </div>
   <div class="wrap">
-    <h2>Where we work</h2>
-    <p class="lede">All of Canberra, plus Queanbeyan and Jerrabomberra. South Coast jobs by arrangement.</p>
-    <div class="areagrid">
+    <div class="areagrid" data-reveal="stagger">
       <div><h3>Gungahlin</h3><p>Gungahlin, Amaroo, Bonner, Moncrieff, Ngunnawal, Palmerston, Harrison</p></div>
       <div><h3>Belconnen</h3><p>Belconnen, Bruce, Kaleen, Evatt, Lawson, Latham, Melba, Macquarie, Charnwood</p></div>
       <div><h3>Tuggeranong</h3><p>Kambah, Greenway, Wanniassa, Calwell, Theodore, Banks, Bonython, Gordon, Fadden</p></div>
@@ -375,20 +419,21 @@ section{padding-block:clamp(48px,7vw,88px)}
   </div>
 </section>
 
-<section class="quote" id="quote">
+<section class="quote dark" id="quote">
+  <img class="bgimg" src="sunset-slope.webp" width="765" height="1020" loading="lazy" decoding="async" alt="">
   <div class="wrap quote-grid">
-    <div class="qtext">
+    <div class="qtext" data-reveal>
       <h2>Get a free quote</h2>
       <p>Fill this in and Damian will call you back, usually the same day. No pressure, no obligation.</p>
       <p>Prefer to talk?</p>
       <a class="call" href="tel:0401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>0401 619 496</a>
     </div>
-    <form class="form" id="quoteForm" novalidate>
-      <div class="row">
+    <form class="form" id="quoteForm" novalidate data-reveal>
+      <div class="row2">
         <label for="qName">Your name<input id="qName" name="name" type="text" autocomplete="name" required></label>
         <label for="qPhone">Phone<input id="qPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required></label>
       </div>
-      <div class="row">
+      <div class="row2">
         <label for="qSuburb">Suburb<input id="qSuburb" name="suburb" type="text" autocomplete="address-level2" required></label>
         <label for="qService">What do you need?<select id="qService" name="service"><option>New Colorbond fence</option><option>Replace an old fence</option><option>Gate</option><option>Repair</option><option>Glass or pool fence</option><option>Something else</option></select></label>
       </div>
@@ -407,7 +452,7 @@ section{padding-block:clamp(48px,7vw,88px)}
 </section>
 </main>
 
-<footer class="site">
+<footer class="site dark">
   <div class="wrap">
     <div class="fgrid">
       <div><div class="logo-tile"><img src="logo-720.png" width="720" height="235" alt="Canberra to Coast Fencing" loading="lazy" decoding="async"></div></div>
@@ -434,16 +479,50 @@ section{padding-block:clamp(48px,7vw,88px)}
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"HomeAndConstructionBusiness","name":"Canberra to Coast Fencing","description":"Colorbond fence installations, replacements, gates and repairs across Canberra, Queanbeyan and Jerrabomberra.","telephone":"+61401619496","email":"canberratocoast@gmail.com","url":"https://www.canberratocoast.net/","image":"https://www.canberratocoast.net/share.jpg","address":{"@type":"PostalAddress","addressLocality":"Canberra","addressRegion":"ACT","addressCountry":"AU"},"areaServed":[{"@type":"City","name":"Canberra"},{"@type":"City","name":"Queanbeyan"},{"@type":"City","name":"Jerrabomberra"}],"priceRange":"$$","founder":{"@type":"Person","name":"Damian Rubino-Fuchs"}}
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
 (function(){
   var $=function(id){return document.getElementById(id)};
   var FORM_ENDPOINT="";      /* live site: paste a Formspree or Web3Forms URL here and the form posts to it */
   var DEMO=/*DEMO*/false;    /* demo: the form shows the thank-you without sending anything */
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var html=document.documentElement;
+
+  /* header turns solid once the hero starts to leave */
+  var top=$("topbar"), ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ top.classList.toggle("scrolled",window.scrollY>40); ticking=false; }); }
+  window.addEventListener("scroll",onScroll,{passive:true}); onScroll();
 
   /* sticky call bar shows once the hero has scrolled away (phones only) */
-  var bar=$("sticky"), hero=document.querySelector(".hero");
+  var bar=$("sticky"), hero=$("hero");
   function barOn(on){ bar.classList.toggle("on",on); document.body.classList.toggle("pad",on); }
   if("IntersectionObserver" in window){ new IntersectionObserver(function(e){ barOn(!e[0].isIntersecting); },{threshold:0.05}).observe(hero); } else { barOn(true); }
+
+  /* motion: one hero moment, then quiet scroll reveals */
+  if(window.gsap && window.ScrollTrigger && !reduce){
+    gsap.registerPlugin(ScrollTrigger);
+    var tl=gsap.timeline({defaults:{ease:"expo.out"}});
+    tl.fromTo(".hero img.bg",{scale:1.12},{scale:1,duration:2.2},0)
+      .to(".hero .line>span",{y:0,yPercent:0,duration:1.1,stagger:.13,clearProps:"transform"},.15)
+      .to(".rule",{scaleX:1,duration:.8,clearProps:"transform"},.7)
+      .from("[data-hero]",{y:22,opacity:0,duration:.9,stagger:.12},.55);
+    gsap.to(".hero img.bg",{yPercent:10,ease:"none",scrollTrigger:{trigger:"#hero",start:"top top",end:"bottom top",scrub:true}});
+    gsap.to(".quote .bgimg",{yPercent:-8,ease:"none",scrollTrigger:{trigger:"#quote",start:"top bottom",end:"bottom top",scrub:true}});
+    document.querySelectorAll("[data-reveal]").forEach(function(el){
+      var targets=el.getAttribute("data-reveal")==="stagger"?el.children:el;
+      gsap.from(targets,{y:28,opacity:0,duration:.9,stagger:.09,ease:"power3.out",scrollTrigger:{trigger:el,start:"top 88%",once:true}});
+    });
+    var track=document.querySelector(".track");
+    if(track) gsap.fromTo(track,{scaleX:0},{scaleX:1,ease:"none",scrollTrigger:{trigger:".steps",start:"top 75%",end:"bottom 55%",scrub:true}});
+    document.querySelectorAll("[data-count]").forEach(function(el){
+      var target=parseFloat(el.getAttribute("data-count")), dec=(el.getAttribute("data-count").split(".")[1]||"").length, suf=el.getAttribute("data-suffix")||"", o={v:0};
+      gsap.to(o,{v:target,duration:1.6,ease:"power2.out",scrollTrigger:{trigger:el,start:"top 90%",once:true},onUpdate:function(){ el.textContent=o.v.toFixed(dec)+suf; }});
+    });
+  } else {
+    html.classList.add("ready");
+  }
+  setTimeout(function(){ html.classList.add("ready"); },1800);   /* belt and braces: never leave the headline hidden */
 
   /* gallery lightbox */
   var lb=$("lb"), img=$("lbImg"), cap=$("lbCap"), items=[].slice.call(document.querySelectorAll(".gallery button")), idx=0;

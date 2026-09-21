@@ -17,7 +17,8 @@ Static HTML, no build step. Upload this folder as-is to Vercel, Netlify, Cloudfl
 
 ## Files
 
-- `index.html` - the whole page, styles and scripts inline
+- `index.html` - the whole page, styles and scripts inline (GSAP loads from cdnjs for the animations)
+- `fonts/` - Big Shoulders Display and Hanken Grotesk, self-hosted
 - `*.webp` - Damian's own job photos (full size and 800px versions)
 - `logo-720.png`, `mark-240.png` - logo cut out from the supplied image
 - `icon-*.png`, `share.jpg` - favicon, app icon and social share image
