@@ -3,7 +3,7 @@ Change a thing here and every page that mentions it changes."""
 
 SITE = "Crossroads Christian Church"
 SITE_SHORT = "Crossroads"
-TAGLINE = "One church, four Sunday services across Canberra."
+TAGLINE = "One church in Canberra, four Sunday services: 9.30am in Braddon and Belconnen, 6.30pm at ANU and in Belconnen."
 BASE_URL = "https://crossroads.org.au"
 OFFICE_EMAIL = "office@crossroads.asn.au"
 YOUTH_EMAIL = "youth@crossroads.asn.au"
@@ -120,7 +120,7 @@ BOARD = [
     ("Derek and Anna Brotherson", "Derek is Principal of the Sydney Missionary and Bible College (SMBC), where Anna also lectures and serves in the college community."),
 ]
 
-CONSTITUTION = "https://drive.google.com/file/d/1AaT-QVzcOKeAVpI4JwQ1w6axCAS4dsCj/view?usp=sharing"
+CONSTITUTION = "https://drive.google.com/file/d/10US17GAOv90CJ-Yej83yjFrMtQkw276Q/view?usp=sharing"
 
 POLICIES = [
     ("Crossroads Christian Church Constitution", "https://drive.google.com/file/d/10US17GAOv90CJ-Yej83yjFrMtQkw276Q/view?usp=sharing"),
@@ -239,16 +239,26 @@ NAV = [
     ("Sundays", "/sundays/"),
     ("Kids & youth", "/kids/"),
     ("Connect", "/connect/"),
-    ("Teaching", "/teaching/"),
+    ("Sermons", "/teaching/"),
     ("About", "/about/"),
-    ("Give", "/giving/"),
+    ("Contact", "/contact/"),
 ]
-CTA = ("Plan a visit", "/sundays/")
+CTA = ("Plan a visit", "/im-new/")
+
+# Short excerpts from public Google reviews of Crossroads, quoted word for word
+# with first names only. The church should confirm it is happy to show them.
+REVIEWS = [
+    ("The first day we were met at the door and welcomed.", "Carly", "visiting Crossroads North with her son"),
+    ("I really like how the church goes through books of the Bible sequentially, so we can see what it says and how we can apply it to our lives.", "Jordan", "attending for two years"),
+    ("A welcoming church, offering patient answers to life-related questions, not just spiritual concerns.", "Rachel", "Google review"),
+    ("The people here are so warm and friendly without being pushy. The teaching was heartfelt, well-researched and practical for my life.", "Lynn", "Google review"),
+    ("Crossroads was my first contact for church on my first week in Canberra. I was always welcomed and taken care of. I felt like home.", "Yan", "new to Canberra"),
+]
 
 MENU = [
     ("Visit", [("I'm new", "/im-new/"), ("Sundays", "/sundays/"), ("Kids", "/kids/"), ("Youth", "/youth/"), ("Who is Jesus?", "/who-is-jesus/")]),
     ("Get involved", [("Connect", "/connect/"), ("Growth groups", "/growth-groups/"), ("Jesus on Life", "/jesus-on-life/"), ("Serve", "/serving/"), ("Give", "/giving/"), ("Events and venue hire", "/events/")]),
-    ("Teaching", [("Sermons", "/sermons/"), ("Word to Life podcast", "/word-to-life/"), ("Bible studies", "/bible-studies/"), ("Crosstrain", "/crosstrain/"), ("Resources", "/resources/"), ("Apps", "/apps/")]),
+    ("Sermons and teaching", [("Sermons", "/sermons/"), ("Word to Life podcast", "/word-to-life/"), ("Bible studies", "/bible-studies/"), ("Crosstrain", "/crosstrain/"), ("Resources", "/resources/"), ("Apps", "/apps/")]),
     ("About", [("Who we are", "/who-we-are/"), ("What we believe", "/what-we-believe/"), ("Stories", "/stories/"), ("History", "/history/"), ("Global partners", "/global-partners/"), ("MTS", "/mts/"), ("Policies and safe ministry", "/policies/"), ("Employment", "/employment/"), ("Contact", "/contact/")]),
 ]
 

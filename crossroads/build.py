@@ -276,6 +276,12 @@ def b_episodes(d, o):
                      f'<div class="embed"><div class="frame ep-frame" hidden></div></div></li>')
     return f'<ol class="episodes">{"".join(items)}</ol>'
 
+def b_reviews(d, o):
+    items = "".join(
+        f'<figure class="review"><blockquote>“{esc(q)}”</blockquote><figcaption>{esc(n)}<span>{esc(m)}</span></figcaption></figure>'
+        for q, n, m in d)
+    return f'<div class="reviews">{items}</div><p class="muted reviews-note">From public Google reviews of Crossroads.</p>'
+
 BLOCKS = {k[2:]: v for k, v in globals().items() if k.startswith("b_")}
 
 def svc_cards():
@@ -324,7 +330,7 @@ def header_html(p):
     on_dark = " on-dark" if p.get("dark_head", home) else ""
     solid = "" if p.get("dark_head", home) else " always-solid"
     links = "".join(a(h, esc(l)) for l, h in D.NAV)
-    cta = btn(D.CTA[1], D.CTA[0])
+    cta = a("/giving/", "Give", "give") + btn(D.CTA[1], D.CTA[0])
     menu_groups = "".join(
         f'<div class="menu-group"><h2>{esc(g)}</h2><ul>' + "".join(f"<li>{a(h, esc(l))}</li>" for l, h in items) + "</ul></div>"
         for g, items in D.MENU)
@@ -379,7 +385,7 @@ def footer_html():
     </div>
     <div class="base">
       <span>© {YEAR} Crossroads Christian Church Canberra. A member of the {a(D.FIEC, "Fellowship of Independent Evangelical Churches")}.</span>
-      <span>{a(D.ELVANTO, "Elvanto login")} · {a(D.GIVENOW, "Give online")}</span>
+      <span>{a("/all-pages/", "All pages")} · {a(D.ELVANTO, "Elvanto login")} · {a(D.GIVENOW, "Give online")}</span>
     </div>
   </div>
 </footer>
@@ -459,7 +465,7 @@ def home_html(p):
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <h1 id="hero-h">Jesus, for all of Canberra.</h1>
-      <p class="lede">One church that meets in four places every Sunday. Come as you are, wherever you are in the city.</p>
+      <p class="lede">One church, four Sunday services. <strong>9.30am</strong> in Braddon and Belconnen, <strong>6.30pm</strong> at ANU and in Belconnen. Come as you are.</p>
       <p class="hero-cta">{btn("/sundays/", "Find your Sunday")}<a class="link" href="/im-new/">What to expect</a></p>
     </div>
     {cross}
@@ -474,8 +480,19 @@ def write(path, text):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
 
+def all_pages_page():
+    groups = "".join(
+        f'<div class="sub"><h2>{esc(g)}</h2><ul class="links">' + "".join(f"<li>{a(h, esc(l))}</li>" for l, h in items) + "</ul></div>"
+        for g, items in D.MENU)
+    return dict(slug="all-pages", title="All pages", lede="Every page on this site, in one list.",
+                desc="Every page on the Crossroads Christian Church Canberra website.",
+                sections=[S_raw(f'<div class="wrap">{groups}</div>')])
+
+def S_raw(html_):
+    return dict(kind="raw", data=html_)
+
 def build():
-    pages = PAGES_A + PAGES_B
+    pages = PAGES_A + PAGES_B + [all_pages_page()]
     slugs = {p["slug"] for p in pages}
     for p in pages:
         out = ROOT / "index.html" if p["slug"] == "" else ROOT / p["slug"] / "index.html"

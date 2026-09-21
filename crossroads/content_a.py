@@ -1,7 +1,7 @@
 """Pages: home, I'm new, Sundays and the four services, kids, youth, and the
 Connect family of pages. Words are Crossroads' own wherever they had them."""
 from data import *  # noqa: F401,F403
-from data import S, SERVICES, SVC, STORIES, CENTRE, OFFICE_EMAIL, YOUTH_EMAIL, DIVORCECARE_EMAIL, CLASSIFIEDS, \
+from data import S, SERVICES, SVC, STORIES, REVIEWS, CENTRE, OFFICE_EMAIL, YOUTH_EMAIL, DIVORCECARE_EMAIL, CLASSIFIEDS, \
     VIDEOS, JOL_STORIES, FORM_KIDS_VISITOR, FORM_YOUTH_VISITOR, FORM_PARTNERSHIP, DIVORCECARE_ORG, \
     CROSSROADS_ENGLISH_FB, APP_IOS, APP_ANDROID, SERMON_LIBRARY, SERMON_VIDEO, APPLE_PODCASTS, SPOTIFY
 
@@ -39,7 +39,7 @@ PAGES.append(dict(
     desc="One church meeting in four places across Canberra every Sunday: North and Belconnen at 9.30am, City and Lake G at 6.30pm. Come as you are.",
     sections=[
         S("services", title="Four services. One church family.",
-          lede="You don’t need to know the Bible, have everything sorted, or pretend to be someone you’re not. Come as you are.",
+          lede="Not sure which one? Come to any of them. You don’t need to know the Bible, have everything sorted, or pretend to be someone you’re not.",
           cta=("What to expect", "/im-new/")),
         S("split", dict(img="sunday-wide", alt="A full hall at a Crossroads Sunday service", html=(
             "<h2>What a Sunday is like</h2>"
@@ -60,6 +60,8 @@ PAGES.append(dict(
         S("band", dict(h2="Still working out what you believe about Jesus?",
                        html="Jesus is the most significant and influential figure in history. His claims are worth investigating, because if they are true, they change everything.",
                        href="/who-is-jesus/", label="Explore who Jesus is")),
+        S("reviews", [REVIEWS[0], REVIEWS[1], REVIEWS[2], REVIEWS[4]], title="What people say",
+          lede="From people who walked in the door not long ago."),
         S("stories", STORIES[:3], title="Stories from our church",
           lede="How Jesus has changed the lives of people at Crossroads. Honest, personal and still unfolding.",
           cta=("All stories", "/stories/")),
@@ -101,6 +103,7 @@ PAGES.append(dict(
             ("Kids and teens", "Morning services have a crèche for babies and toddlers, Kids@Church for primary-aged children, and Youth@Church during the Bible talk."),
             ("The feel of it", "Relaxed and friendly, and a community that aims to be theologically deep and spiritually warm. Everything we do centres on hearing God speak through the Bible and responding to him together."),
         ], title="What to expect"),
+        S("reviews", [REVIEWS[0], REVIEWS[3], REVIEWS[2]], title="What it was like for others", chalk=True),
         S("cards", [
             dict(title="Kids", img="kids-2", alt="Children at Kids@Church", href="/kids/", text="Kids@Church on Sunday mornings and KidsBlast on Friday nights for Grades 3 to 6.", go="Kids at Crossroads"),
             dict(title="Youth", img="youth-sunset", alt="Teenagers on a hill at sunset", href="/youth/", text="Youth@Church on Sunday mornings and Crossfire on Friday nights for Years 7 to 12.", go="Youth at Crossroads"),
