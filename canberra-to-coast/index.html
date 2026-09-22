@@ -253,6 +253,11 @@ html.gsap .hero .line>span,html.gsap .rule{transition:none!important}
 .fence-wrap{display:grid;gap:14px}
 @media(max-width:899px){.fence-wrap{position:sticky;top:calc(var(--header-h) + 6px);z-index:3;background:var(--bg);padding-block:8px}}
 .fence{width:100%;height:auto;border-radius:12px;background:linear-gradient(#DCE6F2 0%,#EEF2EC 62%,#BFB49A 62%,#A89B7E 100%);display:block}
+.fence-photo{position:relative;aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:var(--bone-2)}
+.fence-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.fence-photo #fenceB{opacity:0;transition:opacity .55s ease}
+.fence-photo.swap #fenceB{opacity:1}
+@media(prefers-reduced-motion:reduce){.fence-photo #fenceB{transition:none}}
 .fence-name{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
 .fence-name b{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:1.6rem;letter-spacing:.02em}
 .fence-name span{color:var(--mute);font-size:.9rem}
@@ -573,25 +578,10 @@ html.gsap .hero .line>span,html.gsap .rule{transition:none!important}
     <div class="head" data-reveal><h2>Pick your colour</h2><p class="lede">Tap a colour to see it on the fence. Damian brings the real steel samples to your quote, because screens lie a little.</p></div>
     <div class="colour-grid" data-reveal>
       <div class="fence-wrap">
-        <svg class="fence" id="fenceSvg" viewBox="0 0 600 300" role="img" aria-labelledby="fenceTitle"><title id="fenceTitle">Drawing of a Colorbond fence panel in the chosen colour</title>
-          <defs>
-            <pattern id="ribs" width="16" height="10" patternUnits="userSpaceOnUse"><rect width="16" height="10" fill="var(--sheet,#323233)"/><rect x="0" width="5" height="10" fill="rgba(0,0,0,.28)"/><rect x="5" width="2" height="10" fill="rgba(255,255,255,.14)"/><rect x="11" width="2" height="10" fill="rgba(0,0,0,.12)"/></pattern>
-          </defs>
-          <rect x="0" y="228" width="600" height="72" fill="rgba(0,0,0,.05)"/>
-          <rect data-part="plinth" x="66" y="212" width="468" height="24" fill="#B9935A"/>
-          <rect data-part="plinth" x="66" y="212" width="468" height="24" fill="url(#wood)" opacity=".35"/>
-          <rect data-part="sheet" x="72" y="52" width="456" height="162" fill="url(#ribs)"/>
-          <rect data-part="rail" x="66" y="52" width="468" height="9" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.35)" stroke-width="1"/>
-          <rect data-part="rail" x="66" y="128" width="468" height="9" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.35)" stroke-width="1"/>
-          <rect data-part="rail" x="66" y="205" width="468" height="9" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.35)" stroke-width="1"/>
-          <rect data-part="cap" x="60" y="44" width="480" height="10" rx="2" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
-          <rect data-part="post" x="52" y="36" width="20" height="200" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
-          <rect data-part="post" x="528" y="36" width="20" height="200" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
-          <rect data-part="post" x="49" y="30" width="26" height="8" rx="2" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
-          <rect data-part="post" x="525" y="30" width="26" height="8" rx="2" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
-          <rect data-part="footing" x="46" y="236" width="32" height="44" rx="3" fill="rgba(0,0,0,.18)"/>
-          <rect data-part="footing" x="522" y="236" width="32" height="44" rx="3" fill="rgba(0,0,0,.18)"/>
-        </svg>
+        <div class="fence-photo">
+          <img id="fenceA" src="gate-monument-700.webp" srcset="gate-monument-700.webp 700w, gate-monument.webp 1100w" sizes="(min-width:900px) 560px, 92vw" width="1100" height="825" alt="A Colorbond gate and fence shown in Monument" decoding="async">
+          <img id="fenceB" alt="" aria-hidden="true" decoding="async">
+        </div>
         <div class="fence-name"><b id="fenceName">Monument</b><span id="fenceHint">Canberra's favourite. Goes with everything.</span></div>
       </div>
       <div>
@@ -608,6 +598,9 @@ html.gsap .hero .line>span,html.gsap .rule{transition:none!important}
     <div class="anat" data-reveal>
       <div class="fence-wrap">
         <svg class="fence" id="fenceSvg2" viewBox="0 0 600 300" role="img" aria-label="Drawing of a fence with the selected part highlighted">
+          <defs>
+            <pattern id="ribs" width="16" height="10" patternUnits="userSpaceOnUse"><rect width="16" height="10" fill="var(--sheet,#323233)"/><rect x="0" width="5" height="10" fill="rgba(0,0,0,.28)"/><rect x="5" width="2" height="10" fill="rgba(255,255,255,.14)"/><rect x="11" width="2" height="10" fill="rgba(0,0,0,.12)"/></pattern>
+          </defs>
           <rect x="0" y="228" width="600" height="72" fill="rgba(0,0,0,.05)"/>
           <rect data-part="plinth" x="66" y="212" width="468" height="24" fill="#B9935A"/>
           <rect data-part="sheet" x="72" y="52" width="456" height="162" fill="url(#ribs)"/>
@@ -828,20 +821,19 @@ html.gsap .hero .line>span,html.gsap .rule{transition:none!important}
   /* GUIDE PRICES, per metre installed, incl. GST. Damian to confirm. Typical Canberra range for 2026. */
   var PRICES={ perMetre:{"1.5":[80,115],"1.8":[95,135],"2.1":[110,155]}, removal:[15,25], gate:{single:[450,650],double:[900,1300]}, minimum:900 };
   var COLOURS=[
-    {n:"Monument",h:"#323233",t:"Canberra's favourite. Goes with everything."},
-    {n:"Night Sky",h:"#0B0B0C",t:"Deepest black. Sharp against greenery."},
-    {n:"Basalt",h:"#6D6C6E",t:"Warm mid grey. Hides dust well."},
-    {n:"Woodland Grey",h:"#4B4C46",t:"Green-grey. Sits back into the garden."},
-    {n:"Ironstone",h:"#3E434C",t:"Blue-grey. Modern, not cold."},
-    {n:"Deep Ocean",h:"#364152",t:"Navy. Great with brick and timber."},
-    {n:"Shale Grey",h:"#BDBFBA",t:"Light grey. Keeps a narrow yard bright."},
-    {n:"Surfmist",h:"#E4E2D5",t:"Off white. Coastal, clean, shows dirt a bit."},
-    {n:"Dune",h:"#B1ADA3",t:"Soft stone. Easy on the eye."},
-    {n:"Paperbark",h:"#CABFA4",t:"Sandy beige. Matches older brick."},
-    {n:"Classic Cream",h:"#E9DCB8",t:"The classic cream. Warm and tidy."},
-    {n:"Pale Eucalypt",h:"#7C846A",t:"Gum-leaf green. Disappears behind plants."}
-  ];
-  var REVIEWS=[
+    {n:"Monument",s:"monument",h:"#323233",t:"Canberra's favourite. Goes with everything."},
+    {n:"Night Sky",s:"night-sky",h:"#0B0B0C",t:"Deepest black. Sharp against greenery."},
+    {n:"Basalt",s:"basalt",h:"#6D6C6E",t:"Warm mid grey. Hides dust well."},
+    {n:"Woodland Grey",s:"woodland-grey",h:"#4B4C46",t:"Green-grey. Sits back into the garden."},
+    {n:"Ironstone",s:"ironstone",h:"#3E434C",t:"Blue-grey. Modern, not cold."},
+    {n:"Deep Ocean",s:"deep-ocean",h:"#364152",t:"Navy. Great with brick and timber."},
+    {n:"Shale Grey",s:"shale-grey",h:"#BDBFBA",t:"Light grey. Keeps a narrow yard bright."},
+    {n:"Surfmist",s:"surfmist",h:"#E4E2D5",t:"Off white. Coastal, clean, shows dirt a bit."},
+    {n:"Dune",s:"dune",h:"#B1ADA3",t:"Soft stone. Easy on the eye."},
+    {n:"Paperbark",s:"paperbark",h:"#CABFA4",t:"Sandy beige. Matches older brick."},
+    {n:"Classic Cream",s:"classic-cream",h:"#E9DCB8",t:"The classic cream. Warm and tidy."},
+    {n:"Pale Eucalypt",s:"pale-eucalypt",h:"#7C846A",t:"Gum-leaf green. Disappears behind plants."}
+  ]; var REVIEWS=[
     ["Daniel S.","I've just had a 26 metre fence installed on a shared boundary by Damian from Canberra to Coast Fencing. The fence looks amazing and he was so super friendly and easy to deal with. Extremely competitive price and excellent product. Would highly recommend."],
     ["Rhonda F.","Got a fast and good quote from Damian. Arrived when promised and did a fabulous job. It was a fence along a boundary that had a steep drop off on one side. The final fence is well constructed and looks great. Neighbours and I very happy, would highly recommend this company."],
     ["Yvonne M.","Damian and his crew were professional, hard working and created a wonderful fence for our home. Excellent value, Damian carried out all work in a timely manner and communicated extremely well. We highly recommend this company."],
@@ -944,24 +936,48 @@ html.gsap .hero .line>span,html.gsap .rule{transition:none!important}
   pgCalc();
 
   /* ---------- colour picker ---------- */
-  var sw=$("swatches");
+  var sw=$("swatches"), fenceA=$("fenceA"), fenceB=$("fenceB"), photo=document.querySelector(".fence-photo");
+  var current=0, swapped=false, cycle=null, userPicked=false, phone=window.matchMedia("(max-width:899px)").matches;
+  function srcFor(c){ return phone ? "gate-"+c.s+"-700.webp" : "gate-"+c.s+".webp"; }
   COLOURS.forEach(function(c,i){
     var b=document.createElement("button"); b.type="button"; b.className="swatch"; b.setAttribute("aria-pressed",i===0?"true":"false");
     b.innerHTML='<span class="c" style="background:'+c.h+'"></span><b>'+c.n+'</b>';
-    b.addEventListener("click",function(){ pickColour(i); });
+    b.addEventListener("click",function(){ stopCycle(); pickColour(i); });
     sw.appendChild(b);
   });
+  function paintPhoto(c){
+    var next=swapped?fenceA:fenceB, shown=swapped?fenceB:fenceA;
+    next.onload=function(){
+      photo.classList.toggle("swap",!swapped); swapped=!swapped;
+      shown.setAttribute("aria-hidden","true"); shown.alt="";
+      next.removeAttribute("aria-hidden"); next.alt="A Colorbond gate and fence shown in "+c.n;
+    };
+    next.removeAttribute("srcset"); next.removeAttribute("sizes");   /* a srcset would override the new src */
+    next.src=srcFor(c);
+  }
   function pickColour(i){
-    var c=COLOURS[i]; chosenColour=c.n;
+    var c=COLOURS[i]; current=i; chosenColour=c.n;
     [].forEach.call(sw.children,function(el,k){ el.setAttribute("aria-pressed",k===i?"true":"false"); });
+    paintPhoto(c);
     document.querySelectorAll(".fence").forEach(function(svg){ svg.style.setProperty("--sheet",c.h); });
     $("fenceName").textContent=c.n; $("fenceHint").textContent=c.t; $("qColour").value=c.n;
     setSmsLinks(); pgCalc();
     var msg=$("qMsg"); if(!msg.value.trim()||msg.value===lastAutoNote){ lastAutoNote="Colour: "+c.n; msg.value=lastAutoNote; }
   }
+  function stopCycle(){ userPicked=true; if(cycle){ clearInterval(cycle); cycle=null; } }
   document.querySelectorAll(".fence").forEach(function(svg){ svg.style.setProperty("--sheet",COLOURS[0].h); });
-  /* wood grain pattern for the plinth, added to the first svg's defs */
-  var defs=document.querySelector("#fenceSvg defs"); defs.insertAdjacentHTML("beforeend",'<pattern id="wood" width="60" height="8" patternUnits="userSpaceOnUse"><rect width="60" height="8" fill="none"/><path d="M0 4 Q15 1 30 4 T60 4" stroke="rgba(0,0,0,.5)" stroke-width="1" fill="none"/></pattern>');
+  $("qColour").value=COLOURS[0].n; chosenColour=COLOURS[0].n;
+  /* quietly fetch the other colours once the page is idle, so switching is instant */
+  (window.requestIdleCallback||function(f){ setTimeout(f,2500); })(function(){ COLOURS.forEach(function(c,i){ if(i){ var im=new Image(); im.src=srcFor(c); } }); });
+  /* the colours show themselves off until someone chooses one */
+  if(!reduce&&"IntersectionObserver" in window){
+    new IntersectionObserver(function(e){
+      if(userPicked) return;
+      if(e[0].isIntersecting){ if(!cycle) cycle=setInterval(function(){ pickColour((current+1)%COLOURS.length); },2600); }
+      else if(cycle){ clearInterval(cycle); cycle=null; }
+    },{threshold:.4}).observe(document.getElementById("colours"));
+  }
+  sw.addEventListener("pointerdown",stopCycle); sw.addEventListener("focusin",stopCycle);
 
   /* ---------- anatomy stepper ---------- */
   var parts=$("parts");

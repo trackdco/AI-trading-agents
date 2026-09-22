@@ -30,6 +30,9 @@ Static HTML, no build step. Upload this folder as-is to Vercel, Netlify, Cloudfl
   the page still works and shows everything if that fails to load)
 - `fonts/` - Big Shoulders Display and Hanken Grotesk, self-hosted
 - `*.webp` - Damian's own job photos, full size and 800px versions
+- `gate-*.webp` - the same gate photo recoloured into all 12 Colorbond colours (1100px and 700px).
+  Made from `images/11.webp` by `tools/mask.py` (marks just the fence and gate) then `tools/recolour.py`
+  (keeps the real shadows, ribs and sun glare, swaps the colour). Re-run those two if the photo changes.
 - `logo-720.png`, `mark-240.png` - logo cut out from the supplied image
 - `icon-*.png`, `share.jpg` - favicon, app icon and social share image
 
