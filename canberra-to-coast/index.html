@@ -27,29 +27,31 @@
   --bone:#F3F0E9; --bone-2:#E8E4DA; --char:#22252A; --char-2:#2B2F35;
   --green:#3F6B2E; --green-2:#8BC162; --gold:#E9B430; --navy:#1A2747;
   --bg:#F3F0E9; --fg:#1C1F23; --mute:#5A5F66; --rule:rgba(28,31,35,.14); --rule-2:rgba(28,31,35,.32);
-  --btn:#3F6B2E; --btn-ink:#FFFFFF; --btn-hover:#345A26; --card:#FFFFFF; --field:#FFFFFF;
+  --btn:#3F6B2E; --btn-ink:#FFFFFF; --btn-hover:#345A26; --card:#FFFFFF; --field:#FFFFFF; --chip:#FFFFFF;
   --display:'Big Shoulders Display','Roboto Condensed','Arial Narrow',sans-serif;
   --body:'Hanken Grotesk','Helvetica Neue',Arial,sans-serif;
-  --wrap:1200px; --gut:clamp(18px,4.5vw,40px); --pad:clamp(72px,10vw,128px);
+  --wrap:1200px; --gut:clamp(18px,4.5vw,40px); --pad:clamp(64px,9vw,120px); --header-h:74px;
   color-scheme:light dark;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#17191D; --fg:#ECE9E2; --mute:#A9AEB5; --rule:rgba(236,233,226,.14); --rule-2:rgba(236,233,226,.32);
-    --btn:#8BC162; --btn-ink:#1C1F23; --btn-hover:#9DD072; --card:#22252A; --field:#22252A; --char:#0F1114; --char-2:#181B1F;
+    --btn:#8BC162; --btn-ink:#1C1F23; --btn-hover:#9DD072; --card:#22252A; --field:#22252A; --chip:#22252A; --char:#0F1114; --char-2:#181B1F;
+    --green:#6FA84F;
   }
 }
 :root[data-theme="dark"]{
   --bg:#17191D; --fg:#ECE9E2; --mute:#A9AEB5; --rule:rgba(236,233,226,.14); --rule-2:rgba(236,233,226,.32);
-  --btn:#8BC162; --btn-ink:#1C1F23; --btn-hover:#9DD072; --card:#22252A; --field:#22252A; --char:#0F1114; --char-2:#181B1F;
+  --btn:#8BC162; --btn-ink:#1C1F23; --btn-hover:#9DD072; --card:#22252A; --field:#22252A; --chip:#22252A; --char:#0F1114; --char-2:#181B1F;
+  --green:#6FA84F;
 }
-.dark{--bg:var(--char);--fg:#F3F0E9;--mute:#B4B9BF;--rule:rgba(243,240,233,.14);--rule-2:rgba(243,240,233,.34);--btn:var(--green-2);--btn-ink:#1C1F23;--btn-hover:#9DD072;--card:var(--char-2);--field:var(--char-2);background:var(--bg);color:var(--fg);position:relative}
+.dark{--bg:var(--char);--fg:#F3F0E9;--mute:#B4B9BF;--rule:rgba(243,240,233,.14);--rule-2:rgba(243,240,233,.34);--btn:var(--green-2);--btn-ink:#1C1F23;--btn-hover:#9DD072;--card:var(--char-2);--field:var(--char-2);--chip:var(--char-2);background:var(--bg);color:var(--fg);position:relative}
 .dark::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.08;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:96px;overflow-x:clip}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--header-h) + 16px);overflow-x:clip}
 body{margin:0;background:var(--bg);color:var(--fg);font:400 1.0625rem/1.65 var(--body);-webkit-font-smoothing:antialiased;overflow-x:clip}
-body.pad{padding-bottom:92px}
+body.pad{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 img{max-width:100%;height:auto;display:block}
 h1,h2,h3{margin:0}
 h2{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(2.5rem,5.2vw,4.4rem);line-height:.92;letter-spacing:.005em;text-wrap:balance}
@@ -61,91 +63,154 @@ section{padding-block:var(--pad)}
 .head{display:grid;gap:16px;max-width:780px}
 .lede{font-size:clamp(1.05rem,1.4vw,1.25rem);color:var(--mute);max-width:58ch;text-wrap:pretty}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:12px 24px;border-radius:8px;background:var(--btn);color:var(--btn-ink);font-weight:700;font-size:1rem;letter-spacing:.01em;text-decoration:none;border:1.5px solid transparent;cursor:pointer;font-family:inherit;transition:transform .2s,background .2s,border-color .2s}
-.btn:hover{background:var(--btn-hover);transform:translateY(-1px)}
 .btn.ghost{background:transparent;color:inherit;border-color:var(--rule-2)}
-.btn.ghost:hover{background:rgba(127,127,127,.12);border-color:currentColor}
+@media(hover:hover){.btn:hover{background:var(--btn-hover);transform:translateY(-1px)}.btn.ghost:hover{background:rgba(127,127,127,.12);border-color:currentColor}}
 .btn.small{min-height:44px;padding:8px 18px;font-size:.95rem}
 .btn svg{width:20px;height:20px;flex:none}
 :focus-visible{outline:3px solid var(--green-2);outline-offset:3px}
 .skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--char);color:#F3F0E9;padding:10px 14px;border-radius:8px;text-decoration:none}
 .skip:focus{top:12px}
-.draft{font-size:.8rem;text-align:center;padding:6px var(--gut);background:var(--green-2);color:#1C1F23}
+.draft{position:relative;z-index:60;font-size:.8rem;text-align:center;padding:6px var(--gut);background:var(--green-2);color:#1C1F23}
+body:has(.draft) .top{top:calc(env(safe-area-inset-top,0px) + 0px);position:sticky}
+body:has(.draft) .hero{margin-top:calc(-1 * var(--header-h))}
+.tag{display:inline-block;font-size:.8rem;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--green-2);color:#1C1F23;letter-spacing:.01em}
+.link{display:inline-block;font-weight:700;color:var(--fg);text-decoration:none;border-bottom:2px solid var(--green);padding:8px 0 3px}
+.link:hover{border-color:currentColor}
 
-/* header: transparent over the hero, solid once you scroll */
+/* header */
 .top{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:40;color:#F3F0E9;transition:background .35s,box-shadow .35s}
 .top::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(rgba(8,10,14,.6),rgba(8,10,14,0));transition:opacity .35s}
 .top.scrolled{background:rgba(34,37,42,.94);backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(243,240,233,.12)}
 .top.scrolled::before{opacity:0}
 .nav{display:flex;align-items:center;gap:16px;min-height:74px}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto;min-width:0}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto;min-width:0;padding-block:6px;min-height:44px}
 .brand img{height:42px;width:auto;flex:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
 .brand b{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:1.15rem;line-height:.95;color:#F3F0E9;white-space:nowrap}
 .brand b span{color:var(--green-2)}
+.menu{display:none;gap:18px;margin-right:14px}
+.menu a{text-decoration:none;font-weight:600;font-size:.98rem;color:rgba(243,240,233,.88);padding:6px 0;border-bottom:2px solid transparent}
+.menu a:hover{color:#F3F0E9;border-color:var(--green-2)}
+@media(min-width:1000px){.menu{display:flex;font-size:.94rem}}
+@media(max-width:1099px){.menu a[href="#areas"],.menu a[href="#projects"]{display:none}}
 .phone{font-weight:700;text-decoration:none;color:#F3F0E9;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;font-size:1.05rem}
 .phone svg{width:18px;height:18px;color:var(--green-2)}
 .nav .btn{flex:none;white-space:nowrap;background:var(--green-2);color:#1C1F23}
 .nav .btn:hover{background:#9DD072}
 .nav .btn .short{display:none}
-@media(max-width:640px){.phone{display:none}.nav .btn .long{display:none}.nav .btn .short{display:inline}.nav{min-height:64px;gap:10px}.brand{gap:8px;overflow:hidden}.brand img{height:32px}.brand b{font-size:1rem}}
-@media(max-width:340px){.brand b{display:none}}
+@media(max-width:640px){.phone{display:none}.nav .btn .long{display:none}.nav .btn .short{display:inline}.nav{min-height:64px;gap:10px}.brand{gap:8px}.brand img{height:32px}.brand b{font-size:.95rem;letter-spacing:.01em}.nav .btn.small{padding-inline:14px}}
+@media(max-width:400px){.brand b{display:none}}
 
 /* hero */
 .hero{min-height:min(92svh,860px);display:grid;align-items:end;isolation:isolate;overflow:hidden;padding:0}
 .hero picture,.hero img.bg{position:absolute;left:0;right:0;top:-8%;height:116%;width:100%;object-fit:cover;z-index:-2}
-.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgba(8,10,14,.92) 0%,rgba(8,10,14,.6) 36%,rgba(8,10,14,.12) 68%,rgba(8,10,14,.05) 100%)}
-.hero-in{padding-block:clamp(130px,20vw,200px) clamp(64px,8vw,96px);display:grid;gap:22px;max-width:920px;position:relative;z-index:1}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgba(8,10,14,.93) 0%,rgba(8,10,14,.62) 36%,rgba(8,10,14,.14) 68%,rgba(8,10,14,.05) 100%)}
+.hero-in{padding-block:clamp(110px,14vw,164px) clamp(56px,7vw,88px);display:grid;gap:20px;max-width:920px;position:relative;z-index:1}
 .kicker{font-weight:600;color:#F3F0E9;font-size:1.02rem;display:flex;align-items:center;gap:12px;text-shadow:0 1px 8px rgba(8,10,14,.6)}
 .kicker::before{content:"";width:10px;height:10px;background:var(--green-2);transform:rotate(45deg);flex:none}
-h1{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(2.9rem,8.6vw,7.2rem);line-height:.9;letter-spacing:.005em;color:#F3F0E9;text-wrap:balance}
+h1{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(2.7rem,7.6vw,6.2rem);line-height:.9;letter-spacing:.005em;color:#F3F0E9;text-wrap:balance}
 .line{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
 .line>span{display:block}
 .rule{width:110px;height:5px;background:var(--green-2);transform-origin:left}
 .sub{font-size:clamp(1.1rem,1.7vw,1.35rem);max-width:54ch;color:rgba(243,240,233,.9);text-wrap:pretty}
+.anchor{font-size:1rem;color:rgba(243,240,233,.8)}
+.anchor b{color:#F3F0E9}
 .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
-.cta .btn{min-height:58px;padding-inline:28px;font-size:1.05rem}
+.cta .btn{min-height:58px;padding-inline:26px;font-size:1.05rem}
 .cta .btn.ghost{color:#F3F0E9;border-color:rgba(243,240,233,.6);background:rgba(243,240,233,.06);backdrop-filter:blur(6px)}
 .cta .btn.ghost:hover{background:rgba(243,240,233,.16)}
 .ribs{position:absolute;left:0;right:0;bottom:-1px;height:26px;z-index:2;background:repeating-linear-gradient(90deg,var(--char) 0 5px,transparent 5px 16px)}
-@media(max-width:560px){.cta{display:grid}.hero{min-height:min(94svh,820px)}}
+@media(min-width:900px) and (max-height:830px){.hero{min-height:auto}.hero-in{padding-block:104px 52px;gap:14px}h1{font-size:clamp(2.7rem,5.6vw,4.6rem)}.sub{font-size:1.08rem}.cta .btn{min-height:52px}}
+@media(max-width:560px){.cta{display:grid;grid-template-columns:1fr}.cta .btn{padding-inline:16px}.hero{min-height:min(92svh,780px)}}
 html.js .hero .line>span{transform:translateY(112%)}
 html.js .rule{transform:scaleX(0)}
 html.js.ready .hero .line>span{transform:none;transition:transform .9s cubic-bezier(.2,.75,.1,1)}
 html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,.75,.1,1)}
+html.gsap .hero .line>span,html.gsap .rule{transition:none!important}
 @media(prefers-reduced-motion:reduce){html.js .hero .line>span,html.js .rule{transform:none!important;transition:none!important}html{scroll-behavior:auto}.btn:hover{transform:none}}
 
 /* trust strip */
 .trust{padding-block:0}
 .trust ul{list-style:none;margin:0;padding:clamp(30px,4vw,48px) 0;display:grid;grid-template-columns:repeat(2,1fr);gap:26px 20px}
-@media(min-width:820px){.trust ul{grid-template-columns:repeat(4,1fr);gap:24px}}
-.trust li{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;border-left:2px solid var(--green-2);padding-left:16px}
-.trust b{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(2.3rem,3.8vw,3.4rem);line-height:.9;color:#F3F0E9;font-variant-numeric:tabular-nums}
-.trust span{font-weight:700;line-height:1.25;font-size:.98rem}
+@media(min-width:1180px){.trust ul{grid-template-columns:repeat(4,1fr);gap:24px}}
+@media(max-width:480px){.trust ul{grid-template-columns:1fr;gap:18px}}
+.trust li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center;border-left:2px solid var(--green-2);padding-left:16px}
+.trust b{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(2rem,3.4vw,3.2rem);line-height:.9;color:#F3F0E9;font-variant-numeric:tabular-nums}
+.trust span{font-weight:700;line-height:1.25;font-size:.98rem;min-width:0}
 .trust small{display:block;font-weight:400;color:var(--mute);font-size:.86rem;margin-top:2px}
 
 /* services: photo tiles */
 .tiles{display:grid;gap:14px;grid-template-columns:repeat(2,1fr);margin-top:44px}
-@media(min-width:900px){.tiles{grid-template-columns:repeat(4,1fr);gap:18px}}
+@media(min-width:1100px){.tiles{grid-template-columns:repeat(4,1fr);gap:18px}}
 .tile{position:relative;display:block;aspect-ratio:4/5;border-radius:10px;overflow:hidden;text-decoration:none;color:#F3F0E9;background:var(--char)}
 .tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.2,.7,.1,1)}
 .tile:hover img,.tile:focus-visible img{transform:scale(1.06)}
-.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(8,10,14,.94) 0%,rgba(8,10,14,.5) 42%,rgba(8,10,14,0) 72%)}
-.tile .cap{position:absolute;left:0;right:0;bottom:0;padding:18px;z-index:1;display:grid;gap:6px}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(8,10,14,.96) 0%,rgba(8,10,14,.72) 42%,rgba(8,10,14,.3) 72%,rgba(8,10,14,.2) 100%)}
+.tile .cap{position:absolute;left:0;right:0;bottom:0;padding:18px;z-index:1;display:grid;gap:6px;min-width:0;overflow-wrap:anywhere}
 .tile h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(1.5rem,2.4vw,2.1rem);line-height:.95;letter-spacing:.01em;color:#F3F0E9}
-.tile p{font-size:.9rem;color:rgba(243,240,233,.84);line-height:1.45;text-wrap:pretty}
+.tile p{font-size:.92rem;color:rgba(243,240,233,.88);line-height:1.45;text-wrap:pretty}
+.tile .from{font-weight:700;color:var(--green-2);font-size:.95rem}
 .tile .arrow{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;background:var(--green-2);color:#1C1F23;display:grid;place-items:center;z-index:1;opacity:0;transform:translate(8px,-8px);transition:opacity .3s,transform .3s}
 .tile .arrow svg{width:20px;height:20px}
 .tile:hover .arrow,.tile:focus-visible .arrow{opacity:1;transform:none}
 .also{margin-top:28px;color:var(--mute)}
-@media(max-width:480px){.tile .cap{padding:12px}.tile p{font-size:.82rem}}
+@media(max-width:640px){.tiles{grid-template-columns:1fr;gap:12px}.tile{aspect-ratio:16/9}.tile .cap{padding:16px}}
 
-/* gallery: swipe strip on phones, editorial grid on wider screens */
+/* price guide */
+.pg-grid{display:grid;gap:28px;margin-top:40px}
+@media(min-width:900px){.pg-grid{grid-template-columns:1.15fr 1fr;gap:48px;align-items:start}}
+
+.pg-choices{display:grid;gap:22px}
+.pg-choices h3{font-size:.95rem;font-weight:700;color:var(--mute);margin-bottom:10px}
+.chips{display:grid;gap:10px;grid-template-columns:repeat(2,1fr)}
+@media(min-width:560px){.chips.four{grid-template-columns:repeat(4,1fr)}.chips.three{grid-template-columns:repeat(3,1fr)}}
+.chip{position:relative;display:grid;gap:2px;padding:12px 14px;border-radius:10px;border:1.5px solid var(--rule-2);background:var(--chip);cursor:pointer;min-height:54px;transition:border-color .2s,background .2s}
+.chip input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.chip b{font-weight:700;font-size:.98rem}
+.chip small{color:var(--mute);font-size:.82rem}
+.chip:has(input:checked),.chip.on{border-color:var(--green);background:var(--card);box-shadow:inset 0 0 0 1.5px var(--green)}
+@media(hover:hover){.chip:hover{border-color:var(--green)}}
+.chip:has(input:focus-visible){outline:3px solid var(--green-2);outline-offset:3px}
+.stepper{display:inline-grid;grid-template-columns:52px 1fr 52px;align-items:center;border:1.5px solid var(--rule-2);border-radius:10px;overflow:hidden;background:var(--chip);width:100%;max-width:280px}
+.stepper button{all:unset;display:grid;place-items:center;height:54px;font-size:1.6rem;font-weight:700;cursor:pointer;color:var(--fg);background:transparent}
+.stepper button:hover{background:rgba(127,127,127,.12)}
+.stepper button:focus-visible{outline:3px solid var(--green-2);outline-offset:-3px}
+.stepper input{border:0;background:transparent;text-align:center;font:700 1.35rem var(--body);color:var(--fg);width:100%;min-width:0;height:54px;font-variant-numeric:tabular-nums}
+.stepper input:focus{outline:none}
+.pg-result{background:var(--char);color:#F3F0E9;border-radius:14px;padding:clamp(22px,3vw,32px);display:grid;gap:14px;position:sticky;top:calc(var(--header-h) + 26px);container-type:inline-size}
+.pg-result .eyebrow{font-size:.9rem;color:#B4B9BF}
+.pg-price{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,13cqw,4.6rem);line-height:.95;letter-spacing:.005em;font-variant-numeric:tabular-nums}
+.pg-price .nw{white-space:nowrap}
+.pg-price small{font-size:.5em;font-weight:700;color:var(--green-2)}
+.pg-note{font-size:.95rem;color:#B4B9BF;text-wrap:pretty}
+.pg-note b{color:#F3F0E9}
+.pg-actions{display:grid;gap:10px;margin-top:6px}
+.pg-actions .btn{background:var(--green-2);color:#1C1F23}
+.pg-actions .btn.ghost{background:transparent;color:#F3F0E9;border-color:rgba(243,240,233,.45)}
+.pg-actions .btn.ghost:hover{border-color:#F3F0E9}
+.pg-fine{font-size:.82rem;color:#8F959C}
+@media(max-width:899px){
+  .pg-grid{gap:18px}
+  .pg-result{order:-1;position:sticky;top:calc(var(--header-h) + 6px);z-index:3;padding:14px 18px;gap:6px;box-shadow:0 14px 30px -16px rgba(0,0,0,.85)}
+  .pg-result .eyebrow{font-size:.82rem;line-height:1.3}
+  .pg-price{font-size:clamp(1.9rem,9vw,2.6rem)}
+  .pg-result .pg-note,.pg-result .inc,.pg-result .pg-fine{display:none}
+  .pg-actions{display:none}
+  .pg-after{display:grid;gap:12px;margin-top:8px}
+}
+@media(min-width:900px){.pg-after{display:none}}
+.inc{display:flex;flex-wrap:wrap;gap:8px 18px;list-style:none;margin:8px 0 0;padding:0;font-size:.9rem;color:#D9DCD8}
+.inc li{display:flex;align-items:center;gap:6px}
+.inc li::before{content:"";width:6px;height:6px;background:var(--green-2);transform:rotate(45deg);flex:none}
+
+/* gallery */
 .gallery{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px var(--gut) 24px;margin-top:40px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .gallery::-webkit-scrollbar{display:none}
-.gallery figure{margin:0;flex:0 0 min(76vw,340px);aspect-ratio:4/5;scroll-snap-align:start}
+.gallery figure{margin:0;flex:0 0 min(76vw,340px);aspect-ratio:4/5;scroll-snap-align:start;position:relative}
 .gallery button{all:unset;display:block;width:100%;height:100%;border-radius:10px;overflow:hidden;cursor:zoom-in;background:var(--bone-2)}
 .gallery button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
 .gallery img{width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.2,.7,.1,1)}
 .gallery button:hover img{transform:scale(1.04)}
+.gallery figcaption{position:absolute;left:10px;bottom:10px;font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:999px;background:rgba(34,37,42,.82);color:#F3F0E9;pointer-events:none;backdrop-filter:blur(4px)}
 .swipe{color:var(--mute);font-size:.9rem;padding-inline:var(--gut);margin-top:-8px}
 @media(min-width:700px){
   .gallery{display:grid;overflow:visible;width:min(var(--wrap),100% - 2*var(--gut));margin-inline:auto;padding:0;gap:12px;grid-template-columns:repeat(3,1fr);grid-auto-rows:220px;scroll-snap-type:none}
@@ -172,7 +237,51 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
   .gallery figure:nth-child(8){grid-column:2;grid-row:2/4}
 }
 
-/* why: sticky heading, ruled list */
+/* colour picker + fence drawing */
+.colour-grid{display:grid;gap:28px;margin-top:40px}
+@media(min-width:900px){.colour-grid{grid-template-columns:1fr 1fr;gap:56px;align-items:center}}
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(min-width:560px){.swatches{grid-template-columns:repeat(4,1fr)}}
+.swatch{all:unset;display:grid;gap:8px;align-content:start;cursor:pointer;border-radius:10px;padding:6px;border:1.5px solid transparent;transition:border-color .2s}
+.swatch span.c{display:block;aspect-ratio:1.4;border-radius:8px;border:1px solid rgba(0,0,0,.12);box-shadow:inset 0 -14px 20px -12px rgba(0,0,0,.45)}
+.swatch b{font-size:.9rem;font-weight:700;line-height:1.2;overflow-wrap:anywhere}
+@media(min-width:900px) and (max-width:1199px){.swatch b{font-size:.8rem}}
+.swatch small{display:block;font-weight:400;color:var(--mute);font-size:.78rem}
+@media(hover:hover){.swatch:hover{border-color:var(--rule-2)}}
+.swatch[aria-pressed="true"]{border-color:var(--green);box-shadow:inset 0 0 0 1.5px var(--green)}
+.swatch:focus-visible{outline:3px solid var(--green-2);outline-offset:2px}
+.fence-wrap{display:grid;gap:14px}
+@media(max-width:899px){.fence-wrap{position:sticky;top:calc(var(--header-h) + 6px);z-index:3;background:var(--bg);padding-block:8px}}
+.fence{width:100%;height:auto;border-radius:12px;background:linear-gradient(#DCE6F2 0%,#EEF2EC 62%,#BFB49A 62%,#A89B7E 100%);display:block}
+.fence-name{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.fence-name b{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:1.6rem;letter-spacing:.02em}
+.fence-name span{color:var(--mute);font-size:.9rem}
+.fence [data-part]{transition:filter .25s}
+.fence .hl{filter:drop-shadow(0 0 6px rgba(139,193,98,.95)) drop-shadow(0 0 2px rgba(139,193,98,1))}
+.colour-note{font-size:.85rem;color:var(--mute);margin-top:18px;text-wrap:pretty}
+
+/* anatomy */
+.anat{display:grid;gap:28px;margin-top:40px}
+@media(min-width:900px){.anat{grid-template-columns:1fr 1fr;gap:56px;align-items:start}}
+.parts{list-style:none;margin:0;padding:0;display:grid}
+.parts li{border-top:1px solid var(--rule)}
+.parts li:last-child{border-bottom:1px solid var(--rule)}
+.parts button{all:unset;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;width:100%;padding:16px 4px;cursor:pointer;font-weight:700;font-size:1.05rem;color:var(--fg)}
+.parts button:focus-visible{outline:3px solid var(--green-2);outline-offset:-3px;border-radius:6px}
+@media(hover:hover){.parts button:hover{color:var(--green-2)}}
+.parts .num{font-family:var(--display);font-weight:800;font-size:1.5rem;color:var(--green-2);width:28px}
+.parts .chev{width:18px;height:18px;color:var(--mute);transition:transform .25s}
+.parts li.open .chev{transform:rotate(90deg);color:var(--green-2)}
+.parts .body{display:none;padding:0 4px 16px 46px;color:var(--mute);text-wrap:pretty}
+.parts li.open .body{display:block}
+.incl{margin-top:26px;display:grid;gap:10px;padding:22px;border-radius:12px;background:var(--card);border:1px solid var(--rule)}
+.incl h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:1.4rem;letter-spacing:.02em}
+.incl ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;grid-template-columns:1fr}
+@media(min-width:560px){.incl ul{grid-template-columns:1fr 1fr}}
+.incl li{display:flex;gap:10px;align-items:start;font-size:.98rem}
+.incl li svg{width:20px;height:20px;flex:none;color:var(--green-2);margin-top:3px}
+
+/* why */
 .split{display:grid;gap:40px}
 @media(min-width:900px){.split{grid-template-columns:1fr 1.25fr;gap:72px;align-items:start}.split-head{position:sticky;top:120px}}
 .reasons{list-style:none;margin:0;padding:0;display:grid}
@@ -182,20 +291,33 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
 .reasons h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(1.6rem,2.6vw,2.2rem);letter-spacing:.01em;line-height:.95;color:#F3F0E9}
 .reasons p{color:var(--mute);margin-top:8px;max-width:52ch;text-wrap:pretty}
 
-/* reviews */
-.quotes{display:grid;gap:22px;margin-top:44px}
-@media(min-width:860px){.quotes{grid-template-columns:repeat(3,1fr);gap:28px}.quotes blockquote:nth-child(2){transform:translateY(36px)}}
-.quotes blockquote{margin:0;padding:34px 26px 24px;background:var(--card);border:1px solid var(--rule);border-radius:12px;display:grid;gap:14px;align-content:start;position:relative}
-.quotes blockquote::before{content:"\201C";position:absolute;top:2px;right:22px;font-family:var(--display);font-weight:800;font-size:6.5rem;line-height:1;color:var(--green);opacity:.16}
+/* reviews marquee */
+.rv-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:18px}
+.rv-links{display:flex;flex-wrap:wrap;gap:12px}
+.rv-rows{display:grid;gap:14px;margin-top:40px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.rv-row{display:flex;gap:14px;width:max-content;animation:tick 90s linear infinite}
+.rv-row.rev{animation-direction:reverse;animation-duration:105s}
+.rv-rows:hover .rv-row{animation-play-state:paused}
+.rv{flex:0 0 340px;max-width:82vw;padding:22px 22px 18px;background:var(--card);border:1px solid var(--rule);border-radius:12px;display:grid;gap:10px;align-content:start;position:relative;margin:0}
+.rv::before{content:"\201C";position:absolute;top:0;right:18px;font-family:var(--display);font-weight:800;font-size:5rem;line-height:1;color:var(--green);opacity:.16}
 .stars{display:flex;gap:2px;color:var(--gold)}
-.stars svg{width:18px;height:18px}
-.quotes p{font-size:1rem;text-wrap:pretty}
-.quotes footer{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.9rem;color:var(--mute)}
-.quotes footer b{color:var(--fg);font-weight:700}
-.glink{display:inline-flex;gap:10px;align-items:center;margin-top:30px;font-weight:700;color:var(--fg);text-decoration:none;border-bottom:2px solid var(--green);padding-bottom:2px}
-.glink svg{width:18px;height:18px;transition:transform .25s}
-.glink:hover svg{transform:translateX(4px)}
-@media(min-width:860px){.glink{margin-top:66px}}
+.stars svg{width:16px;height:16px}
+.rv p{font-size:.95rem;text-wrap:pretty}
+.rv footer{display:flex;justify-content:space-between;gap:10px;font-size:.86rem;color:var(--mute)}
+.rv footer b{color:var(--fg);font-weight:700}
+@keyframes tick{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.rv-rows{mask-image:none;-webkit-mask-image:none}.rv-row{animation:none;flex-wrap:wrap;width:auto}.rv-row .dup,.rv-row.rev{display:none}.rv{flex:1 1 300px}}
+@media(hover:none){
+  .rv-rows{mask-image:none;-webkit-mask-image:none;overflow-x:auto;scroll-snap-type:x mandatory;padding-inline:var(--gut);padding-bottom:8px;scrollbar-width:none}
+  .rv-rows::-webkit-scrollbar{display:none}
+  .rv-row{animation:none}
+  .rv-row.rev{display:none}
+  .rv-row .dup{display:none}
+  .rv{scroll-snap-align:start;flex:0 0 min(80vw,330px)}
+}
+.hover-only{display:inline}
+.touch-only{display:none}
+@media(hover:none){.hover-only{display:none}.touch-only{display:inline}}
 
 /* how it works */
 .steps{list-style:none;margin:48px 0 0;padding:0;display:grid;gap:30px;position:relative}
@@ -206,18 +328,17 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
 .track,.trackbg{display:none}
 @media(min-width:800px){
   .steps{grid-template-columns:repeat(3,1fr);gap:40px}
-  .trackbg,.track{display:block;position:absolute;left:34px;right:34px;top:33px;height:2px}
+  .trackbg,.track{display:block;position:absolute;left:34px;right:calc((100% - 80px)/3 - 34px);top:33px;height:2px}
   .trackbg{background:var(--rule)}
   .track{background:var(--green-2);transform-origin:left}
 }
 
-/* areas: suburb ticker + grouped list */
+/* areas */
 .ticker{margin-top:44px;display:grid;gap:12px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .row{display:flex;width:max-content;animation:tick 70s linear infinite}
 .row.rev{animation-direction:reverse;animation-duration:84s}
 .row span{font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:clamp(1.7rem,3.4vw,2.8rem);letter-spacing:.02em;color:var(--fg);padding:0 14px 0 26px;white-space:nowrap;display:flex;align-items:center;gap:26px;line-height:1.1}
 .row span::after{content:"";width:9px;height:9px;background:var(--green);transform:rotate(45deg);flex:none}
-@keyframes tick{to{transform:translateX(-50%)}}
 .ticker:hover .row{animation-play-state:paused}
 @media(prefers-reduced-motion:reduce){.row{animation:none;flex-wrap:wrap;width:auto}.row.rev{display:none}.ticker{mask-image:none;-webkit-mask-image:none}}
 .areagrid{display:grid;gap:26px 32px;margin-top:48px}
@@ -227,6 +348,19 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
 .areagrid p{color:var(--mute);line-height:1.7;text-wrap:pretty}
 .note{margin-top:30px;font-weight:700}
 
+/* faq */
+.faq{margin-top:36px;display:grid;max-width:820px}
+.faq details{border-top:1px solid var(--rule)}
+.faq details:last-child{border-bottom:1px solid var(--rule)}
+.faq summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:18px 4px;font-weight:700;font-size:1.08rem}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-family:var(--display);font-weight:800;font-size:1.8rem;line-height:1;color:var(--green);transition:transform .25s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq summary:focus-visible{outline:3px solid var(--green-2);outline-offset:-3px;border-radius:6px}
+@media(hover:hover){.faq summary:hover{color:var(--green)}}
+.faq .a{padding:0 4px 20px;color:var(--mute);max-width:66ch;text-wrap:pretty}
+.faq .a a{color:var(--fg)}
+
 /* quote form */
 .quote{isolation:isolate;overflow:hidden}
 .quote .bgimg{position:absolute;left:0;right:0;top:-10%;height:120%;width:100%;object-fit:cover;z-index:-2;opacity:.6}
@@ -235,22 +369,38 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
 @media(min-width:900px){.quote-grid{grid-template-columns:1fr 1.2fr;gap:64px;align-items:start}}
 .qtext{display:grid;gap:16px;align-content:start}
 .qtext p{color:var(--mute);text-wrap:pretty;max-width:46ch}
-.qtext .call{display:inline-flex;gap:12px;align-items:center;font-family:var(--display);font-weight:800;font-size:clamp(2rem,3.4vw,2.8rem);color:#F3F0E9;text-decoration:none;margin-top:8px;line-height:1}
+.qtext ol{margin:0;padding-left:20px;color:var(--mute);display:grid;gap:6px}
+.qtext ol b{color:#F3F0E9}
+.qtext .call{display:inline-flex;gap:12px;align-items:center;font-family:var(--display);font-weight:800;font-size:clamp(2rem,3.4vw,2.8rem);color:#F3F0E9;text-decoration:none;margin-top:8px;line-height:1;padding-block:8px;min-height:48px}
 .qtext .call svg{width:28px;height:28px;color:var(--green-2)}
+.qtext .btn.ghost{color:#F3F0E9;border-color:rgba(243,240,233,.5);justify-self:start}
 .form{--fg:#1C1F23;--mute:#5A5F66;--rule-2:rgba(28,31,35,.32);--field:#FFFFFF;--btn:#3F6B2E;--btn-ink:#FFFFFF;--btn-hover:#345A26;background:var(--bone);color:var(--fg);border-radius:14px;padding:clamp(20px,3vw,32px);display:grid;gap:14px;box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
 .form label{display:grid;gap:6px;font-weight:700;font-size:.95rem}
-.form input,.form select,.form textarea{font:inherit;font-weight:400;min-height:50px;padding:10px 14px;border-radius:8px;border:1.5px solid var(--rule-2);background:var(--field);color:var(--fg);width:100%}
-.form textarea{min-height:110px;resize:vertical}
+.form input,.form select,.form textarea{font:inherit;font-size:1.0625rem;font-weight:400;min-height:50px;padding:10px 14px;border-radius:8px;border:1.5px solid var(--rule-2);background:var(--field);color:var(--fg);width:100%}
+.form textarea{min-height:96px;resize:vertical}
 .form input:focus,.form select:focus,.form textarea:focus{outline:3px solid var(--green-2);outline-offset:1px;border-color:var(--green)}
+.form input[aria-invalid="true"]{border-color:#B42318;background:#FFF6F5}
+.form .field-err{color:#B42318;font-weight:600;font-size:.88rem}
+.form .req{color:#B42318}
 .form .row2{display:grid;gap:14px}
 @media(min-width:560px){.form .row2{grid-template-columns:1fr 1fr}}
 .form .btn{margin-top:4px;min-height:56px}
-.form small{color:var(--mute);font-weight:400}
+.form small{color:var(--mute);font-weight:400;font-size:.875rem}
 .form .err{color:#B42318;font-weight:700}
+.form .alt{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.92rem;color:var(--mute);align-items:center}
+.form .alt a{color:var(--fg);font-weight:700}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .thanks{padding:28px;border-radius:14px;background:var(--bone);color:#1C1F23;display:grid;gap:10px}
 .thanks h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:2rem;line-height:1}
 .thanks a{color:var(--green);font-weight:700}
+.thanks .btn{justify-self:start;margin-top:6px;background:#3F6B2E;color:#fff}
+
+/* final cta */
+.final{text-align:center}
+.final .wrap{display:grid;gap:18px;justify-items:center}
+.final p{color:var(--mute);max-width:44ch;text-wrap:pretty}
+.final .cta{justify-content:center}
+.final .cta .btn.ghost{color:#F3F0E9;border-color:rgba(243,240,233,.5)}
 
 /* footer */
 .site{padding-block:56px 28px;border-top:1px solid var(--rule)}
@@ -264,11 +414,22 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
 .fine{margin-top:34px;padding-top:16px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:8px 24px;font-size:.85rem;color:var(--mute)}
 
 /* sticky call bar (phones) */
-.stickybar{position:fixed;left:0;right:0;bottom:0;z-index:50;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px var(--gut) calc(10px + env(safe-area-inset-bottom,0px));background:rgba(34,37,42,.96);backdrop-filter:blur(12px);border-top:1px solid rgba(243,240,233,.14);transform:translateY(110%);transition:transform .35s cubic-bezier(.2,.7,.1,1)}
+.stickybar{position:fixed;left:0;right:0;bottom:0;z-index:50;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:10px var(--gut) calc(10px + env(safe-area-inset-bottom,0px));background:rgba(34,37,42,.96);backdrop-filter:blur(12px);border-top:1px solid rgba(243,240,233,.14);transform:translateY(110%);transition:transform .35s cubic-bezier(.2,.7,.1,1)}
 .stickybar.on{transform:none}
-.stickybar .btn{min-height:50px;background:var(--green-2);color:#1C1F23}
+.stickybar .btn{min-height:50px;padding:8px 10px;font-size:.95rem;background:var(--green-2);color:#1C1F23;gap:6px}
 .stickybar .btn.ghost{background:transparent;color:#F3F0E9;border-color:rgba(243,240,233,.5)}
+.stickybar .btn svg{width:18px;height:18px}
 @media(min-width:900px){.stickybar{display:none}body.pad{padding-bottom:0}}
+
+/* small text floors */
+.chip small,.pg-fine,.gallery figcaption{font-size:.875rem}
+.fgrid p a{display:inline-block;padding:6px 0}
+
+/* light-section variants */
+.why .reasons h3{color:var(--fg)}.why .reasons svg{color:var(--green)}
+.how .steps h3{color:var(--fg)}.how .steps .n{background:var(--bg);color:var(--green);border-color:var(--green)}.how .track{background:var(--green)}
+.areas .areagrid h3{color:var(--green-2)}.areas .row span{color:#F3F0E9}.areas .row span::after{background:var(--green-2)}
+[hidden]{display:none!important}
 
 /* lightbox */
 .lb{border:0;padding:0;background:transparent;max-width:min(96vw,1200px);max-height:96vh;width:auto;color:#F3F0E9}
@@ -283,13 +444,14 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
 </style>
 </head>
 <body>
-<script>document.documentElement.classList.add("js");</script>
+<script>document.documentElement.classList.add("js");setTimeout(function(){document.documentElement.classList.add("ready")},1200);</script>
 <a class="skip" href="#quote">Skip to the quote form</a>
 <header class="top" id="topbar">
   
   <div class="wrap nav">
     <a class="brand" href="#hero" aria-label="Canberra to Coast Fencing, back to top"><img src="mark-240.png" width="240" height="87" alt=""><b><span>Canberra</span> to Coast<br>Fencing</b></a>
-    <a class="phone" href="tel:0401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>0401 619 496</a>
+    <nav class="menu" aria-label="Sections"><a href="#services">Services</a><a href="#pricing">Pricing</a><a href="#projects">Our work</a><a href="#reviews">Reviews</a><a href="#areas">Areas</a><a href="#faq">FAQ</a></nav>
+    <a class="phone" href="tel:+61401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>0401 619 496</a>
     <a class="btn small" href="#quote"><span class="long">Get a free quote</span><span class="short">Free quote</span></a>
   </div>
 </header>
@@ -306,9 +468,11 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
       <h1><span class="line"><span>Colorbond fencing</span></span><span class="line"><span>across Canberra.</span></span><span class="line"><span>Done properly.</span></span></h1>
       <div class="rule" aria-hidden="true"></div>
       <p class="sub" data-hero>New fences, replacements, gates and repairs. Damian quotes every job himself, turns up when he says he will, and leaves your yard clean.</p>
+      <p class="anchor" data-hero>Most Colorbond fences run <b>$95 to $135 a metre</b>. Fixed price in writing before we start.</p>
       <div class="cta" data-hero>
         <a class="btn" href="#quote">Get a free quote</a>
-        <a class="btn ghost" href="tel:0401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>Call 0401 619 496</a>
+        <a class="btn ghost" data-sms="hero" href="sms:+61401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H8l-5 3 1.5-4.5A8 8 0 1 1 21 12z"/></svg>Text us a photo</a>
+        <a class="btn ghost" href="tel:+61401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>Call 0401 619 496</a>
       </div>
     </div>
   </div>
@@ -320,7 +484,7 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
     <li><b data-count="5.0">5.0</b><span>Google rating<small>from 20+ reviews</small></span></li>
     <li><b data-count="20" data-suffix="+">20+</b><span>Five-star reviews<small>and counting</small></span></li>
     <li><b>Insured</b><span>Fully insured<small>ABN registered business</small></span></li>
-    <li><b>Free</b><span>On-site quotes<small>Fixed price, no surprises</small></span></li>
+    <li><b>Fixed</b><span>Fixed-price quotes<small>Free, on site, no surprises</small></span></li>
   </ul>
 </section>
 
@@ -328,31 +492,162 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
   <div class="wrap">
     <div class="head" data-reveal><h2>What we do</h2><p class="lede">Colorbond is all we do, so we do it well. Every job gets a fixed quote before we start.</p></div>
     <div class="tiles" data-reveal="stagger">
-      <a class="tile" href="#quote"><img src="black-fence-pines-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="New black Colorbond fence with a timber plinth"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><div class="cap"><h3>New Colorbond fences</h3><p>Boundary and privacy fences in any Colorbond colour, with a timber or steel plinth to suit the block.</p></div></a>
-      <a class="tile" href="#quote"><img src="green-fence-garden-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Green Colorbond fence replacing an old fence in an established garden"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><div class="cap"><h3>Fence replacements</h3><p>We pull down the tired old paling or Colorbond fence, cart it away and put up new.</p></div></a>
-      <a class="tile" href="#quote"><img src="cream-gates-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Cream Colorbond double gates matching the fence"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><div class="cap"><h3>Gates</h3><p>Single and double gates to match your fence, hung straight and latching properly.</p></div></a>
-      <a class="tile" href="#quote"><img src="charcoal-stepped-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Charcoal Colorbond fence stepped along a sloping driveway"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><div class="cap"><h3>Repairs</h3><p>Storm damage, leaning posts, rusted or dented sheets. Fixed fast, matched to what you have.</p></div></a>
+      <a class="tile" href="#pricing"><img src="black-fence-pines-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="New black Colorbond fence with a timber plinth"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><div class="cap"><h3>New Colorbond fences</h3><p>Boundary and privacy fences in any Colorbond colour, with a timber or steel plinth to suit the block.</p><span class="from">From $95 a metre</span></div></a>
+      <a class="tile" href="#pricing"><img src="green-fence-garden-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Green Colorbond fence replacing an old fence in an established garden"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><div class="cap"><h3>Fence replacements</h3><p>We pull down the tired old paling or Colorbond fence, cart it away and put up new.</p><span class="from">From $110 a metre, old fence gone</span></div></a>
+      <a class="tile" href="#pricing"><img src="cream-gates-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Cream Colorbond double gates matching the fence"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><div class="cap"><h3>Gates</h3><p>Single and double gates to match your fence, hung straight and latching properly.</p><span class="from">From $450</span></div></a>
+      <a class="tile" href="#quote"><img src="charcoal-stepped-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Charcoal Colorbond fence stepped along a sloping driveway"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><div class="cap"><h3>Repairs</h3><p>Storm damage, leaning posts, rusted or dented sheets. Fixed fast, matched to what you have.</p><span class="from">Priced from a photo</span></div></a>
     </div>
-    <p class="also">We also do glass pool fencing and rural fencing. Just ask when you call.</p>
+    <p class="also">We also do glass pool fencing and rural fencing. Just ask when you call. <a class="link" href="#anatomy">See what's in every fence</a></p>
   </div>
 </section>
 
-<section class="projects" id="projects">
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="head" data-reveal><h2>Your rough price in ten seconds</h2><p class="lede">Pick the job, set the metres, and you'll see the range most people pay. Damian confirms the exact price on site, in writing.</p></div>
+    <div class="pg-grid" data-reveal>
+      <div class="pg-choices">
+        <div><h3>What's the job?</h3>
+          <div class="chips four" role="radiogroup" aria-label="Job type">
+            <label class="chip"><input type="radio" name="pgJob" value="new" checked><b>New fence</b><small>Empty boundary</small></label>
+            <label class="chip"><input type="radio" name="pgJob" value="replace"><b>Replace old fence</b><small>We take the old one away</small></label>
+            <label class="chip"><input type="radio" name="pgJob" value="gate"><b>Gate only</b><small>Single or double</small></label>
+            <label class="chip"><input type="radio" name="pgJob" value="repair"><b>Repair</b><small>Storm, rust, leaning</small></label>
+          </div>
+        </div>
+        <div id="pgHeightWrap"><h3>How high?</h3>
+          <div class="chips three" role="radiogroup" aria-label="Fence height">
+            <label class="chip"><input type="radio" name="pgHeight" value="1.5"><b>1.5 m</b><small>Front or low</small></label>
+            <label class="chip"><input type="radio" name="pgHeight" value="1.8" checked><b>1.8 m</b><small>The usual</small></label>
+            <label class="chip"><input type="radio" name="pgHeight" value="2.1"><b>2.1 m</b><small>Extra privacy</small></label>
+          </div>
+        </div>
+        <div id="pgMetresWrap"><h3>How many metres?</h3>
+          <div class="stepper"><button type="button" id="pgMinus" aria-label="Fewer metres">−</button><input id="pgMetres" type="number" inputmode="numeric" min="3" max="300" step="1" value="20" aria-label="Metres of fence"><button type="button" id="pgPlus" aria-label="More metres">+</button></div>
+          <p class="pg-fine" style="margin-top:8px;color:var(--mute)">A side boundary on a normal block is about 30 to 40 m. A back fence is about 15 to 20 m.</p>
+        </div>
+        <div id="pgGateWrap"><h3 id="pgGateHead">Add a gate?</h3>
+          <div class="chips three" role="radiogroup" aria-label="Gate">
+            <label class="chip" id="pgGateNone"><input type="radio" name="pgGate" value="none" checked><b>No gate</b></label>
+            <label class="chip"><input type="radio" name="pgGate" value="single"><b>Single</b><small>Walk through</small></label>
+            <label class="chip"><input type="radio" name="pgGate" value="double"><b>Double</b><small>Drive through</small></label>
+          </div>
+        </div>
+        <div class="pg-after">
+          <a class="btn" data-sms="pg2" href="sms:+61401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H8l-5 3 1.5-4.5A8 8 0 1 1 21 12z"/></svg>Lock it in by text</a>
+          <a class="btn ghost" href="#quote" data-toform>Send it through the form</a>
+          <p class="pg-fine">Guide only. Sloping blocks, rock and hard access can change it. Damian tells you before you commit, never after.</p>
+        </div>
+      </div>
+      <div class="pg-result" aria-live="polite">
+        <span class="eyebrow" id="pgEyebrow">Guide price for 20 m of new 1.8 m Colorbond fence</span>
+        <div class="pg-price" id="pgPrice">$1,900 <small>to</small> $2,700</div>
+        <p class="pg-note" id="pgNote">Includes posts in concrete, rails, sheets, plinth and clean-up. <b>Boundary fence? Your neighbour usually pays half.</b></p>
+        <ul class="inc" id="pgInc"><li>Genuine Colorbond</li><li>Fixed price in writing</li><li>No call-out fee</li></ul>
+        <div class="pg-actions">
+          <a class="btn" data-sms="pg" href="sms:+61401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H8l-5 3 1.5-4.5A8 8 0 1 1 21 12z"/></svg>Lock it in by text</a>
+          <a class="btn ghost" href="#quote" data-toform>Send it through the form</a>
+        </div>
+        <p class="pg-fine">Guide only. Sloping blocks, rock, and hard access can change it. Damian tells you before you commit, never after.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="projects dark" id="projects">
   <div class="wrap"><div class="head" data-reveal><h2>Recent jobs</h2><p class="lede">Real fences from real backyards around Canberra. No stock photos. Tap one to see it bigger.</p></div></div>
   <div class="gallery" data-reveal="stagger">
-    <figure><button type="button" data-src="black-fence-ute.webp" data-cap="Black Colorbond fence with a timber plinth on a rural block"><img src="black-fence-ute-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Black Colorbond fence with a timber plinth on a rural block, work ute alongside"></button></figure>
-    <figure><button type="button" data-src="sunset-fence.webp" data-cap="Dark Colorbond boundary fence in a new estate at sunset"><img src="sunset-fence-800.webp" width="600" height="800" loading="lazy" decoding="async" alt="Dark Colorbond boundary fence in a new estate at sunset"></button></figure>
-    <figure><button type="button" data-src="grey-fence-deck.webp" data-cap="Grey Colorbond fence on a sleeper retaining wall beside a deck"><img src="grey-fence-deck-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Grey Colorbond fence on a sleeper retaining wall beside a deck"></button></figure>
-    <figure><button type="button" data-src="charcoal-stepped.webp" data-cap="Charcoal Colorbond fence stepped along a gravel driveway"><img src="charcoal-stepped-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Charcoal Colorbond fence stepped along a gravel driveway"></button></figure>
-    <figure><button type="button" data-src="sunset-slope.webp" data-cap="Boundary fence stepping down a sloping block at sunset"><img src="sunset-slope-800.webp" width="600" height="800" loading="lazy" decoding="async" alt="Boundary fence stepping down a sloping block at sunset"></button></figure>
-    <figure><button type="button" data-src="cream-gates.webp" data-cap="Cream Colorbond fence and matching double gates on a paved courtyard"><img src="cream-gates-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Cream Colorbond fence and matching double gates on a paved courtyard"></button></figure>
-    <figure><button type="button" data-src="green-fence-garden.webp" data-cap="Green Colorbond fence above a stone garden wall"><img src="green-fence-garden-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Green Colorbond fence above a stone garden wall"></button></figure>
-    <figure><button type="button" data-src="posts-trailer.webp" data-cap="Posts set and ready for panels, trailer on site"><img src="posts-trailer-800.webp" width="600" height="800" loading="lazy" decoding="async" alt="Steel posts set in the ground ready for panels, with the Canberra to Coast Fencing trailer on site"></button></figure>
+    <figure><button type="button" data-src="black-fence-ute.webp" data-cap="Black Colorbond fence with a timber plinth on a rural block"><img src="black-fence-ute-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Black Colorbond fence with a timber plinth on a rural block, work ute alongside"></button><figcaption>Rural boundary, black</figcaption></figure>
+    <figure><button type="button" data-src="sunset-fence.webp" data-cap="Dark Colorbond boundary fence in a new estate at sunset"><img src="sunset-fence-800.webp" width="600" height="800" loading="lazy" decoding="async" alt="Dark Colorbond boundary fence in a new estate at sunset"></button><figcaption>New estate, 1.8 m</figcaption></figure>
+    <figure><button type="button" data-src="grey-fence-deck.webp" data-cap="Grey Colorbond fence on a sleeper retaining wall beside a deck"><img src="grey-fence-deck-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Grey Colorbond fence on a sleeper retaining wall beside a deck"></button><figcaption>On a sleeper wall</figcaption></figure>
+    <figure><button type="button" data-src="charcoal-stepped.webp" data-cap="Charcoal Colorbond fence stepped along a gravel driveway"><img src="charcoal-stepped-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Charcoal Colorbond fence stepped along a gravel driveway"></button><figcaption>Stepped for the slope</figcaption></figure>
+    <figure><button type="button" data-src="sunset-slope.webp" data-cap="Boundary fence stepping down a sloping block at sunset"><img src="sunset-slope-800.webp" width="600" height="800" loading="lazy" decoding="async" alt="Boundary fence stepping down a sloping block at sunset"></button><figcaption>Sloping block</figcaption></figure>
+    <figure><button type="button" data-src="cream-gates.webp" data-cap="Cream Colorbond fence and matching double gates on a paved courtyard"><img src="cream-gates-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Cream Colorbond fence and matching double gates on a paved courtyard"></button><figcaption>Double gates, cream</figcaption></figure>
+    <figure><button type="button" data-src="green-fence-garden.webp" data-cap="Green Colorbond fence above a stone garden wall"><img src="green-fence-garden-800.webp" width="800" height="600" loading="lazy" decoding="async" alt="Green Colorbond fence above a stone garden wall"></button><figcaption>Replacement, green</figcaption></figure>
+    <figure><button type="button" data-src="posts-trailer.webp" data-cap="Posts set and ready for panels, trailer on site"><img src="posts-trailer-800.webp" width="600" height="800" loading="lazy" decoding="async" alt="Steel posts set in the ground ready for panels, with the Canberra to Coast Fencing trailer on site"></button><figcaption>Posts in, day one</figcaption></figure>
   </div>
   <p class="swipe">Swipe for more</p>
 </section>
 
-<section class="why dark" id="why">
+<section class="colours" id="colours">
+  <div class="wrap">
+    <div class="head" data-reveal><h2>Pick your colour</h2><p class="lede">Tap a colour to see it on the fence. Damian brings the real steel samples to your quote, because screens lie a little.</p></div>
+    <div class="colour-grid" data-reveal>
+      <div class="fence-wrap">
+        <svg class="fence" id="fenceSvg" viewBox="0 0 600 300" role="img" aria-labelledby="fenceTitle"><title id="fenceTitle">Drawing of a Colorbond fence panel in the chosen colour</title>
+          <defs>
+            <pattern id="ribs" width="16" height="10" patternUnits="userSpaceOnUse"><rect width="16" height="10" fill="var(--sheet,#323233)"/><rect x="0" width="5" height="10" fill="rgba(0,0,0,.28)"/><rect x="5" width="2" height="10" fill="rgba(255,255,255,.14)"/><rect x="11" width="2" height="10" fill="rgba(0,0,0,.12)"/></pattern>
+          </defs>
+          <rect x="0" y="228" width="600" height="72" fill="rgba(0,0,0,.05)"/>
+          <rect data-part="plinth" x="66" y="212" width="468" height="24" fill="#B9935A"/>
+          <rect data-part="plinth" x="66" y="212" width="468" height="24" fill="url(#wood)" opacity=".35"/>
+          <rect data-part="sheet" x="72" y="52" width="456" height="162" fill="url(#ribs)"/>
+          <rect data-part="rail" x="66" y="52" width="468" height="9" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.35)" stroke-width="1"/>
+          <rect data-part="rail" x="66" y="128" width="468" height="9" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.35)" stroke-width="1"/>
+          <rect data-part="rail" x="66" y="205" width="468" height="9" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.35)" stroke-width="1"/>
+          <rect data-part="cap" x="60" y="44" width="480" height="10" rx="2" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
+          <rect data-part="post" x="52" y="36" width="20" height="200" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
+          <rect data-part="post" x="528" y="36" width="20" height="200" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
+          <rect data-part="post" x="49" y="30" width="26" height="8" rx="2" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
+          <rect data-part="post" x="525" y="30" width="26" height="8" rx="2" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
+          <rect data-part="footing" x="46" y="236" width="32" height="44" rx="3" fill="rgba(0,0,0,.18)"/>
+          <rect data-part="footing" x="522" y="236" width="32" height="44" rx="3" fill="rgba(0,0,0,.18)"/>
+        </svg>
+        <div class="fence-name"><b id="fenceName">Monument</b><span id="fenceHint">Canberra's favourite. Goes with everything.</span></div>
+      </div>
+      <div>
+        <div class="swatches" id="swatches" role="group" aria-label="Colorbond colours"></div>
+        <p class="colour-note">COLORBOND® and the colour names are registered trademarks of BlueScope Steel Limited. Colours shown are a close match, not the real thing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="anatomy dark" id="anatomy">
+  <div class="wrap">
+    <div class="head" data-reveal><h2>What's in every fence we build</h2><p class="lede">A Colorbond fence is only as good as the bits you can't see. Tap a part.</p></div>
+    <div class="anat" data-reveal>
+      <div class="fence-wrap">
+        <svg class="fence" id="fenceSvg2" viewBox="0 0 600 300" role="img" aria-label="Drawing of a fence with the selected part highlighted">
+          <rect x="0" y="228" width="600" height="72" fill="rgba(0,0,0,.05)"/>
+          <rect data-part="plinth" x="66" y="212" width="468" height="24" fill="#B9935A"/>
+          <rect data-part="sheet" x="72" y="52" width="456" height="162" fill="url(#ribs)"/>
+          <rect data-part="rail" x="66" y="52" width="468" height="9" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.35)" stroke-width="1"/>
+          <rect data-part="rail" x="66" y="128" width="468" height="9" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.35)" stroke-width="1"/>
+          <rect data-part="rail" x="66" y="205" width="468" height="9" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.35)" stroke-width="1"/>
+          <rect data-part="cap" x="60" y="44" width="480" height="10" rx="2" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
+          <rect data-part="post" x="52" y="36" width="20" height="200" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
+          <rect data-part="post" x="528" y="36" width="20" height="200" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
+          <rect data-part="post" x="49" y="30" width="26" height="8" rx="2" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
+          <rect data-part="post" x="525" y="30" width="26" height="8" rx="2" fill="var(--sheet,#323233)" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
+          <rect data-part="footing" x="46" y="236" width="32" height="44" rx="3" fill="rgba(0,0,0,.28)"/>
+          <rect data-part="footing" x="522" y="236" width="32" height="44" rx="3" fill="rgba(0,0,0,.28)"/>
+        </svg>
+      </div>
+      <div>
+        <ul class="parts" id="parts">
+          <li class="open" data-part="footing"><button type="button" aria-expanded="true"><span class="num">1</span>Footings and posts<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button><div class="body">Steel posts set in concrete, deep. Canberra frost heaves shallow footings, so we go deeper than the bare minimum. A post that moves is a fence that leans.</div></li>
+          <li data-part="rail"><button type="button" aria-expanded="false"><span class="num">2</span>Rails<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button><div class="body">Top and bottom rails, plus a middle rail on taller panels, hold the sheets rigid so they don't drum and rattle in the wind.</div></li>
+          <li data-part="sheet"><button type="button" aria-expanded="false"><span class="num">3</span>Colorbond sheets<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button><div class="body">Genuine Colorbond steel, cut to your height, in the colour you picked. Not the cheap import sheet that fades in two summers.</div></li>
+          <li data-part="plinth"><button type="button" aria-expanded="false"><span class="num">4</span>Plinth<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button><div class="body">A treated timber or steel plinth along the ground keeps soil, mulch and mower damage off the steel, so the fence doesn't rust from the bottom up.</div></li>
+          <li data-part="cap"><button type="button" aria-expanded="false"><span class="num">5</span>Capping and post caps<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button><div class="body">Capping covers the sharp top edge and finishes the line clean. Post caps keep water out of the posts.</div></li>
+        </ul>
+        <div class="incl">
+          <h3>Included in every quote</h3>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Old fence pulled down and taken to the tip</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Concrete, posts, rails, sheets and plinth</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Genuine Colorbond steel in your colour</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Fixed price in writing, no call-out fee</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>A quote you can hand to your neighbour</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Yard swept and offcuts gone</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="why" id="why">
   <div class="wrap split">
     <div class="split-head head" data-reveal><h2>Why people pick Damian</h2><p class="lede">Twenty-odd five-star reviews say the same four things.</p></div>
     <ul class="reasons" data-reveal="stagger">
@@ -364,43 +659,29 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
   </div>
 </section>
 
-<section class="reviews" id="reviews">
+<section class="reviews dark" id="reviews">
   <div class="wrap">
-    <div class="head" data-reveal><h2>What customers say</h2><p class="lede">Real Google reviews, word for word.</p></div>
-    <div class="quotes" data-reveal="stagger">
-      <blockquote>
-        <div class="stars" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg></div>
-        <p>I've just had a 26 metre fence installed on a shared boundary by Damian from Canberra to Coast Fencing. The fence looks amazing and he was so super friendly and easy to deal with. Extremely competitive price and excellent product. Would highly recommend.</p>
-        <footer><b>Daniel S.</b><span>Google review</span></footer>
-      </blockquote>
-      <blockquote>
-        <div class="stars" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg></div>
-        <p>Got a fast and good quote from Damian at Canberra to Coast Fencing. Arrived when promised and did a fabulous job. It was a fence along a boundary that had a steep drop off on one side. The final fence is well constructed and looks great. Neighbours and I very happy, would highly recommend this company.</p>
-        <footer><b>Rhonda F.</b><span>Google review</span></footer>
-      </blockquote>
-      <blockquote>
-        <div class="stars" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg></div>
-        <p>Damian and his crew were professional, hard working and created a wonderful fence for our home. Excellent value, Damian carried out all work in a timely manner and communicated extremely well. We highly recommend this company.</p>
-        <footer><b>Yvonne M.</b><span>Google review</span></footer>
-      </blockquote>
+    <div class="rv-head" data-reveal>
+      <div class="head"><h2>What customers say</h2><p class="lede">Real Google reviews, word for word. <span class="hover-only">Hover to pause.</span><span class="touch-only">Swipe to read more.</span></p></div>
+      <div class="rv-links"><a class="btn ghost small" id="readReviews" href="#" target="_blank" rel="noopener">Read all reviews on Google</a><a class="btn small" id="writeReview" href="#" target="_blank" rel="noopener" hidden>Write a review</a></div>
     </div>
-    <a class="glink" href="https://www.google.com/search?q=Canberra+to+Coast+fencing+reviews" target="_blank" rel="noopener">Read all our Google reviews<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
   </div>
+  <div class="rv-rows" id="rvRows" data-reveal></div>
 </section>
 
-<section class="how dark" id="how">
+<section class="how" id="how">
   <div class="wrap">
     <div class="head" data-reveal><h2>How it works</h2><p class="lede">Three steps. No paperwork marathon.</p></div>
     <ol class="steps" data-reveal="stagger">
       <div class="trackbg" aria-hidden="true"></div><div class="track" aria-hidden="true"></div>
-      <li><span class="n" aria-hidden="true">1</span><h3>Call or send the form</h3><p>Tell us roughly how many metres, the colour you like and your suburb. Photos help.</p></li>
-      <li><span class="n" aria-hidden="true">2</span><h3>Damian measures up and quotes</h3><p>He comes out, checks the boundary and the levels, and gives you a fixed price. Usually within a few days.</p></li>
+      <li><span class="n" aria-hidden="true">1</span><h3>Call, text or send the form</h3><p>Tell us roughly how many metres, the colour you like and your suburb. A photo of the yard helps.</p></li>
+      <li><span class="n" aria-hidden="true">2</span><h3>Damian measures up and quotes</h3><p>He comes out, checks the boundary and the levels, and gives you a fixed price in writing. Usually within a few days.</p></li>
       <li><span class="n" aria-hidden="true">3</span><h3>Fence goes up</h3><p>Most home fences take a day or two. We take the old one away and leave it tidy.</p></li>
     </ol>
   </div>
 </section>
 
-<section class="areas" id="areas">
+<section class="areas dark" id="areas">
   <div class="wrap"><div class="head" data-reveal><h2>Where we work</h2><p class="lede">All of Canberra, plus Queanbeyan and Jerrabomberra. South Coast jobs by arrangement.</p></div></div>
   <div class="ticker" aria-hidden="true">
     <div class="row"><span>Gungahlin</span><span>Amaroo</span><span>Bonner</span><span>Moncrieff</span><span>Ngunnawal</span><span>Palmerston</span><span>Harrison</span><span>Belconnen</span><span>Bruce</span><span>Kaleen</span><span>Evatt</span><span>Lawson</span><span>Latham</span><span>Melba</span><span>Macquarie</span><span>Gungahlin</span><span>Amaroo</span><span>Bonner</span><span>Moncrieff</span><span>Ngunnawal</span><span>Palmerston</span><span>Harrison</span><span>Belconnen</span><span>Bruce</span><span>Kaleen</span><span>Evatt</span><span>Lawson</span><span>Latham</span><span>Melba</span><span>Macquarie</span></div>
@@ -419,34 +700,73 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
   </div>
 </section>
 
+<section class="faqs" id="faq">
+  <div class="wrap">
+    <div class="head" data-reveal><h2>Good to know</h2><p class="lede">The questions Damian gets asked at nearly every quote.</p></div>
+    <div class="faq" data-reveal>
+      <details><summary>How much does a Colorbond fence cost?</summary><div class="a">Most 1.8 m Colorbond fences in Canberra land between $95 and $135 a metre installed, so a typical 30 m side boundary is roughly $2,900 to $4,000. Taller fences, sloping blocks and rock cost a bit more. <a href="#pricing">Try the price guide</a> for your numbers, then Damian gives you a fixed price on site.</div></details>
+      <details><summary>Do I have to pay for the whole boundary fence myself?</summary><div class="a">Usually not. In the ACT, neighbours normally share the cost of a boundary fence equally, and it's similar in NSW for Queanbeyan. Talk to your neighbour before the quote. Damian writes the quote so you can hand a copy straight over.</div></details>
+      <details><summary>Do I need council approval?</summary><div class="a">Most side and back boundary fences in the ACT don't need approval as long as they sit behind the front of the house and stay under the height limit. Front fences and corner blocks have extra rules. If yours needs a tick from anyone, Damian will tell you at the quote.</div></details>
+      <details><summary>How long does it take?</summary><div class="a">Damian usually quotes within a few days of you getting in touch. Most home fences are built in one to two days once materials are in. Colorbond sheets are cut to your height, so the colour and height you choose set the lead time.</div></details>
+      <details><summary>Colorbond or timber?</summary><div class="a">Colorbond doesn't rot, warp or feed termites, never needs painting, and looks the same from both sides. Timber is cheaper up front and dearer over ten years. If you want the timber look, ask about a timber plinth under Colorbond sheets.</div></details>
+      <details><summary>My block slopes. Does that matter?</summary><div class="a">Not much. We either step the panels down the slope or rake them to follow it, and fill gaps with a plinth. Have a look at the sloping jobs in the photos above.</div></details>
+      <details><summary>Do you take the old fence away?</summary><div class="a">Yes. Pulling down the old fence and taking it to the tip is part of every replacement quote, tip fees included.</div></details>
+      <details><summary>Is there a warranty?</summary><div class="a">Genuine Colorbond steel comes with BlueScope's own warranty against rust and fading. Damian stands behind his workmanship too, and he's easy to get hold of if anything ever needs a look.</div></details>
+      <details><summary>Can I get a gate to match?</summary><div class="a">Yes. Single gates for the side of the house, double gates wide enough for a car or trailer, all in the same colour as the fence and hung so they still swing straight in five years.</div></details>
+    </div>
+  </div>
+</section>
+
 <section class="quote dark" id="quote">
   <img class="bgimg" src="sunset-slope.webp" width="765" height="1020" loading="lazy" decoding="async" alt="">
   <div class="wrap quote-grid">
     <div class="qtext" data-reveal>
       <h2>Get a free quote</h2>
-      <p>Fill this in and Damian will call you back, usually the same day. No pressure, no obligation.</p>
+      <p>Fill this in and Damian calls you back, usually the same day. No pressure, no obligation.</p>
+      <ol><li><b>You send this.</b> Takes a minute.</li><li><b>Damian calls</b> to sort a time to measure up.</li><li><b>Fixed price in writing</b>, then you decide.</li></ol>
       <p>Prefer to talk?</p>
-      <a class="call" href="tel:0401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>0401 619 496</a>
+      <a class="call" href="tel:+61401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>0401 619 496</a>
+      <a class="btn ghost" data-sms="form" href="sms:+61401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H8l-5 3 1.5-4.5A8 8 0 1 1 21 12z"/></svg>Or text us a photo of the yard</a>
     </div>
     <form class="form" id="quoteForm" novalidate data-reveal>
       <div class="row2">
-        <label for="qName">Your name<input id="qName" name="name" type="text" autocomplete="name" required></label>
-        <label for="qPhone">Phone<input id="qPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required></label>
+        <label for="qService">What do you need?<select id="qService" name="service"><option>New Colorbond fence</option><option>Replace an old fence</option><option>Gate</option><option>Repair</option><option>Glass or pool fence</option><option>Something else</option></select></label>
+        <label for="qWhen">When do you need it?<select id="qWhen" name="when"><option>As soon as possible</option><option>In the next 2 to 4 weeks</option><option>In the next couple of months</option><option>Just getting prices</option></select></label>
       </div>
       <div class="row2">
-        <label for="qSuburb">Suburb<input id="qSuburb" name="suburb" type="text" autocomplete="address-level2" required></label>
-        <label for="qService">What do you need?<select id="qService" name="service"><option>New Colorbond fence</option><option>Replace an old fence</option><option>Gate</option><option>Repair</option><option>Glass or pool fence</option><option>Something else</option></select></label>
+        <label for="qMetres">Roughly how many metres? <small>(optional)</small><input id="qMetres" name="metres" type="number" inputmode="numeric" min="1" max="999" placeholder="e.g. 30"></label>
+        <label for="qSuburb">Suburb <span class="req" aria-hidden="true">*</span><input id="qSuburb" name="suburb" type="text" autocomplete="address-level2" required aria-describedby="qSuburbErr"><small class="field-err" id="qSuburbErr" hidden>Please add your suburb</small></label>
       </div>
-      <label for="qMsg"><span>Anything else? <small>(optional)</small></span><textarea id="qMsg" name="message" placeholder="Roughly how many metres, and any colour you like."></textarea></label>
+      <div class="row2">
+        <label for="qName">Your name <span class="req" aria-hidden="true">*</span><input id="qName" name="name" type="text" autocomplete="name" required aria-describedby="qNameErr"><small class="field-err" id="qNameErr" hidden>Please add your name</small></label>
+        <label for="qPhone">Mobile <span class="req" aria-hidden="true">*</span><input id="qPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="qPhoneErr"><small class="field-err" id="qPhoneErr" hidden>Please check the mobile number, it needs at least 8 digits</small></label>
+      </div>
+      <label for="qMsg"><span>Anything else? <small>(optional)</small></span><textarea id="qMsg" name="message" placeholder="Colour you like, gates, a steep bit, whatever helps."></textarea></label>
+      <input type="hidden" id="qColour" name="colour" value="">
+      <input type="hidden" id="qGuide" name="guide" value="">
       <label class="hp" aria-hidden="true">Company<input id="qCompany" name="company" type="text" tabindex="-1" autocomplete="off"></label>
-      <p class="err" id="formErr" hidden>That didn't send. Please call 0401 619 496 instead.</p>
-      <button class="btn" type="submit" id="qSend">Send my quote request</button>
-      <small>We only use your details to call you about your fence.</small>
+      <p class="err" id="formErr" hidden>Please fill in the three fields marked in red.</p>
+      <button class="btn" type="submit" id="qSend">Request my quote</button>
+      <div class="alt"><span>Fields marked * are needed. We only use your details to call you about your fence.</span></div>
     </form>
     <div class="thanks" id="thanks" hidden>
-      <h3>Thanks, <span id="thanksName">there</span>.</h3>
-      <p>Damian will call you on <b id="thanksPhone"></b>, usually the same day.</p>
-      <p>In a hurry? Call <a href="tel:0401619496">0401 619 496</a>.</p>
+      <h3 id="thanksHead">Thanks, <span id="thanksName">there</span>.</h3>
+      <p id="thanksBody">Damian will call you on <b id="thanksPhone"></b>, usually the same day.</p>
+      <p id="thanksCopyWrap" hidden>Or copy the details and email them to <a href="mailto:canberratocoast@gmail.com">canberratocoast@gmail.com</a>.</p>
+      <p>In a hurry? Call <a href="tel:+61401619496">0401 619 496</a>.</p>
+      <a class="btn" id="thanksSms" href="sms:+61401619496">Open the text message</a>
+    </div>
+  </div>
+</section>
+
+<section class="final dark" id="ready">
+  <div class="wrap" data-reveal>
+    <h2>Ready when you are.</h2>
+    <p>Damian calls back, usually the same day, seven days a week.</p>
+    <div class="cta">
+      <a class="btn" href="#quote">Get a free quote</a>
+      <a class="btn ghost" href="tel:+61401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>Call 0401 619 496</a>
+      <a class="btn ghost" data-sms="ready" href="sms:+61401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H8l-5 3 1.5-4.5A8 8 0 1 1 21 12z"/></svg>Text us a photo</a>
     </div>
   </div>
 </section>
@@ -456,17 +776,18 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
   <div class="wrap">
     <div class="fgrid">
       <div><div class="logo-tile"><img src="logo-720.png" width="720" height="235" alt="Canberra to Coast Fencing" loading="lazy" decoding="async"></div></div>
-      <div><h3>Call or email</h3><p><a href="tel:0401619496">0401 619 496</a><br><a href="mailto:canberratocoast@gmail.com">canberratocoast@gmail.com</a></p></div>
-      <div><h3>Where we work</h3><p>Canberra, Queanbeyan and Jerrabomberra.<br>South Coast by arrangement.</p></div>
-      <div><h3>Business</h3><p>Canberra to Coast Fencing<br>ABN 44 686 184 703</p></div>
+      <div><h3>Call or email</h3><p><a href="tel:+61401619496">0401 619 496</a><br><a href="mailto:canberratocoast@gmail.com">canberratocoast@gmail.com</a></p></div>
+      <div><h3>On this page</h3><p><a href="#services">Services</a><br><a href="#pricing">Price guide</a><br><a href="#colours">Colours</a><br><a href="#reviews">Reviews</a><br><a href="#faq">Good to know</a></p></div>
+      <div><h3>Business</h3><p>Canberra to Coast Fencing<br>ABN 44 686 184 703<br>Canberra, Queanbeyan and Jerrabomberra</p></div>
     </div>
-    <div class="fine"><span>© 2026 Canberra to Coast Fencing</span><span>Colorbond® is a registered trademark of BlueScope Steel.</span><span>Site by Frontline Systems</span></div>
+    <div class="fine"><span>© 2026 Canberra to Coast Fencing</span><span>COLORBOND® is a registered trademark of BlueScope Steel Limited.</span><span>Site by Frontline Systems</span></div>
   </div>
 </footer>
 
 <div class="stickybar" id="sticky">
-  <a class="btn" href="tel:0401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>Call now</a>
-  <a class="btn ghost" href="#quote">Get a quote</a>
+  <a class="btn" href="tel:+61401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>Call</a>
+  <a class="btn ghost" data-sms="bar" href="sms:+61401619496"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H8l-5 3 1.5-4.5A8 8 0 1 1 21 12z"/></svg>Text</a>
+  <a class="btn ghost" href="#quote">Quote</a>
 </div>
 
 <dialog class="lb" id="lb" aria-label="Photo">
@@ -477,54 +798,211 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
 </dialog>
 
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"HomeAndConstructionBusiness","name":"Canberra to Coast Fencing","description":"Colorbond fence installations, replacements, gates and repairs across Canberra, Queanbeyan and Jerrabomberra.","telephone":"+61401619496","email":"canberratocoast@gmail.com","url":"https://www.canberratocoast.net/","image":"https://www.canberratocoast.net/share.jpg","address":{"@type":"PostalAddress","addressLocality":"Canberra","addressRegion":"ACT","addressCountry":"AU"},"areaServed":[{"@type":"City","name":"Canberra"},{"@type":"City","name":"Queanbeyan"},{"@type":"City","name":"Jerrabomberra"}],"priceRange":"$$","founder":{"@type":"Person","name":"Damian Rubino-Fuchs"}}
+{"@context":"https://schema.org","@graph":[
+{"@type":"HomeAndConstructionBusiness","@id":"https://www.canberratocoast.net/#business","name":"Canberra to Coast Fencing","description":"Colorbond fence installations, replacements, gates and repairs across Canberra, Queanbeyan and Jerrabomberra.","telephone":"+61401619496","email":"canberratocoast@gmail.com","url":"https://www.canberratocoast.net/","image":"https://www.canberratocoast.net/share.jpg","address":{"@type":"PostalAddress","addressLocality":"Canberra","addressRegion":"ACT","addressCountry":"AU"},"areaServed":[{"@type":"City","name":"Canberra"},{"@type":"City","name":"Queanbeyan"},{"@type":"City","name":"Jerrabomberra"}],"priceRange":"$$","founder":{"@type":"Person","name":"Damian Rubino-Fuchs"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"How much does a Colorbond fence cost?","acceptedAnswer":{"@type":"Answer","text":"Most 1.8 m Colorbond fences in Canberra land between $95 and $135 a metre installed, so a typical 30 m side boundary is roughly $2,900 to $4,000. Taller fences, sloping blocks and rock cost a bit more."}},
+{"@type":"Question","name":"Do I have to pay for the whole boundary fence myself?","acceptedAnswer":{"@type":"Answer","text":"Usually not. In the ACT, neighbours normally share the cost of a boundary fence equally, and it's similar in NSW for Queanbeyan."}},
+{"@type":"Question","name":"Do I need council approval?","acceptedAnswer":{"@type":"Answer","text":"Most side and back boundary fences in the ACT don't need approval as long as they sit behind the front of the house and stay under the height limit. Front fences and corner blocks have extra rules."}},
+{"@type":"Question","name":"How long does it take?","acceptedAnswer":{"@type":"Answer","text":"Damian usually quotes within a few days. Most home fences are built in one to two days once materials are in."}},
+{"@type":"Question","name":"Do you take the old fence away?","acceptedAnswer":{"@type":"Answer","text":"Yes. Pulling down the old fence and taking it to the tip is part of every replacement quote, tip fees included."}}
+]}]}
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer>
 (function(){
   var $=function(id){return document.getElementById(id)};
-  var FORM_ENDPOINT="";      /* live site: paste a Formspree or Web3Forms URL here and the form posts to it */
-  var DEMO=/*DEMO*/false;    /* demo: the form shows the thank-you without sending anything */
-  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var html=document.documentElement;
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* header turns solid once the hero starts to leave */
+  /* ---------- one place for every business fact ---------- */
+  var SITE={
+    name:"Canberra to Coast Fencing", phoneDisplay:"0401 619 496", phoneE164:"+61401619496", email:"canberratocoast@gmail.com",
+    googleReviewsUrl:"https://www.google.com/search?q=Canberra+to+Coast+fencing+reviews",   /* replace with the g.page link */
+    googleWriteReviewUrl:"https://www.google.com/search?q=Canberra+to+Coast+fencing+reviews", /* replace with the g.page/.../review link */
+    formEndpoint:"https://api.web3forms.com/submit",
+    formAccessKey:""   /* paste the Web3Forms access key here and the form emails Damian; empty = falls back to text message */
+  };
+  var DEMO=/*DEMO*/false;   /* demo: the form shows the thank-you without sending anything */
+  /* GUIDE PRICES, per metre installed, incl. GST. Damian to confirm. Typical Canberra range for 2026. */
+  var PRICES={ perMetre:{"1.5":[80,115],"1.8":[95,135],"2.1":[110,155]}, removal:[15,25], gate:{single:[450,650],double:[900,1300]}, minimum:900 };
+  var COLOURS=[
+    {n:"Monument",h:"#323233",t:"Canberra's favourite. Goes with everything."},
+    {n:"Night Sky",h:"#0B0B0C",t:"Deepest black. Sharp against greenery."},
+    {n:"Basalt",h:"#6D6C6E",t:"Warm mid grey. Hides dust well."},
+    {n:"Woodland Grey",h:"#4B4C46",t:"Green-grey. Sits back into the garden."},
+    {n:"Ironstone",h:"#3E434C",t:"Blue-grey. Modern, not cold."},
+    {n:"Deep Ocean",h:"#364152",t:"Navy. Great with brick and timber."},
+    {n:"Shale Grey",h:"#BDBFBA",t:"Light grey. Keeps a narrow yard bright."},
+    {n:"Surfmist",h:"#E4E2D5",t:"Off white. Coastal, clean, shows dirt a bit."},
+    {n:"Dune",h:"#B1ADA3",t:"Soft stone. Easy on the eye."},
+    {n:"Paperbark",h:"#CABFA4",t:"Sandy beige. Matches older brick."},
+    {n:"Classic Cream",h:"#E9DCB8",t:"The classic cream. Warm and tidy."},
+    {n:"Pale Eucalypt",h:"#7C846A",t:"Gum-leaf green. Disappears behind plants."}
+  ];
+  var REVIEWS=[
+    ["Daniel S.","I've just had a 26 metre fence installed on a shared boundary by Damian from Canberra to Coast Fencing. The fence looks amazing and he was so super friendly and easy to deal with. Extremely competitive price and excellent product. Would highly recommend."],
+    ["Rhonda F.","Got a fast and good quote from Damian. Arrived when promised and did a fabulous job. It was a fence along a boundary that had a steep drop off on one side. The final fence is well constructed and looks great. Neighbours and I very happy, would highly recommend this company."],
+    ["Yvonne M.","Damian and his crew were professional, hard working and created a wonderful fence for our home. Excellent value, Damian carried out all work in a timely manner and communicated extremely well. We highly recommend this company."],
+    ["Bryce","Damian went above and beyond on such a short notice. Great turnaround time at a busy time of year. Excellent communication and always turned up on time. Couldn't be happier with our fence. Highly recommend!"],
+    ["Kylie H.","What an amazing experience. Made sure we were happy every step of the way! Very professional, reliable, fast, amazing quality and takes pride in his work (you don't get that often these days). Would highly recommend."],
+    ["Jason C.","Damian was awesome, communicated well and done an amazing job. Would highly recommend him."],
+    ["Nick C.","Canberra to Coast went above and beyond to achieve a quality job, would highly recommend to anyone, and will definitely be using them for any future works."],
+    ["Mitch T.","Canberra to Coast is my preferred contractor for fencing for my landscaping clients. Reliable and top quality work every time."],
+    ["M Organ","Excellent job done by Damian to replace our old paling fence with a shiny new Colorbond one. Turned up as promised, good communicator and well priced."],
+    ["Kelli W.","Quick quotes and great communication from Damian. Really pleased with the fence which was completed as planned."],
+    ["Matt M.","Great workmanship, highly recommend and very easy to talk to."],
+    ["Shaun","Highly recommend these guys, great quality work and reasonably priced."],
+    ["Brendon R.","Great communication, professional and fast."],
+    ["Jason E.","Damian was really clear, responsive, thorough and efficient. The advice he gave improved the final result. Very happy with the work."]
+  ];
+
+  /* ---------- tiny analytics hook: fires if Google Ads or Meta pixel is on the page ---------- */
+  function track(ev,params){ try{ if(window.gtag) gtag("event",ev,params||{}); if(window.fbq) fbq("trackCustom",ev,params||{}); }catch(e){} }
+  document.addEventListener("click",function(e){ var a=e.target.closest("a[href^='tel:'],a[href^='sms:']"); if(a) track("generate_lead",{method:a.getAttribute("href").slice(0,3)}); });
+
+  /* ---------- text-us links, pre-written ---------- */
+  var chosenColour="", lastAutoNote="";
+  function smsHref(body){ return "sms:"+SITE.phoneE164+"?&body="+encodeURIComponent(body); }
+  function defaultSms(){ return "Hi Damian, I'd like a fence quote.\nSuburb: \nRoughly how many metres: \nColour: "+(chosenColour||"")+"\n(Attach a photo of the yard if you can.)"; }
+  function setSmsLinks(){ document.querySelectorAll("[data-sms]").forEach(function(a){ var k=a.getAttribute("data-sms"); if(k!=="pg"&&k!=="pg2") a.href=smsHref(defaultSms()); }); }
+  setSmsLinks();
+  $("readReviews").href=SITE.googleReviewsUrl; $("writeReview").href=SITE.googleWriteReviewUrl;
+
+  /* ---------- header + sticky bar ---------- */
   var top=$("topbar"), ticking=false;
   function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ top.classList.toggle("scrolled",window.scrollY>40); ticking=false; }); }
   window.addEventListener("scroll",onScroll,{passive:true}); onScroll();
+  var bar=$("sticky"), heroEl=$("hero"), quoteEl=$("quote"), heroIn=true, quoteIn=false;
+  function barSync(){ var on=!heroIn&&!quoteIn; bar.classList.toggle("on",on); document.body.classList.toggle("pad",on); }
+  if("IntersectionObserver" in window){
+    new IntersectionObserver(function(e){ heroIn=e[0].isIntersecting; barSync(); },{threshold:0.05}).observe(heroEl);
+    new IntersectionObserver(function(e){ quoteIn=e[0].isIntersecting; barSync(); },{threshold:0.15}).observe(quoteEl);
+  } else { heroIn=false; barSync(); }
 
-  /* sticky call bar shows once the hero has scrolled away (phones only) */
-  var bar=$("sticky"), hero=$("hero");
-  function barOn(on){ bar.classList.toggle("on",on); document.body.classList.toggle("pad",on); }
-  if("IntersectionObserver" in window){ new IntersectionObserver(function(e){ barOn(!e[0].isIntersecting); },{threshold:0.05}).observe(hero); } else { barOn(true); }
+  /* ---------- price guide ---------- */
+  function money(n){ n=Math.round(n/50)*50; return "$"+n.toLocaleString("en-AU"); }
+  function pgState(){
+    var job=document.querySelector("input[name=pgJob]:checked").value, h=document.querySelector("input[name=pgHeight]:checked").value, g=document.querySelector("input[name=pgGate]:checked").value;
+    var m=parseInt($("pgMetres").value,10); if(!(m>0)) m=0; m=Math.min(300,m);
+    return {job:job,h:h,g:g,m:m};
+  }
+  var pgLast={lo:1900,hi:2700}, pgTouched=false, pgSummary="", pgRange="", pgTween=null;
+  function pgCalc(){
+    var s=pgState(), lo=0, hi=0, eyebrow="", note="", fenceJob=(s.job==="new"||s.job==="replace"), gateJob=(s.job==="gate");
+    $("pgHeightWrap").hidden=!fenceJob; $("pgMetresWrap").hidden=!fenceJob; $("pgGateWrap").hidden=(s.job==="repair");
+    $("pgGateHead").textContent=gateJob?"Which gate?":"Add a gate?";
+    $("pgGateNone").hidden=gateJob;
+    if(gateJob&&s.g==="none"){ document.querySelector("input[name=pgGate][value=single]").checked=true; s.g="single"; syncChips(); }
+    if(fenceJob){
+      var pm=PRICES.perMetre[s.h];
+      if(s.m>0){
+        lo=s.m*pm[0]; hi=s.m*pm[1];
+        if(s.job==="replace"){ lo+=s.m*PRICES.removal[0]; hi+=s.m*PRICES.removal[1]; }
+        if(s.g!=="none"){ lo+=PRICES.gate[s.g][0]; hi+=PRICES.gate[s.g][1]; }
+        lo=Math.max(lo,PRICES.minimum); hi=Math.max(hi,PRICES.minimum+400);
+        eyebrow="Guide price for "+s.m+" m of "+(s.job==="replace"?"replacement ":"new ")+s.h+" m Colorbond fence"+(s.g!=="none"?" with a "+s.g+" gate":"");
+      } else {
+        eyebrow="Add some metres to see a price";
+      }
+      note=(s.job==="replace"?"Includes pulling down the old fence and tip fees, then ":"Includes ")+"posts in concrete, rails, sheets, plinth and clean-up. <b>Boundary fence? Your neighbour usually pays half.</b>";
+    } else if(gateJob){
+      lo=PRICES.gate[s.g][0]; hi=PRICES.gate[s.g][1];
+      eyebrow="Guide price for a "+s.g+" Colorbond gate, hung and latched";
+      note="Matched to your existing fence colour. <b>Double gates fit a car or trailer.</b>";
+    } else {
+      eyebrow="Repairs are priced from a photo"; note="Text Damian a photo of the damage and he'll come back with a price, usually the same day. <b>Most small repairs are done in a morning.</b>";
+    }
+    $("pgEyebrow").textContent=eyebrow; $("pgNote").innerHTML=note;
+    var priceEl=$("pgPrice"), hasPrice=(hi>0);
+    function paint(a,b){ priceEl.innerHTML=money(a)+' <span class="nw"><small>to</small> '+money(b)+'</span>'; }
+    if(pgTween){ pgTween.kill(); pgTween=null; }
+    if(s.job==="repair"){ priceEl.textContent="Send a photo"; }
+    else if(!hasPrice){ priceEl.textContent="Add some metres"; }
+    else {
+      if(window.gsap&&!reduce){ var o={a:pgLast.lo,b:pgLast.hi}; pgTween=gsap.to(o,{a:lo,b:hi,duration:.5,ease:"expo.out",onUpdate:function(){ paint(o.a,o.b); }}); }
+      else paint(lo,hi);
+      pgLast={lo:lo,hi:hi};
+    }
+    pgRange=hasPrice?money(lo)+" to "+money(hi):"";
+    pgSummary=eyebrow+(pgRange?", guide "+pgRange:"");
+    var body=hasPrice
+      ? "Hi Damian, I'd like to lock in a quote.\n"+eyebrow+"\nGuide price "+pgRange+"\nSuburb: \nColour: "+(chosenColour||"")+"\n(Photo of the yard attached if I can.)"
+      : defaultSms();
+    document.querySelectorAll("[data-sms=pg],[data-sms=pg2]").forEach(function(a){ a.href=smsHref(body); });
+  }
+  function syncChips(){ document.querySelectorAll(".chip").forEach(function(l){ var i=l.querySelector("input"); l.classList.toggle("on",!!(i&&i.checked)); }); }
+  function pgChanged(){ pgTouched=true; syncChips(); pgCalc(); }
+  ["pgJob","pgHeight","pgGate"].forEach(function(n){ document.querySelectorAll("input[name="+n+"]").forEach(function(r){ r.addEventListener("change",pgChanged); }); });
+  var mInput=$("pgMetres");
+  mInput.addEventListener("input",pgChanged);
+  mInput.addEventListener("blur",function(){ var v=parseInt(mInput.value,10); if(v>300){ mInput.value=300; pgChanged(); } });
+  $("pgMinus").addEventListener("click",function(){ mInput.value=Math.max(3,(parseInt(mInput.value,10)||3)-1); pgChanged(); });
+  $("pgPlus").addEventListener("click",function(){ mInput.value=Math.max(3,Math.min(300,(parseInt(mInput.value,10)||2)+1)); pgChanged(); });
+  syncChips();
+  pgCalc();
 
-  /* motion: one hero moment, then quiet scroll reveals */
-  if(window.gsap && window.ScrollTrigger && !reduce){
+  /* ---------- colour picker ---------- */
+  var sw=$("swatches");
+  COLOURS.forEach(function(c,i){
+    var b=document.createElement("button"); b.type="button"; b.className="swatch"; b.setAttribute("aria-pressed",i===0?"true":"false");
+    b.innerHTML='<span class="c" style="background:'+c.h+'"></span><b>'+c.n+'</b>';
+    b.addEventListener("click",function(){ pickColour(i); });
+    sw.appendChild(b);
+  });
+  function pickColour(i){
+    var c=COLOURS[i]; chosenColour=c.n;
+    [].forEach.call(sw.children,function(el,k){ el.setAttribute("aria-pressed",k===i?"true":"false"); });
+    document.querySelectorAll(".fence").forEach(function(svg){ svg.style.setProperty("--sheet",c.h); });
+    $("fenceName").textContent=c.n; $("fenceHint").textContent=c.t; $("qColour").value=c.n;
+    setSmsLinks(); pgCalc();
+    var msg=$("qMsg"); if(!msg.value.trim()||msg.value===lastAutoNote){ lastAutoNote="Colour: "+c.n; msg.value=lastAutoNote; }
+  }
+  document.querySelectorAll(".fence").forEach(function(svg){ svg.style.setProperty("--sheet",COLOURS[0].h); });
+  /* wood grain pattern for the plinth, added to the first svg's defs */
+  var defs=document.querySelector("#fenceSvg defs"); defs.insertAdjacentHTML("beforeend",'<pattern id="wood" width="60" height="8" patternUnits="userSpaceOnUse"><rect width="60" height="8" fill="none"/><path d="M0 4 Q15 1 30 4 T60 4" stroke="rgba(0,0,0,.5)" stroke-width="1" fill="none"/></pattern>');
+
+  /* ---------- anatomy stepper ---------- */
+  var parts=$("parts");
+  function showPart(li){
+    [].forEach.call(parts.children,function(el){ var on=el===li; el.classList.toggle("open",on); el.querySelector("button").setAttribute("aria-expanded",String(on)); });
+    var p=li.getAttribute("data-part");
+    document.querySelectorAll("#fenceSvg2 [data-part]").forEach(function(el){ el.classList.toggle("hl",el.getAttribute("data-part")===p); });
+  }
+  [].forEach.call(parts.children,function(li){ li.querySelector("button").addEventListener("click",function(){ showPart(li); }); });
+  showPart(parts.children[0]);
+
+  /* ---------- reviews marquee ---------- */
+  var star='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.7 5.9 21l1.3-6.8-5-4.7 6.8-.8z"/></svg>';
+  function card(r,dup){ return '<blockquote class="rv'+(dup?' dup':'')+'"><div class="stars" aria-label="5 out of 5 stars">'+star+star+star+star+star+'</div><p>'+r[1]+'</p><footer><b>'+r[0]+'</b><span>Google review</span></footer></blockquote>'; }
+  var half=Math.ceil(REVIEWS.length/2), r1=REVIEWS.slice(0,half), r2=REVIEWS.slice(half);
+  $("rvRows").innerHTML='<div class="rv-row">'+r1.map(function(r){return card(r,false)}).join("")+r1.map(function(r){return card(r,true)}).join("")+'</div><div class="rv-row rev">'+r2.map(function(r){return card(r,false)}).join("")+r2.map(function(r){return card(r,true)}).join("")+'</div>';
+
+  /* ---------- motion: one hero moment, then quiet scroll reveals ---------- */
+  if(window.gsap&&window.ScrollTrigger&&!reduce){
     gsap.registerPlugin(ScrollTrigger);
     var tl=gsap.timeline({defaults:{ease:"expo.out"}});
+    html.classList.add("gsap");
     tl.fromTo(".hero img.bg",{scale:1.12},{scale:1,duration:2.2},0)
-      .to(".hero .line>span",{y:0,yPercent:0,duration:1.1,stagger:.13,clearProps:"transform"},.15)
-      .to(".rule",{scaleX:1,duration:.8,clearProps:"transform"},.7)
-      .from("[data-hero]",{y:22,opacity:0,duration:.9,stagger:.12},.55);
+      .to(".hero .line>span",{y:0,yPercent:0,duration:1.1,stagger:.13},.15)
+      .to(".rule",{scaleX:1,duration:.8},.7)
+      .from("[data-hero]",{y:22,opacity:0,duration:.9,stagger:.1},.55);
     gsap.to(".hero img.bg",{yPercent:10,ease:"none",scrollTrigger:{trigger:"#hero",start:"top top",end:"bottom top",scrub:true}});
     gsap.to(".quote .bgimg",{yPercent:-8,ease:"none",scrollTrigger:{trigger:"#quote",start:"top bottom",end:"bottom top",scrub:true}});
     document.querySelectorAll("[data-reveal]").forEach(function(el){
       var targets=el.getAttribute("data-reveal")==="stagger"?el.children:el;
       gsap.from(targets,{y:28,opacity:0,duration:.9,stagger:.09,ease:"power3.out",scrollTrigger:{trigger:el,start:"top 88%",once:true}});
     });
-    var track=document.querySelector(".track");
-    if(track) gsap.fromTo(track,{scaleX:0},{scaleX:1,ease:"none",scrollTrigger:{trigger:".steps",start:"top 75%",end:"bottom 55%",scrub:true}});
+    var track_=document.querySelector(".track");
+    if(track_) gsap.fromTo(track_,{scaleX:0},{scaleX:1,ease:"none",scrollTrigger:{trigger:".steps",start:"top 75%",end:"bottom 55%",scrub:true}});
     document.querySelectorAll("[data-count]").forEach(function(el){
       var target=parseFloat(el.getAttribute("data-count")), dec=(el.getAttribute("data-count").split(".")[1]||"").length, suf=el.getAttribute("data-suffix")||"", o={v:0};
       gsap.to(o,{v:target,duration:1.6,ease:"power2.out",scrollTrigger:{trigger:el,start:"top 90%",once:true},onUpdate:function(){ el.textContent=o.v.toFixed(dec)+suf; }});
     });
-  } else {
-    html.classList.add("ready");
-  }
-  setTimeout(function(){ html.classList.add("ready"); },1800);   /* belt and braces: never leave the headline hidden */
+  } else { html.classList.add("ready"); }
 
-  /* gallery lightbox */
+  /* ---------- gallery lightbox ---------- */
   var lb=$("lb"), img=$("lbImg"), cap=$("lbCap"), items=[].slice.call(document.querySelectorAll(".gallery button")), idx=0;
   function show(i){ idx=(i+items.length)%items.length; var b=items[idx]; img.src=b.getAttribute("data-src"); img.alt=b.querySelector("img").alt; cap.textContent=b.getAttribute("data-cap"); }
   items.forEach(function(b,i){ b.addEventListener("click",function(){ show(i); if(lb.showModal){ lb.showModal(); $("lbNext").focus(); } else { window.open(b.getAttribute("data-src")); } }); });
@@ -534,27 +1012,62 @@ html.js.ready .rule{transform:none;transition:transform .7s .4s cubic-bezier(.2,
   lb.addEventListener("click",function(e){ if(e.target===lb) lb.close(); });
   lb.addEventListener("keydown",function(e){ if(e.key==="ArrowLeft") show(idx-1); if(e.key==="ArrowRight") show(idx+1); });
 
-  /* quote form */
+  /* ---------- quote form ---------- */
   var f=$("quoteForm");
+  function composed(d){ return ["Hi Damian, quote request from the website.","Need: "+d.service,"When: "+d.when,d.metres?"Metres: about "+d.metres:"",d.guide?"Price guide: "+d.guide:"","Suburb: "+d.suburb,d.colour?"Colour: "+d.colour:"","Name: "+d.name,"Mobile: "+d.phone,d.message?"Notes: "+d.message:""].filter(Boolean).join("\n"); }
+  function digits(v){ return (v.match(/\d/g)||[]).length; }
+  function setErr(el,errEl,bad){ el.setAttribute("aria-invalid",bad?"true":"false"); errEl.hidden=!bad; }
+  [["qSuburb","qSuburbErr"],["qName","qNameErr"],["qPhone","qPhoneErr"]].forEach(function(pair){
+    $(pair[0]).addEventListener("input",function(){ if($(pair[0]).getAttribute("aria-invalid")==="true"){ var ok=pair[0]==="qPhone"?digits($(pair[0]).value)>=8:!!$(pair[0]).value.trim(); if(ok) setErr($(pair[0]),$(pair[1]),false); } });
+  });
   f.addEventListener("submit",function(e){
     e.preventDefault();
     if($("qCompany").value) return;
-    var name=$("qName").value.trim(), phone=$("qPhone").value.trim(), suburb=$("qSuburb").value.trim();
-    if(!name||!phone||!suburb){ [$("qName"),$("qPhone"),$("qSuburb")].some(function(el){ if(!el.value.trim()){ el.focus(); return true; } }); return; }
-    var data={name:name,phone:phone,suburb:suburb,service:$("qService").value,message:$("qMsg").value.trim(),_subject:"Quote request from "+name+" ("+suburb+")"};
-    var btn=$("qSend"), err=$("formErr");
-    function done(){ $("thanksName").textContent=name.split(" ")[0]; $("thanksPhone").textContent=phone; f.hidden=true; $("thanks").hidden=false; $("thanks").scrollIntoView({block:"center"}); }
-    if(FORM_ENDPOINT){
-      btn.disabled=true; btn.textContent="Sending…"; err.hidden=true;
-      fetch(FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(data)})
-        .then(function(r){ if(!r.ok) throw new Error(r.status); done(); })
-        .catch(function(){ btn.disabled=false; btn.textContent="Send my quote request"; err.hidden=false; });
-    } else if(DEMO){ done(); }
-    else {
-      var body="Name: "+name+"\nPhone: "+phone+"\nSuburb: "+suburb+"\nNeed: "+data.service+"\n\n"+data.message;
-      window.location.href="mailto:canberratocoast@gmail.com?subject="+encodeURIComponent(data._subject)+"&body="+encodeURIComponent(body);
-      done();
+    var first=null;
+    [["qSuburb","qSuburbErr",function(v){return !!v.trim()}],["qName","qNameErr",function(v){return !!v.trim()}],["qPhone","qPhoneErr",function(v){return digits(v)>=8}]].forEach(function(t){
+      var el=$(t[0]), bad=!t[2](el.value); setErr(el,$(t[1]),bad); if(bad&&!first) first=el;
+    });
+    var err=$("formErr");
+    if(first){ err.hidden=false; first.focus(); return; }
+    err.hidden=true;
+    var d={service:$("qService").value,when:$("qWhen").value,metres:$("qMetres").value.trim(),suburb:$("qSuburb").value.trim(),colour:$("qColour").value,guide:$("qGuide").value,name:$("qName").value.trim(),phone:$("qPhone").value.trim(),message:$("qMsg").value.trim()};
+    var text=composed(d), btn=$("qSend");
+    function show(sent){
+      $("thanksName").textContent=d.name.split(" ")[0]; $("thanksSms").href=smsHref(text);
+      if(sent){
+        $("thanksHead").innerHTML='Thanks, <span id="thanksName">'+d.name.split(" ")[0]+'</span>.';
+        $("thanksBody").innerHTML='Damian will call you on <b>'+d.phone+'</b>, usually the same day.';
+        $("thanksCopyWrap").hidden=true; $("thanksSms").textContent="Send the same details by text";
+      } else {
+        $("thanksHead").textContent="One more tap, "+d.name.split(" ")[0]+".";
+        $("thanksBody").textContent="Your phone's messages app should now be open with your details in it. Press send and Damian will call you back, usually the same day.";
+        $("thanksCopyWrap").hidden=false; $("thanksSms").textContent="Open the text message";
+      }
+      f.hidden=true; $("thanks").hidden=false; $("thanks").scrollIntoView({block:"center"});
+      track("generate_lead",{method:sent?"form":"sms",service:d.service});
     }
+    if(SITE.formAccessKey){
+      btn.disabled=true; btn.textContent="Sending…";
+      fetch(SITE.formEndpoint,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({access_key:SITE.formAccessKey,subject:"Quote request: "+d.service+" in "+d.suburb,from_name:SITE.name+" website",name:d.name,phone:d.phone,suburb:d.suburb,service:d.service,when:d.when,metres:d.metres,colour:d.colour,guide:d.guide,message:text})})
+        .then(function(r){ return r.json().catch(function(){return {}}).then(function(body){ if(!r.ok||body.success===false) throw new Error(body.message||r.status); }); })
+        .then(function(){ show(true); })
+        .catch(function(){ btn.disabled=false; btn.textContent="Request my quote"; window.location.href=smsHref(text); show(false); });
+    } else if(DEMO){ show(true); }
+    else { window.location.href=smsHref(text); show(false); }
+  });
+  document.querySelectorAll("[data-toform]").forEach(function(a){
+    a.addEventListener("click",function(){
+      var st=pgState(), svc={new:"New Colorbond fence",replace:"Replace an old fence",gate:"Gate",repair:"Repair"}[st.job];
+      $("qService").value=svc;
+      if((st.job==="new"||st.job==="replace")&&st.m>0) $("qMetres").value=st.m;
+      if(pgSummary){
+        var line="Price guide: "+pgSummary+(chosenColour?", colour "+chosenColour:"");
+        var msg=$("qMsg");
+        if(!msg.value.trim()||msg.value===lastAutoNote){ lastAutoNote=line; msg.value=line; }
+        $("qGuide").value=pgSummary;
+      }
+      setTimeout(function(){ $("qSuburb").focus({preventScroll:true}); },600);
+    });
   });
 })();
 </script>
