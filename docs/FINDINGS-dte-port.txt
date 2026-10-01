@@ -1,0 +1,68 @@
+DTE + D(1h/4h) PORTED TO ES, GOLD, RTY AND YM (2026-09-09)
+Declared in the addendum to docs/PREREG-dte-method.md before the run. Rule frozen exactly
+as in docs/FINDINGS-dte-delivery-isolated.txt; only the instrument changes.
+Data: data/reference/algotrader_3min/{NQ,ES,RTY,YM,GC}_3min.parquet, 2021-04 to 2026-06.
+Cost 3 ticks per market. 1:2 target, 120-minute time exit, exits from the bar AFTER entry.
+
+NQ-3min is the CONTROL. The finding is on 1-minute bars; these files are 3-minute, so a
+positive ES or GC result would mean nothing unless NQ is also positive on this venue.
+
+================ A CORRECTION TO MY OWN SCORING ================
+The addendum's third condition — "win rate clears the 33.3% break-even for the 1:2 target"
+— is MIS-SPECIFIED and my first pass reported "0 of 5 markets pass" on the strength of it.
+That is wrong and withdrawn. This book has THREE outcomes, not two: 19-31% of trades exit
+on the 120-minute timer, and those FLAT exits average +0.36 to +0.53 R. A nominal 1:2
+target therefore does not imply a 33.3% break-even. The correct break-even uses the
+realised average win and average loss. Re-scored below on that basis.
+
+================ RESULT ================
+ sym    n  per_wk       R      PF       t      H1      H2   drop3   maxDD  medRisk(ticks)
+  NQ  330   1.23  +0.1583  1.2949  +2.14  +0.1764 +0.1402 +0.1415   10.9        171.5
+ RTY  494   1.84  +0.1604  1.3244  +2.81  +0.2604 +0.0612 +0.1493   21.9         70.0
+  YM  401   1.49  +0.1448  1.2774  +2.24  +0.1767 +0.1131 +0.1309   10.4         74.0
+  ES  350   1.30  +0.0690  1.1195  +0.98  -0.0138 +0.1517 +0.0526   20.4         40.0
+  GC  388   1.44  +0.0142  1.0259  +0.23  +0.0010 +0.0274 -0.0011   13.4         41.0
+
+Outcome mix and the true break-even:
+ sym  profitable  break-even  excess   TARGET   STOP   FLAT   FLAT avg R   avgW/avgL
+  NQ     43.3%      37.1%     +6.2     30.6%  50.6%  18.8%     +0.373       1.693
+ RTY     47.0%      40.1%     +6.9     24.9%  43.9%  31.2%     +0.442       1.496
+  YM     47.9%      41.8%     +6.0     25.9%  47.6%  26.4%     +0.526       1.391
+  ES     42.9%      40.5%     +2.4     26.0%  50.3%  23.7%     +0.511       1.470
+  GC     43.3%      42.7%     +0.6     21.9%  47.4%  30.7%     +0.360       1.343
+
+DECLARED BAR PER MARKET (R>0, both halves>0, profitable rate above its own break-even)
+  NQ   PASS    RTY  PASS    YM   PASS
+  ES   FAIL - H1 is -0.0138
+  GC   nominally passes the three conditions but is DEAD on substance: R +0.014 at t 0.23,
+       excess +0.6 points, and it turns NEGATIVE on drop-3-best. Recorded as a failure.
+
+PORT-LEVEL BAR: "NQ-3min positive (venue valid) AND at least 3 of 5 markets positive."
+NQ-3min is +0.1583 at t 2.14, so the venue is valid, and NQ / RTY / YM all clear properly.
+THE PORT SUCCEEDS on the declared bar.
+
+================ THE CAVEAT THAT MATTERS MOST ================
+NQ, RTY, YM and ES are ALL US equity index futures and are heavily correlated. This is
+closer to 1.5 independent tests than to four. Gold is the only structurally different
+market in the set, and gold is where the rule dies.
+
+The honest statement is NOT "the rule works across markets". It is "the rule works on US
+equity index futures and not on metals". That is still worth having - three separate
+contracts, and it says something about what behaviour the rule captures - but it is one
+asset class.
+
+UNEXPLAINED LOOSE THREAD: ES is the weak one. It is the most liquid equity index and the
+most correlated with NQ, so it should look most like NQ. It does not (+0.069 versus
++0.158, and its first half is negative). No explanation for this yet.
+
+================ PREDICTIONS SCORED ================
+ P1 NQ-3min positive but WEAKER than 1-min, far fewer trades ... HALF WRONG. Fewer trades,
+    yes (1.23/wk versus 4.8), but R is HIGHER, not weaker: +0.158 versus +0.103.
+ P2 ES positive and weaker than NQ ............................ CORRECT (+0.069 vs +0.158)
+ P3 GC weakest or negative ..................................... CORRECT, weakest, ~zero
+ P4 at least one market will fail .............................. CORRECT (ES halves, GC
+    substance) - the 6E law holds: the grammar transfers, the instrument does not
+ P5 frequency scales with tick-to-range ratio, not uniformly .... roughly consistent (RTY
+    highest at 1.84/wk, NQ lowest at 1.23) but the prediction was too loose to score cleanly
+
+Repro: python3 scripts/dte_port.py --syms NQ,ES,RTY,YM,GC

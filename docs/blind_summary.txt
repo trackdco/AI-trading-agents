@@ -1,0 +1,24 @@
+NQ VALUE-AREA RETEST — CLEAN-ROOM BACKTEST SUMMARY
+session-days traded: 782
+trades: 6486
+win rate (TARGET/(TARGET+STOP)): 0.6729
+mean net_r: 0.1833
+total net_r: 1188.69
+count by res: TARGET=3865, STOP=1879, SAR=741, FLAT=1
+per-year: trades / total net_r
+  2023: 1364 / 263.59
+  2024: 1616 / 356.60
+  2025: 1847 / 301.52
+  2026: 1659 / 266.98
+sanity problems: 0
+trades whose fill bar starts exactly at the signal time (t_fill == t_sig): 1093
+
+AMBIGUITIES
+- Session bounds t0+23h / t0+22h / t0+14h / t0+15.5h are absolute durations added to the wall-clock 18:00 ET of the session-day (no session spans a DST switch, so this matches wall-clock reading).
+- 'top'/'bottom' bins of the volume profile are taken as the highest/lowest bins touched by any prior-session bar (min floor(low) .. max floor(high)).
+- 'Same end time' signal dedup: nearest level to close[i]; an exact-distance tie keeps the first candidate in (VAH, VAL) order.
+- 'Previous bar i-1' is the previous element of the hour-filtered list (identical to the previous session bar except across data gaps).
+- The NEXT signal used for cancel, and the opposing signals used for SAR, are taken from the full signal list regardless of whether those signals were themselves skipped (occupancy, news, risk>30, unarmed).
+- t_free is initialised to t0 - 24h; per-year figures are grouped by the session-day's year.
+- t_fill == t_sig is allowed: the spec arms on the signal candle itself (si0 = start-1), so live = start and the fill can occur on the bar that starts at the signal time. The strict t_sig < t_fill check was relaxed to t_sig <= t_fill rather than altering the rule.
+- If VAH == VAL (degenerate profile) both levels are still tested; duplicate signals at one time collapse via the nearest-level rule.

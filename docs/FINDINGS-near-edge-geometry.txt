@@ -1,0 +1,68 @@
+WHY THE TARGET IS ONLY ~1.5 POINTS: where the two band systems actually sit
+
+2023-26: 733 sessions with a respected zone
+   VWAP envelope width (2k*sigma): median   166.4 pts
+   Bollinger band width          : median    71.8 pts   <- 0.43x the envelope
+   upper BB minus upper envelope : median   -35.9 pts
+   lower envelope minus lower BB : median   -46.5 pts
+2020-22: 616 sessions with a respected zone
+   VWAP envelope width (2k*sigma): median   146.4 pts
+   Bollinger band width          : median    64.8 pts   <- 0.44x the envelope
+   upper BB minus upper envelope : median   -29.5 pts
+   lower envelope minus lower BB : median   -38.2 pts
+2017-19: 676 sessions with a respected zone
+   VWAP envelope width (2k*sigma): median    44.4 pts
+   Bollinger band width          : median    19.7 pts   <- 0.44x the envelope
+   upper BB minus upper envelope : median    -9.2 pts
+   lower envelope minus lower BB : median   -12.5 pts
+
+READ THIS (corrected - my first explanation was wrong):
+
+The Bollinger band is NOT sitting on top of the VWAP envelope. It is much NARROWER - about 0.43x the
+width - and it sits well INSIDE it. The upper Bollinger band is typically 30-45 points BELOW the upper
+edge of the respected envelope.
+
+So the real cause is a circularity in my own rule, not the band geometry:
+  * I required price to be OUTSIDE the respected VWAP envelope at the signal candle's close.
+  * I set the target to the NEAR EDGE of that same envelope.
+Those two conditions together guarantee a tiny target. "Just outside the line" and "the line" are the
+same place. Whatever the excursion did beforehand, the trade is entered at the moment price is barely
+past the edge, so the distance left to travel is ~1.5 points by construction.
+
+The Bollinger break-and-return is almost irrelevant in my build, because the Bollinger band is so far
+inside the envelope that price re-enters it long before the envelope filter is satisfied.
+
+The fix is to require a MINIMUM DEPTH beyond the envelope edge before entering, so there is a real
+distance to travel back. That is a structural repair of a circular rule, not a parameter tune - but it
+is a different strategy and needs its own pre-registration.
+
+
+DIAGNOSTIC: require a minimum DEPTH beyond the envelope edge before entering.
+Stop fixed at 30 points, target = near edge. Depth 0 is the version already run.
+
+  depth                      2023-26                   2020-22                   2017-19
+             trades  R/trade  medTgt   trades  R/trade  medTgt   trades  R/trade  medTgt
+  0            488  +0.0687      2.4     413  +0.0281      2.1     405  +0.0213      0.7
+  10           230  +0.0893      8.6     171  -0.0147      7.7      24  -0.0252      6.8
+  20           101  +0.0415     17.1      68  -0.0637     14.1       6  +0.0101      8.2
+  30            58  +0.0342     23.4      30  -0.0832     25.0                         0
+  50            15  +0.1749     39.8      10  +0.0409     36.2                         0
+
+  medTgt = median points from entry to the target on winning trades.
+
+VERDICT ON THE DEPTH FIX
+Requiring a real excursion does exactly what it should to the target: median distance goes from 2.4
+points at depth 0 to 8.6 at depth 10, 17 at depth 20, 23 at depth 30. So the circularity is confirmed
+and repaired - the tiny target WAS an artefact of my rule, not of the idea.
+
+But the edge goes with it. 2020-22 flips negative the moment a real target is required (-0.015 at
+depth 10, -0.064 at 20, -0.083 at 30) and 2017-19 flips negative too and then runs out of trades
+entirely. Only 2023-26 stays positive. Depth 50 looks strong (+0.17 / +0.04) on 15 and 10 trades -
+that is not a sample, it is anecdote.
+
+So the honest reading: the near-edge result at depth 0 was a 1.5-point scalp created by a circular
+rule, and once the rule is fixed so the trade has somewhere to go, the effect disappears on two of
+three tapes. That matches the earlier diagnostic, which found no drift back toward the envelope at any
+horizon on any tape. The reversion is not there; only the scalp was, and the scalp dies on costs.
+
+Idea closed. Six tested, six closed.

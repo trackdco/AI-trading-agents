@@ -1,0 +1,61 @@
+================================================================================
+TEST A - base grammar, value-area book, frozen constants
+================================================================================
+  (pd_va_trades_nq17a_xr30_sar_through_tf1.jsonl.gz: 9,060 warmup-period trades before 2017-01-01 excluded from scoring)
+  2017: n    153  WR 58.2%  EV +0.0060  netR +1
+  2018: n    751  WR 64.3%  EV +0.0936  netR +70
+  2019: n    481  WR 61.8%  EV +0.0649  netR +31
+  pooled: n 1,385  WR 62.7%  EV +0.0740   -> TEST A FAIL
+
+================================================================================
+TEST B - the empire, flat
+================================================================================
+  (pd_va_trades_nq17a_lvall_xr30_sar_through_tf1.jsonl.gz: 143 warmup-period trades before 2017-01-01 excluded from scoring)
+  (vwap_rev_tf1_retest_nq17a_ng0_xr30_dd.jsonl.gz: 23,140 warmup-period trades before 2017-01-01 excluded from scoring)
+  (vwap_rev_tf1_retest_nq17a_ng0_xr30_nyanc_dd.jsonl.gz: 11,687 warmup-period trades before 2017-01-01 excluded from scoring)
+  8-level        n   3,773  WR 62.5%  EV +0.0765
+  vwap-session   n   5,473  WR 60.2%  EV +0.0526
+  vwap-ny        n   4,303  WR 61.9%  EV +0.0717
+rail pass: 12,785 trades kept across 725 days (G5 bound 0x, G6 0x)
+  2017: netR -70  worst day -8.4  maxDD -88.5
+  2018: netR +763  worst day -9.2  maxDD -22.2
+  2019: netR +203  worst day -13.6  maxDD -45.0
+  railed pooled: n 12,785  WR 61.6%  EV +0.0700   -> TEST B FAIL
+
+================================================================================
+TEST C - ARMING (primary). dd-matched R/day >= +5% in BOTH halves
+================================================================================
+  (pd_va_trades_nq17a_lvall_xr30_sar_through_tf1_arm1.jsonl.gz: 125 warmup-period trades before 2017-01-01 excluded from scoring)
+  (vwap_rev_tf1_retest_nq17a_ng0_xr30_dd_arm1.jsonl.gz: 3,024 warmup-period trades before 2017-01-01 excluded from scoring)
+  (vwap_rev_tf1_retest_nq17a_ng0_xr30_nyanc_dd_arm1.jsonl.gz: 1,888 warmup-period trades before 2017-01-01 excluded from scoring)
+rail pass: 10,645 trades kept across 716 days (G5 bound 0x, G6 0x)
+  IS: flat +0.565  armed +0.871  dd-matched +1.332  lift +135.7%
+  OOS: flat +1.954  armed +2.196  dd-matched +3.359  lift +71.9%
+  raw: EV +0.0700 -> +0.1031 (+47.3%)  maxDD -84.8 -> -55.4  split 2018-07-29
+  -> TEST C PASS
+
+================================================================================
+TEST D - conviction sizing 2:1 on displacement, same rule
+================================================================================
+  IS: flat +0.529  sized dd-matched +0.819  lift +54.7%
+  OOS: flat +1.938  sized dd-matched +2.388  lift +23.2%
+  -> TEST D PASS
+
+================================================================================
+TEST E - loser-autopsy claims
+================================================================================
+  E1 prior-vol Q4 vs Q1: trades/day +94.4%  |dEV| 0.0433   -> FAIL
+  E2 worst-1% prior-vol 1.23 vs all 1.15 (|d| 0.08)   -> PASS
+
+================================================================================
+PREDICTIONS
+================================================================================
+  P1 year(s) <20 ticks: ['2017', '2018', '2019']; weakest EV year 2017   -> CORRECT
+  (pd_va_trades_nq17b_xr7.25_sar_through_tf1.jsonl.gz: 20,526 warmup-period trades before 2017-01-01 excluded from scoring)
+  P2 frozen EV +0.0740 vs era EV -0.1609   -> CORRECT
+  P3 arming lift in [+10%,+40%] both halves   -> WRONG
+  P4 losses chain (maxDD deeper than worst day) in >=1 year   -> CORRECT
+  P5 1R target best at every depth   -> CORRECT
+  P6 EV order ny > 8-level > session   -> WRONG
+
+PRIMARY VERDICT (Test C, arming): PASS

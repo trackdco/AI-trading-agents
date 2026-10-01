@@ -1,0 +1,70 @@
+
+================ 1-MINUTE ================
+  tape     variant       trades   R/trade    net R    win  medHold    maxDD   @1.25pt
+  2023-26  as-written     53383   -0.0485    -2591  43.6%        5  -2603.8   -0.1201
+  2023-26  bug-fixed      60563   -0.0511    -3097  38.5%        4  -3103.6   -0.1237
+  2020-22  as-written     43266   -0.0488    -2111  44.0%        5  -2126.8   -0.1285
+  2020-22  bug-fixed      49077   -0.0473    -2321  38.8%        4  -2334.5   -0.1284
+  2017-19  as-written     43966   -0.1152    -5064  42.5%        6  -5052.0   -0.2729
+  2017-19  bug-fixed      53090   -0.1185    -6293  35.3%        4  -6280.4   -0.2771
+
+================ 5-MINUTE ================
+  tape     variant       trades   R/trade    net R    win  medHold    maxDD   @1.25pt
+  2023-26  as-written     12220   -0.0083     -102  45.0%       25   -205.3   -0.0416
+  2023-26  bug-fixed      13680   -0.0118     -161  40.5%       20   -222.5   -0.0456
+  2020-22  as-written     10008   +0.0056      +56  45.7%       25    -85.3   -0.0312
+  2020-22  bug-fixed      11282   +0.0020      +22  40.8%       20    -84.9   -0.0355
+  2017-19  as-written     10269   -0.0551     -566  44.3%       30   -587.1   -0.1553
+  2017-19  bug-fixed      11982   -0.0550     -658  38.7%       20   -659.6   -0.1560
+
+================ 15-MINUTE ================
+  tape     variant       trades   R/trade    net R    win  medHold    maxDD   @1.25pt
+  2023-26  as-written      4050   +0.0060      +24  47.0%       90    -73.0   -0.0119
+  2023-26  bug-fixed       4555   -0.0046      -21  41.8%       60    -65.8   -0.0229
+  2020-22  as-written      3293   +0.0021       +7  44.8%       75    -59.3   -0.0182
+  2020-22  bug-fixed       3721   +0.0037      +14  40.4%       60    -61.6   -0.0170
+  2017-19  as-written      3521   +0.0030      +11  46.4%       90    -47.4   -0.0573
+  2017-19  bug-fixed       4020   -0.0106      -43  40.1%       60    -69.2   -0.0717
+
+
+================ SCORING THE PRE-REGISTERED BAR ================
+Condition 1 - net R/trade > 0 on ALL THREE tapes, as written:
+  1-minute : -0.0485 / -0.0488 / -0.1152   FAIL (negative everywhere)
+  5-minute : -0.0083 / +0.0056 / -0.0551   FAIL
+  15-minute: +0.0060 / +0.0021 / +0.0030   passes condition 1 - see below
+Condition 4 - still positive at a 1.25-point cost:
+  15-minute: -0.0119 / -0.0182 / -0.0573   FAIL on all three.
+Condition 2 - pooled t > 2.5: the 15m as-written edge is +0.004 R/trade on a distribution whose
+  standard deviation is ~1R, so t is well under 1 on every tape.
+
+VERDICT: FAIL at every timeframe. The only configuration that is positive on all three tapes
+(15-minute, as written) makes +0.004 R per trade - about a fifth of one tick of NQ per trade - and
+goes negative the moment a realistic cost is applied.
+
+WHAT THE NUMBERS SHOW
+  * It trades enormously. 53,383 trades on 1-minute over 950 sessions is 56 a day. Median hold 5
+    minutes. At that rate cost is everything, and 1-minute loses -0.05 R/trade before the stress test
+    and -0.12 after: roughly -2,600R over the sample. This is a cost-destruction machine.
+  * The pattern is monotone in timeframe, exactly as predicted: 1m -0.05, 5m -0.01, 15m +0.004. The
+    strategy is not adding value at any speed; it is simply paying less rent as it slows down.
+  * Win rate sits at 42-47% throughout with a median hold of minutes, so the exits (big_drop, pb,
+    is_out - any one of which fires) cut trades constantly. That is why it never reaches a target.
+  * 2017-19 is the worst tape at every timeframe (-0.115 on 1m), consistent with the tick-screen law
+    found earlier in this repository.
+
+THE BUG, MEASURED
+  Fixing `is_crossdown_11_48` (dead in the source) adds 12-16% more trades and makes results WORSE on
+  8 of 9 tape/timeframe cells: 1m 2023-26 goes -0.0485 to -0.0511, 15m 2023-26 goes +0.0060 to -0.0046.
+  So the bug was accidentally protective. Prediction P1 said the two variants would differ by less
+  than 20% of net R - WRONG: on 15m 2023-26 the fix flips the sign entirely.
+
+PREDICTIONS
+  P1 bug-fixed within 20% of the faithful port: WRONG - it flips signs on 15m and changes trade counts
+     by 12-16%.
+  P2 shorter timeframes trade more but with worse per-trade expectancy: CORRECT, cleanly monotone.
+  P3 no timeframe passes all five conditions: CORRECT.
+
+FAIRNESS NOTE
+  This repository publishes no backtest and makes no performance claim, so nothing here contradicts
+  its authors. It is an execution bot with a strategy attached; measured on ten years of NQ, the
+  strategy loses at every speed once costs are real.

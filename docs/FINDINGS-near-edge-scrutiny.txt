@@ -1,0 +1,70 @@
+SCRUTINY OF THE NEAR-EDGE STOP SWEEP (post-hoc; NOT covered by the pre-registration)
+
+stop                2023-26               2020-22               2017-19      pooled       t  losers  t(trim)
+F15         +0.0323 (t+1.4)       +0.0003 (t+0.0)       +0.0253 (t+2.7)     +0.0200    1.61     147     1.68
+F20         +0.0523 (t+2.6)       +0.0203 (t+0.9)       +0.0272 (t+3.9)     +0.0344    3.30     103     3.39
+F30         +0.0687 (t+5.0)       +0.0281 (t+1.7)       +0.0213 (t+4.3)     +0.0412    5.54      57     5.68
+F50         +0.0582 (t+7.0)       +0.0493 (t+4.8)       +0.0186 (t+6.7)     +0.0431    9.41      22     9.73
+
+WHAT ONE 'R' IS WORTH, and what the profile really looks like (F30, pooled):
+  1306 trades: 1249 wins averaging +0.088R, 57 losses averaging -0.989R
+  risk is a fixed 30 points = $600 on one NQ contract. A win is ~$53, a loss is ~$-594
+  net per trade $25 | ~0.5 trades a session -> about $12 a session on one contract
+  longest run of losses in 10 years: 2. Worst single trade: -1.02R = $-610
+
+PER YEAR (F30, net R) - is it stable or is one era carrying it?
+  2023-26: 2023 +7R  2024 +12R  2025 +5R  2026 +9R
+  2020-22: 2020 +6R  2021 +3R  2022 +3R
+  2017-19: 2016 +0R  2017 +1R  2018 +4R  2019 +3R
+
+SPLIT-HALF (F30) - first half vs second half of each tape:
+  2023-26: H1 +0.0558  H2 +0.0817
+  2020-22: H1 +0.0447  H2 +0.0116
+  2017-19: H1 +0.0143  H2 +0.0282
+
+
+================ WHAT THE TRADE ACTUALLY IS ================
+  target distance, in POINTS: median 1.48, mean 3.15, 25th pct 0.53, 75th pct 3.84
+  stop distance: 30.00 points fixed. Median hold: 2 minute.
+  So the trade is: risk 30 points to make 1.5, and it resolves inside one minute 50% of the time.
+  The 0.5-point cost assumption is 34% of the gross target.
+
+================ COST SENSITIVITY - THE DECIDER ================
+  Entry here is a MARKET order at the 5m close, so it pays the spread. A limit costs less; a market costs more.
+  cost/RT         2023-26       2020-22       2017-19      pooled     verdict
+  0.50            +0.0687       +0.0281       +0.0213     +0.0412       alive
+  0.75            +0.0604       +0.0198       +0.0129     +0.0328       alive
+  1.00            +0.0521       +0.0114       +0.0046     +0.0245       alive
+  1.25            +0.0437       +0.0031       -0.0037     +0.0162        DEAD
+  1.50            +0.0354       -0.0052       -0.0121     +0.0078        DEAD
+  2.00            +0.0187       -0.0219       -0.0287     -0.0088        DEAD
+
+  On one NQ contract a market order crosses a 0.25-point spread each way (0.5pt) plus about $5 round-trip
+  commission (0.25pt). Realistic all-in for a market entry and market exit is 0.75 to 1.25 points, and
+  worse on MNQ. At 1.0 the edge is gone on two tapes; at 1.25 it is gone on all three.
+
+================ WHY THE GATE TRIPPED ================
+  Sharpe 3.61 with a 95% win rate, a 2.4-point target and a 30-point stop is the classic
+  pennies-in-front-of-a-steamroller shape. 1,249 wins of +$53 against 57 losses of -$594.
+  The t-statistics look strong (pooled 5.5) but they rest on only 57 loss events in ten years,
+  so the tail is barely sampled and the t-statistic overstates the confidence.
+
+================ VERDICT ================
+NOT A PASS, and not eligible to be one.
+
+1. This is a POST-HOC sweep. The pre-registration declared three target variants. Seven stop
+   distances x three targets is 21 combinations, and this was found by looking. It cannot clear a bar
+   it was not tested against. Finding something after sweeping is how the original disaster happened.
+2. The reality gate TRIPS on Sharpe 3.61.
+3. The trade is: risk 30 points to make a MEDIAN OF 1.5 points, resolved within two minutes, winning
+   95% of the time. The 0.5-point cost assumption is 34% of the gross target.
+4. Cost sensitivity is decisive. Entry is a MARKET order at the 5m close, so it pays the spread both
+   ways plus commission - realistically 0.75 to 1.25 points all in on NQ, worse on MNQ. At 1.25 the
+   edge is negative on 2017-19 and 0.003 on 2020-22. The whole result lives inside the difference
+   between an assumed cost and a real one.
+5. Money at a survivable size: about $12 a session on one contract. Scaling it means resting size on a
+   1.5-point target, which is precisely where slippage takes the rest.
+
+The honest summary: the wide-stop near-edge variant is a real statistical artefact of a tiny target
+and a huge stop, not an edge. It is the same fair-bet arithmetic in a different costume - the win rate
+climbs to 95% only because the target shrinks to 1.5 points.

@@ -1,0 +1,12 @@
+strategy,trades,win,PF,WL,maxDD_R,maxDD_pct,R,note,KILL_PF,KILL_DD,KILL_N,KILL_WL,KILL_OVERFIT,survives
+Asia sweep R1,186,0.522,1.092050209205021,1.0,19.0,19.0,-0.0158,fixed R,True,False,False,False,False,False
+Asia sweep R1.5,186,0.43,1.131578947368421,1.5,23.9,23.9,0.0164,fixed R,True,False,False,False,False,False
+Asia sweep R2,186,0.366,1.1545741324921135,2.0,26.0,26.0,0.0379,fixed R,True,True,False,False,False,False
+Asia sweep R3,186,0.306,1.3227665706051872,3.0,23.0,23.0,0.1773,fixed R,False,False,False,False,False,True
+Asia sweep R4,186,0.231,1.2015604681404422,4.0,25.3,25.3,0.1074,fixed R,True,True,False,False,False,False
+Asia sweep R5,186,0.188,1.1576354679802954,5.0,28.4,28.4,0.1048,fixed R,True,True,False,False,False,False
+Asia sweep R8,186,0.113,1.0191657271702368,8.0,64.7,64.7,0.0323,fixed R,True,True,False,False,False,False
+Asia level break F20 [2023-26],326,0.301,1.257396280400572,2.92,29.0,29.0,0.0567,medRR not fixed - approx,True,True,False,False,False,False
+Asia level break F25 [2020-22],241,0.402,1.0755852842809366,1.6,19.9,19.9,0.0102,medRR not fixed - approx,True,False,False,False,False,False
+ORB NQ GIVEBACK,4100,0.32,0.35294117647058826,0.75,225.9,225.9,-0.0486,trailing exit - approx,True,True,False,True,False,False
+Tradovate 5m [2020-22],10008,0.457,0.8416206261510131,1.0,85.3,85.3,0.0056,as-written,True,True,False,False,False,False
