@@ -1,0 +1,16 @@
+# Slot for the one setup Angus will declare. Empty on purpose.
+# status must stay "awaiting_angus" until he writes the entry, stop, target,
+# filters, and size tiers. The harness refuses to run this file as it stands.
+
+name: null
+status: awaiting_angus
+entry: {}
+stop: {}
+target: {}
+filters: []
+size_tiers: []
+notes: >
+  Do not invent a setup in this file. Order-flow detectors live in
+  src/research/features and are not a strategy. When a setup is declared,
+  set status to "declared", name it, and fill entry, stop, target, filters,
+  and size_tiers before any backtest.

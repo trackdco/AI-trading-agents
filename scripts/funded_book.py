@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-"""THE FUNDED BOOK — the official rebuilt-canon configuration. ANGUS sign-off 2026-07-29.
+"""INVALID DOLLAR RESULTS. Do not quote the totals this script prints.
+
+The fit/holdout P&L in this docstring and in the parquet it reads was scored
+with end-of-minute MBP-10 depth (up to 60 seconds of future book). See the
+banner in docs/CANON.md and docs/FINDING-depth-lookahead.md. Running the
+script still reproduces those figures from the committed parquet. Reproduction
+is not validation.
+
+Historical note follows. ANGUS sign-off 2026-07-29, withdrawn as a tradable
+result on 2026-11-03.
 
 Every parameter below was measured before it was chosen, on the fit span (2025-06..2026-07,
 discovery restricted to 2025) and confirmed on the sealed 2023/24 holdout. Nothing here is

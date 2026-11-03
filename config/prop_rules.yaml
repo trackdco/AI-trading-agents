@@ -1,0 +1,623 @@
+# Prop-firm rules used by the research simulator.
+# Retrieved 2026-11-03 from the firms' help centres. Every number the simulator
+# enforces is copied from those pages. Anything that was not on the page, or
+# that lived only in an image the text extract dropped, is listed under
+# `unconfirmed` and is NOT applied.
+#
+# Apex is intentionally absent.
+# This file does not place orders and contains no credentials.
+
+retrieved: "2026-11-03"
+
+automation:
+  topstep:
+    bots_allowed: true
+    route: "ProjectX / TopstepX API"
+    hft_banned: true
+    vps_vpn_remote_for_orders_banned: true
+    api_works_on_live_funded: false
+    sandbox: false
+    api_price_usd_per_month: 29
+    api_price_with_code_topstep: 14.50
+    personal_device_only: true
+    sources:
+      - url: "https://help.topstep.com/en/articles/11187768-topstepx-api-access"
+        title: "TopstepX API Access"
+        page_date: "2026-09-17"
+  lucid:
+    bots_allowed: true
+    trade_copiers_allowed: true
+    news_trading:
+      luciddaily: "hard breach, flat from 1 minute before through 1 minute after high-impact USD releases"
+      flex_pro_direct: "allowed, not a breach"
+    sources:
+      - url: "https://support.lucidtrading.com/en/articles/11404728-other-trading-activities"
+        title: "Other Trading Activities"
+        page_date: null
+
+# Shared clocks. Topstep publishes Central Time. Lucid's page says "EST" for
+# a session that follows the exchange clock; the simulator uses America/New_York
+# and flags that wording under unconfirmed.
+clocks:
+  topstep:
+    timezone: America/Chicago
+    reopen: "17:00"
+    flat_by: "15:10"
+    holding_past_flat_is_breach: true
+    week_open: "Sunday 17:00"
+    week_close: "Friday 15:10"
+    source:
+      url: "https://help.topstep.com/en/articles/8284206-when-and-what-products-can-i-trade"
+      title: "When and What Products Can I Trade?"
+      page_date: null
+      retrieved: "2026-11-03"
+  lucid:
+    timezone: America/New_York
+    reopen: "18:00"
+    flat_by: "16:45"
+    holding_past_flat_is_breach: false
+    note: "Auto-flat at 16:45. Holding past that time does not fail the account."
+    source:
+      url: "https://support.lucidtrading.com/en/articles/11404729-allowed-trading-times"
+      title: "Allowed Trading Times"
+      page_date: "2026-08-26"
+      retrieved: "2026-11-03"
+
+accounts:
+
+  topstep_combine_50k: &topstep_combine_50k
+    firm: topstep
+    plan: combine
+    stage: combine
+    size: 50000
+    start_balance: 50000
+    profit_target: 3000
+    mll_amount: 2000
+    mll_mode: eod_trail_lock_at_start
+    lock_floor: 50000
+    consistency: 0.55
+    consistency_raises_target: true
+    dll: null
+    dll_optional_at_checkout: 1000
+    dll_is_breach: false
+    max_minis: 5
+    max_micros: 50
+    scaling: none
+    fees:
+      monthly: 49
+      activation_if_pass: 149
+      monthly_no_activation_path: 95
+      activation_no_activation_path: 0
+      reset: 49
+    payout: null
+    clock: topstep
+    sources:
+      - url: "https://help.topstep.com/en/articles/8284197-trading-combine-parameters"
+        title: "Trading Combine Parameters"
+        page_date: "2026-09-24"
+      - url: "https://help.topstep.com/en/articles/8284204-what-is-the-maximum-loss-limit"
+        title: "What is the Maximum Loss Limit?"
+        page_date: "2026-09-18"
+      - url: "https://help.topstep.com/en/articles/8284208-consistency-at-topstep"
+        title: "Consistency at Topstep"
+        page_date: "2026-09-17"
+      - url: "https://help.topstep.com/en/articles/10490293-daily-loss-limit-in-the-trading-combine-and-express-funded-account"
+        title: "Daily Loss Limit"
+        page_date: null
+      - url: "https://help.topstep.com/en/articles/14289835-topstep-pricing-and-payment-questions"
+        title: "Topstep Pricing and Payment Questions"
+        page_date: null
+
+  topstep_combine_100k:
+    <<: *topstep_combine_50k
+    size: 100000
+    start_balance: 100000
+    profit_target: 6000
+    mll_amount: 3000
+    lock_floor: 100000
+    dll_optional_at_checkout: 2000
+    max_minis: 10
+    max_micros: 100
+    fees:
+      monthly: 99
+      activation_if_pass: 149
+      monthly_no_activation_path: 149
+      activation_no_activation_path: 0
+      reset: 99
+
+  topstep_combine_150k:
+    <<: *topstep_combine_50k
+    size: 150000
+    start_balance: 150000
+    profit_target: 9000
+    mll_amount: 4500
+    lock_floor: 150000
+    dll_optional_at_checkout: 3000
+    max_minis: 15
+    max_micros: 150
+    fees:
+      monthly: 199
+      activation_if_pass: 149
+      monthly_no_activation_path: 229
+      activation_no_activation_path: 0
+      reset: 199
+
+  topstep_xfa_50k_standard: &topstep_xfa_50k_standard
+    firm: topstep
+    plan: xfa_standard
+    stage: funded
+    size: 50000
+    start_balance: 0
+    profit_target: null
+    mll_amount: 2000
+    mll_mode: eod_trail_lock_at_zero
+    lock_floor: 0
+    consistency: null
+    consistency_raises_target: false
+    dll: null
+    dll_optional_at_checkout: 1000
+    dll_is_breach: false
+    # Dollar tiers of the XFA scaling plan are an image on the help page.
+    # The simulator uses the combine maximum, which is confirmed, and does
+    # not invent the 2/3/5 ladder. See unconfirmed.
+    max_minis: 5
+    max_micros: 50
+    scaling: unconfirmed
+    scaling_increases_mid_session: false
+    fees:
+      monthly: 0
+      activation_if_pass: 0
+    payout:
+      split: 0.90
+      min_request: 125
+      fraction: 0.50
+      fraction_of: balance
+      cap: 2000
+      cap_with_dll_limited_offer: 4000
+      winning_days: 5
+      winning_day_min: 150
+      min_cycle_profit: 0.01
+      first_cycle_exempt: true
+      consistency: null
+      max_payouts: null
+      mll_resets_to_zero_on_first_payout: true
+      buffer_floor: null
+    clock: topstep
+    sources:
+      - url: "https://help.topstep.com/en/articles/8284233-topstep-payout-policy"
+        title: "Topstep Payout Policy"
+        page_date: null
+      - url: "https://help.topstep.com/en/articles/8284204-what-is-the-maximum-loss-limit"
+        title: "What is the Maximum Loss Limit?"
+        page_date: "2026-09-18"
+      - url: "https://help.topstep.com/en/articles/8284223-what-is-the-scaling-plan"
+        title: "What is the Scaling Plan?"
+        page_date: "2026-07-16"
+
+  topstep_xfa_100k_standard:
+    <<: *topstep_xfa_50k_standard
+    size: 100000
+    mll_amount: 3000
+    dll_optional_at_checkout: 2000
+    max_minis: 10
+    max_micros: 100
+    payout:
+      split: 0.90
+      min_request: 125
+      fraction: 0.50
+      fraction_of: balance
+      cap: 3000
+      cap_with_dll_limited_offer: 6000
+      winning_days: 5
+      winning_day_min: 150
+      min_cycle_profit: 0.01
+      first_cycle_exempt: true
+      consistency: null
+      max_payouts: null
+      mll_resets_to_zero_on_first_payout: true
+      buffer_floor: null
+
+  topstep_xfa_150k_standard:
+    <<: *topstep_xfa_50k_standard
+    size: 150000
+    mll_amount: 4500
+    dll_optional_at_checkout: 3000
+    max_minis: 15
+    max_micros: 150
+    payout:
+      split: 0.90
+      min_request: 125
+      fraction: 0.50
+      fraction_of: balance
+      cap: 5000
+      cap_with_dll_limited_offer: 10000
+      winning_days: 5
+      winning_day_min: 150
+      min_cycle_profit: 0.01
+      first_cycle_exempt: true
+      consistency: null
+      max_payouts: null
+      mll_resets_to_zero_on_first_payout: true
+      buffer_floor: null
+
+  topstep_xfa_50k_consistency:
+    <<: *topstep_xfa_50k_standard
+    plan: xfa_consistency
+    payout:
+      split: 0.90
+      min_request: 125
+      fraction: 0.50
+      fraction_of: balance
+      cap: 3000
+      cap_with_dll_limited_offer: 6000
+      winning_days: 3
+      winning_day_min: null
+      min_trading_days: 3
+      min_cycle_profit: 0.01
+      first_cycle_exempt: true
+      consistency: 0.40
+      max_payouts: null
+      mll_resets_to_zero_on_first_payout: true
+      buffer_floor: null
+
+  lucidflex_eval_50k: &lucidflex_eval_50k
+    firm: lucid
+    plan: flex
+    stage: eval
+    size: 50000
+    start_balance: 50000
+    profit_target: 3000
+    mll_amount: 2000
+    mll_mode: eod_trail_lock_at_buffer
+    trail_trigger: 52100
+    lock_floor: 50100
+    consistency: 0.40
+    consistency_addon: 0.50
+    consistency_raises_target: true
+    consistency_cushion: unconfirmed
+    dll: null
+    dll_is_breach: false
+    max_minis: 4
+    max_micros: 40
+    scaling: none
+    fees:
+      onetime: null
+      activation_if_pass: 0
+      fee_status: unconfirmed
+    payout: null
+    clock: lucid
+    news_blackout: false
+    sources:
+      - url: "https://support.lucidtrading.com/en/articles/12945790-lucidflex-evaluation-account"
+        title: "LucidFlex Evaluation Account"
+        page_date: null
+      - url: "https://support.lucidtrading.com/en/articles/12945815-lucidflex-drawdown"
+        title: "LucidFlex Drawdown"
+        page_date: null
+      - url: "https://support.lucidtrading.com/en/articles/12945805-lucidflex-consistency-percentage"
+        title: "LucidFlex Consistency Percentage"
+        page_date: null
+      - url: "https://support.lucidtrading.com/en/articles/16226050-lucidflex-customization"
+        title: "LucidFlex Customization"
+        page_date: null
+
+  lucidflex_eval_25k:
+    <<: *lucidflex_eval_50k
+    size: 25000
+    start_balance: 25000
+    profit_target: 1250
+    mll_amount: 1000
+    trail_trigger: 26100
+    lock_floor: 25100
+    max_minis: 2
+    max_micros: 20
+
+  lucidflex_eval_100k:
+    <<: *lucidflex_eval_50k
+    size: 100000
+    start_balance: 100000
+    profit_target: 6000
+    mll_amount: 3000
+    trail_trigger: 103100
+    lock_floor: 100100
+    max_minis: 6
+    max_micros: 60
+
+  lucidflex_eval_150k:
+    <<: *lucidflex_eval_50k
+    size: 150000
+    start_balance: 150000
+    profit_target: 9000
+    mll_amount: 4500
+    trail_trigger: 154600
+    lock_floor: 150100
+    max_minis: 10
+    max_micros: 100
+
+  lucidflex_funded_50k:
+    firm: lucid
+    plan: flex
+    stage: funded
+    size: 50000
+    start_balance: 50000
+    profit_carries_from_eval: false
+    profit_carry_status: assumed
+    profit_target: null
+    mll_amount: 2000
+    mll_mode: eod_trail_lock_at_buffer
+    trail_trigger: 52100
+    lock_floor: 50100
+    consistency: null
+    dll: null
+    dll_is_breach: false
+    max_minis: 4
+    max_micros: 40
+    scaling: unconfirmed
+    fees:
+      onetime: 0
+      activation_if_pass: 0
+    payout:
+      split: 0.90
+      min_request: 500
+      fraction: 0.50
+      fraction_of: cycle_profit
+      fraction_wording_conflict: "page also says 50% of account balance; cap binds either way once profit is large"
+      cap: 2000
+      winning_days: 5
+      winning_day_min: 150
+      min_cycle_profit: 0.01
+      first_cycle_exempt: false
+      consistency: null
+      max_payouts: 5
+      mll_resets_to_lock_on_payout: true
+      buffer_floor: null
+    clock: lucid
+    news_blackout: false
+    sources:
+      - url: "https://support.lucidtrading.com/en/articles/12945795-lucidflex-funded-account"
+        title: "LucidFlex Funded Account"
+        page_date: null
+      - url: "https://support.lucidtrading.com/en/articles/12945796-lucidflex-payouts"
+        title: "LucidFlex Payouts"
+        page_date: "2026-07-28"
+      - url: "https://support.lucidtrading.com/en/articles/12945815-lucidflex-drawdown"
+        title: "LucidFlex Drawdown"
+        page_date: null
+
+  lucidpro_eval_50k: &lucidpro_eval_50k
+    firm: lucid
+    plan: pro
+    stage: eval
+    size: 50000
+    start_balance: 50000
+    profit_target: 3000
+    mll_amount: 2000
+    mll_mode: eod_trail_lock_at_buffer
+    trail_trigger: 52100
+    lock_floor: 50100
+    consistency: null
+    pass_in_one_day_allowed: true
+    dll: 1200
+    dll_is_breach: false
+    max_minis: 4
+    max_micros: 40
+    scaling: none
+    fees:
+      onetime: null
+      activation_if_pass: 0
+      fee_status: unconfirmed
+    payout: null
+    clock: lucid
+    news_blackout: false
+    sources:
+      - url: "https://support.lucidtrading.com/en/articles/12890029-lucidpro-evaluation-account"
+        title: "LucidPro Evaluation Account"
+        page_date: "2026-08-26"
+      - url: "https://support.lucidtrading.com/en/articles/12890136-lucidpro-drawdown"
+        title: "LucidPro Drawdown"
+        page_date: null
+      - url: "https://support.lucidtrading.com/en/articles/12890122-lucidpro-daily-loss-limit"
+        title: "LucidPro Daily Loss Limit"
+        page_date: null
+
+  lucidpro_eval_25k:
+    <<: *lucidpro_eval_50k
+    size: 25000
+    start_balance: 25000
+    profit_target: 1250
+    mll_amount: 1000
+    trail_trigger: 26100
+    lock_floor: 25100
+    dll: null
+    max_minis: 2
+    max_micros: 20
+
+  lucidpro_eval_100k:
+    <<: *lucidpro_eval_50k
+    size: 100000
+    start_balance: 100000
+    profit_target: 6000
+    mll_amount: 3000
+    trail_trigger: 103100
+    lock_floor: 100100
+    dll: 1800
+    max_minis: 6
+    max_micros: 60
+
+  lucidpro_eval_150k:
+    <<: *lucidpro_eval_50k
+    size: 150000
+    start_balance: 150000
+    profit_target: 9000
+    mll_amount: 4500
+    trail_trigger: 154600
+    lock_floor: 150100
+    dll: 2700
+    max_minis: 10
+    max_micros: 100
+
+  luciddirect_50k:
+    firm: lucid
+    plan: direct
+    stage: funded
+    size: 50000
+    start_balance: 50000
+    profit_target: null
+    mll_amount: 2000
+    mll_mode: eod_trail_lock_at_buffer
+    trail_trigger: 52100
+    lock_floor: 50100
+    consistency: null
+    dll: 1200
+    dll_is_breach: false
+    max_minis: 4
+    max_micros: 40
+    scaling: none
+    fees:
+      onetime: null
+      fee_status: unconfirmed
+    payout:
+      split: 0.90
+      min_request: 500
+      fraction: 0.50
+      fraction_of: cycle_profit
+      cap_first_cycles: 2000
+      cap_later_cycles: 2500
+      cap_switch_after: 3
+      winning_days: null
+      winning_day_min: null
+      min_cycle_profit: 3000
+      min_cycle_profit_later: 2500
+      first_cycle_exempt: false
+      consistency: 0.20
+      max_payouts: null
+      mll_resets_to_lock_on_payout: false
+      buffer_floor: null
+    clock: lucid
+    news_blackout: false
+    sources:
+      - url: "https://support.lucidtrading.com/en/articles/12890148-luciddirect-funded-account"
+        title: "LucidDirect Funded Account"
+        page_date: null
+      - url: "https://support.lucidtrading.com/en/articles/12890192-luciddirect-drawdown"
+        title: "LucidDirect Drawdown"
+        page_date: "2026-08-26"
+      - url: "https://support.lucidtrading.com/en/articles/12890164-luciddirect-payout-objectives"
+        title: "LucidDirect Payout Objectives"
+        page_date: null
+      - url: "https://support.lucidtrading.com/en/articles/12890178-luciddirect-consistency-percentage"
+        title: "LucidDirect Consistency Percentage"
+        page_date: null
+      - url: "https://support.lucidtrading.com/en/articles/12890185-luciddirect-daily-loss-limit"
+        title: "LucidDirect Daily Loss Limit"
+        page_date: null
+
+  luciddaily_25k:
+    firm: lucid
+    plan: daily
+    stage: funded
+    size: 25000
+    start_balance: 25000
+    profit_target: null
+    mll_amount: 1000
+    mll_mode: intraday_trail
+    lock_floor: null
+    lock_status: unconfirmed
+    consistency: null
+    dll: null
+    max_minis: 2
+    max_micros: 20
+    scaling: none
+    payout: null
+    payout_status: unconfirmed
+    clock: lucid
+    news_blackout: true
+    news_blackout_minutes: 1
+    news_blackout_currency: USD
+    news_blackout_impact: high
+    sources:
+      - url: "https://support.lucidtrading.com/en/articles/15997244-luciddaily-funded-account"
+        title: "LucidDaily Funded Account"
+        page_date: "2026-08-07"
+
+  luciddaily_50k:
+    firm: lucid
+    plan: daily
+    stage: funded
+    size: 50000
+    start_balance: 50000
+    profit_target: null
+    mll_amount: 2000
+    mll_mode: intraday_trail
+    lock_floor: null
+    lock_status: unconfirmed
+    consistency: null
+    dll: null
+    max_minis: 4
+    max_micros: 40
+    scaling: none
+    payout: null
+    payout_status: unconfirmed
+    clock: lucid
+    news_blackout: true
+    news_blackout_minutes: 1
+    news_blackout_currency: USD
+    news_blackout_impact: high
+    sources:
+      - url: "https://support.lucidtrading.com/en/articles/15997244-luciddaily-funded-account"
+        title: "LucidDaily Funded Account"
+        page_date: "2026-08-07"
+
+unconfirmed:
+  - id: topstep_xfa_scaling_dollar_tiers
+    affects: "XFA position size by balance"
+    why: "The help page says the ladder is 'shown below' and the text extract has no dollar rows. A 50K example mentions a 2-lot plan. The simulator does not apply 2/3/5 tiers."
+    url: "https://help.topstep.com/en/articles/8284223-what-is-the-scaling-plan"
+  - id: topstep_dll_double_cap_end_date
+    affects: "XFA payout cap if a DLL was added at combine checkout"
+    why: "Described as a limited-time offer starting 2026-06-02 with no end date on the page. Default cap is the standard cap, not the doubled one."
+    url: "https://help.topstep.com/en/articles/8284233-topstep-payout-policy"
+  - id: lucidflex_dll_dollars
+    affects: "Flex daily loss limit when the checkout toggle is On"
+    why: "Official pages say the DLL is optional and a soft lockout. They do not print the dollar amount. Third-party cards say $1,200 on a 50K. Not applied."
+    url: "https://support.lucidtrading.com/en/articles/16226050-lucidflex-customization"
+  - id: lucidflex_funded_scaling_tiers
+    affects: "Flex funded contracts"
+    why: "The funded page says Scaling Plan = Yes and prints only the maximum size. Tiers are not in the article. The simulator uses that maximum and flags it."
+    url: "https://support.lucidtrading.com/en/articles/12945795-lucidflex-funded-account"
+  - id: lucidflex_payout_fraction
+    affects: "How much of a Flex payout is 50%"
+    why: "The payout article says both '50% of their account balance' and '50% of Profit', each up to the cap. The simulator uses 50% of cycle profit, capped. Angus should confirm."
+    url: "https://support.lucidtrading.com/en/articles/12945796-lucidflex-payouts"
+  - id: lucidflex_consistency_cushion
+    affects: "50% consistency add-on"
+    why: "The page shows an example cushion ($1,560 vs $1,500 on a 50K) and says it is a percentage of the actual best day, not a fixed dollar amount. The formula is not specified. The simulator uses a plain 50% ratio and no cushion."
+    url: "https://support.lucidtrading.com/en/articles/12945805-lucidflex-consistency-percentage"
+  - id: lucid_dollar_fees
+    affects: "Eval cost and EV per attempt at Lucid"
+    why: "The fees article says LucidPro and LucidDirect are a one-time fee with no activation fee, and does not print the price. Flex pricing is not in that article. EV runs with fee 0 and fee_unconfirmed set."
+    url: "https://support.lucidtrading.com/en/articles/11404620-simulated-account-fees"
+  - id: lucid_hours_labeled_est
+    affects: "Session clock"
+    why: "The page says EST. The simulator treats the clock as America/New_York so daylight time follows the exchange. Confirm with Lucid if they truly mean EST year-round."
+    url: "https://support.lucidtrading.com/en/articles/11404729-allowed-trading-times"
+  - id: luciddaily_100k_150k_mll
+    affects: "LucidDaily 100K and 150K"
+    why: "The account table's text extract dropped the max-loss cells for 100K and 150K. Those sizes are not in the simulator."
+    url: "https://support.lucidtrading.com/en/articles/15997244-luciddaily-funded-account"
+  - id: luciddaily_lock_and_payout
+    affects: "Whether the LucidDaily intraday trail locks, and the payout schedule"
+    why: "The page confirms intraday drawdown, daily payouts, no consistency, and the news blackout. It does not give a lock balance or the payout dollar rules. Payout simulation is off."
+    url: "https://support.lucidtrading.com/en/articles/15997244-luciddaily-funded-account"
+  - id: lucidpro_payout_table
+    affects: "LucidPro funded payouts"
+    why: "The payout page's 50K row did not extract into clean cells. Pro eval rules are simulated. Pro funded payouts are not."
+    url: "https://support.lucidtrading.com/en/articles/12890092-lucidpro-payouts"
+  - id: lucid_eval_profit_carry
+    affects: "Funded starting balance after a Flex or Pro pass"
+    why: "Topstep states combine profits do not carry into the XFA, and the XFA starts at $0. Lucid's pages do not say whether eval profit carries. The funded sim starts a fresh account at the account size."
+    url: "https://help.topstep.com/en/articles/8284197-trading-combine-parameters"
+  - id: lucid_pass_intraday
+    affects: "When a Lucid eval is marked passed"
+    why: "Lucid says activation is real-time, within 5–30 minutes of hitting the target. The simulator marks a pass at the session close, and a failure the moment the max-loss line is touched. A path that tags the target and then breaches the same day can disagree with the firm."
+    url: "https://support.lucidtrading.com/en/articles/12945790-lucidflex-evaluation-account"
