@@ -61,7 +61,7 @@ def _manage(side, limit, stop_px, target, o, h, l, c, hm, j, end):
     return last, side * (px - limit), mae, False
 
 
-def scan_limits(o, h, l, c, hm, buy, sell, stop, reward, start, end, through=1, first_only=False):
+def scan_limits(o, h, l, c, hm, buy, sell, stop, reward, start, end, through=1, first_only=False, max_trades=None):
     """`buy[i]` / `sell[i]` are limits known before bar i. NaN means no order.
 
     One position at a time. Two passes through on the same bar is no trade.
@@ -86,7 +86,7 @@ def scan_limits(o, h, l, c, hm, buy, sell, stop, reward, start, end, through=1, 
         target = limit + side * reward * stop
         k, gross, mae, hit = _manage(side, limit, stop_px, target, o, h, l, c, hm, i, end)
         out.append(Trade(gross, stop, mae, hit))
-        if first_only:
+        if first_only or (max_trades is not None and len(out) >= max_trades):
             break
         i = k + 1
     return out
