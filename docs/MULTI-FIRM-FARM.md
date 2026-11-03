@@ -139,6 +139,36 @@ The 5-minute rule is the one from the earlier note: first 5 minutes set the dire
 - FundedNext Futures Flex: $85 → $27, $142 → $-30. List price on the Flex challenge page is $141.99. The same page says the third purchase onward is $84.99, and the first two are $74.99. A farm's next eval is the repeat price. The list price is in the sensitivity. No activation fee.
 - MyFundedFutures Rapid EOD: $135 → $-60, $157 → $-82. The help article does not print the price. The firm's own blog says $135 in one paragraph and $157 in another. The rank uses $157, the higher figure. $135 is in the sensitivity.
 
+## Do the sims charge commission?
+
+Yes on the four firms that print a rate. The path still uses one cost model for every firm. Case (b) is TopstepX's MNQ $1.22 round turn plus one tick each side, which is what the rest of this file has been using. It is not each firm's own card. One tick each side on MNQ is $1.00 a round turn (0.50 points at $2 a point). A full-size stop is 16 points, $32 of risk per contract, so the cost is that many dollars times the contracts needed to risk the max-loss line.
+
+- **Topstep.** [TopstepX commissions](https://help.topstep.com/en/articles/8284213-topstepx-commissions-and-fees), 30 Sep 2026: "These fees apply when trading the Trading Combine, Express Funded Account, and Live Funded Account. Commissions and fees are automatically deducted from each trade." Micro E-mini NASDAQ 100 (MNQ) total is $1.22 round turn: exchange $0.70, NFA $0.02, commission $0.50. The live-account costs page also says the Combine charges "a $3.70/lot simulated fee" and lists NQ and ES near $3.80. That sentence is the mini, not the micro. The product table is the MNQ number.
+- **LucidFlex.** [Approved products and commissions](https://support.lucidtrading.com/en/articles/11508978-approved-products-and-commissions), 26 Aug 2026. The column is "Commission (Per Side)." MNQ is 0.50, so $1.00 round turn. NQ is 1.75 per side. The article says the table is "what it costs." It does not use the words "deducted from your balance."
+- **Tradeify.** [Trading commission fees](https://help.tradeify.co/en/articles/10468315-trading-commission-fees), updated in the last two weeks: "Total Round Trip Cost includes Exchange fees, NFA fees, Clearing fees, and Commissions." MNQ is $1.82 round turn. The pricing page says "All trades incur commission fees." It does not separately say the sim balance is where they come out.
+- **MyFundedFutures.** [Futures instrument list](https://help.myfundedfutures.com/en/articles/9735811-futures-instrument-list), 24 Aug 2026, column "Total Cost Round Trip." MNQ is 0.25 tick, $0.50 tick value, **$1.90** round trip. NQ is **$4.68**. The [live account page](https://help.myfundedfutures.com/en/articles/10101257-understanding-live-funded-account-at-myfunded-futures) says "Round-Trip Commissions and Fees" "will be deducted directly from your Live Funded Account balance." The evaluation articles do not repeat that sentence. The instrument list is the schedule for the products the sim trades.
+- **FundedNext Flex.** [How commissions work](https://helpfutures.fundednext.com/en/articles/14298151-how-do-commissions-work-in-futures-trading), 22 Aug 2026: the all-in rate "includes broker commissions, exchange and NFA fees, and clearing fees," and "the commission and fees are charged twice, once for opening and once for closing." The only number on the page is an NQ example, $2.88 per side, $5.76 round turn, described as NinjaTrader's rate. The page does not print an MNQ figure.
+
+Same book as the table above, stated breach, 2,500 paths, its own sample. The commission-plus-slippage point will not match the earlier row to the dollar. Compare the intervals. Slippage only drops the $1.22 and keeps the tick. Zero cost drops both.
+
+| firm | cost | symmetric EV | symmetric payouts / 100 | recipe EV | recipe payouts / 100 |
+|---|---|---|---:|---|---:|
+| LucidFlex | slippage only | $19 ($-0 to $38) | 12.6 | $39 ($12 to $65) | 8.7 |
+| LucidFlex | commission plus slippage | $4 ($-14 to $23) | 11.8 | $21 ($-4 to $46) | 7.6 |
+| LucidFlex | zero cost | $18 ($-2 to $39) | 12.2 | $50 ($23 to $77) | 9.4 |
+| Topstep | slippage only | $17 ($7 to $27) | 11.2 | $81 ($61 to $101) | 10.5 |
+| Topstep | commission plus slippage | $2 ($-7 to $12) | 9.8 | $87 ($65 to $109) | 10.8 |
+| Topstep | zero cost | $19 ($8 to $30) | 11.0 | $83 ($64 to $102) | 10.5 |
+| Tradeify Select Flex | slippage only | $-113 ($-122 to $-105) | 5.5 | $45 ($5 to $85) | 9.9 |
+| Tradeify Select Flex | commission plus slippage | $-117 ($-125 to $-109) | 5.3 | $-16 ($-50 to $18) | 7.1 |
+| Tradeify Select Flex | zero cost | $-116 ($-124 to $-107) | 5.0 | $26 ($-11 to $63) | 9.0 |
+| MyFundedFutures Rapid EOD | slippage only | $-157 ($-157 to $-157) | 0.0 | $-87 ($-101 to $-74) | 3.9 |
+| MyFundedFutures Rapid EOD | commission plus slippage | $-157 ($-157 to $-157) | 0.0 | $-82 ($-96 to $-68) | 4.2 |
+| MyFundedFutures Rapid EOD | zero cost | $-157 ($-157 to $-157) | 0.0 | $-94 ($-107 to $-81) | 3.5 |
+| FundedNext Futures Flex | slippage only | $10 ($-5 to $25) | 12.4 | $31 ($10 to $52) | 10.4 |
+| FundedNext Futures Flex | commission plus slippage | $6 ($-9 to $21) | 12.5 | $10 ($-9 to $28) | 8.4 |
+| FundedNext Futures Flex | zero cost | $11 ($-5 to $27) | 12.0 | $20 ($0 to $40) | 9.4 |
+
 ## A month at the cap
 
 Each firm is run at its published funded cap. The month is the symmetric coin, so a winning day pays the same dollars as the stop. Tradeify's rule says the bot may not be used at another firm, so the combined book is also shown without Tradeify.
