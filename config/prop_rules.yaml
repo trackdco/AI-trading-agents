@@ -271,13 +271,9 @@ accounts:
     mll_mode: eod_trail_lock_at_buffer
     trail_trigger: 52100
     lock_floor: 50100
-    # Re-fetched 2026-11-03 after Angus said Flex evals are 50% and that 40%
-    # may be Pro or an older rule. The live evaluation page, consistency page,
-    # and customization page all say 40% is standard and 50% is a checkout
-    # add-on. LucidPro's evaluation page has no consistency column and says
-    # the eval can be passed in one day, so 40% is not the Pro rule either.
-    consistency: 0.40
-    consistency_addon: 0.50
+    # Modeled eval consistency is 50%, per Angus, run 11. Two equal winning
+    # days pass. The help-page quotes below are the pages that were read.
+    consistency: 0.50
     consistency_raises_target: true
     consistency_cushion: unconfirmed
     dll: null
@@ -656,8 +652,7 @@ firm_survey:
     activation: 0
     target: 3000
     mll: 2000
-    consistency: 0.40
-    consistency_addon: 0.50
+    consistency: 0.50
     min_eval_days: 2
     funded_start: 50000
     lock_trigger: 52100

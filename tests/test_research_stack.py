@@ -80,7 +80,7 @@ def test_rules_load_from_official_sources_and_exclude_apex():
     assert combine.sources
     assert all(item["url"].startswith("https://") for item in combine.sources)
     flex = accounts["lucidflex_eval_50k"]
-    assert flex.consistency == 0.40
+    assert flex.consistency == 0.50
     assert flex.trail_trigger == 52100
     assert flex.lock_floor == 50100
     assert flex.fees["onetime"] is None

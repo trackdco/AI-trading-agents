@@ -36,54 +36,54 @@ Each row is one trade a day unless the name says `two`, which is up to two fills
 | setup | firm | val pass at $2,000 | holdout pass at $2,000 | holdout days | val pass at $1,000 |
 |---|---|---:|---:|---:|---:|
 | onhl_pull_s15 | Topstep | 61.7% | 44.4% (41.3% to 47.5%) | 8.0 | 49.6% |
-| onhl_pull_s15 | LucidFlex | 64.0% | 41.2% (38.1% to 44.3%) | 12.3 | 47.2% |
+| onhl_pull_s15 | LucidFlex | 64.0% | 41.2% (38.1% to 44.3%) | 12.3 | 51.2% |
 | onhl_pull_s15 | FundedNext Futures Flex | 60.1% | 37.4% (34.4% to 40.4%) | 12.1 | 36.3% |
 | onhl_pull_s25 | Topstep | 52.0% | 38.6% (35.6% to 41.6%) | 7.3 | 45.0% |
-| onhl_pull_s25 | LucidFlex | 50.5% | 40.3% (37.3% to 43.3%) | 7.3 | 41.7% |
+| onhl_pull_s25 | LucidFlex | 50.5% | 40.3% (37.3% to 43.3%) | 7.3 | 45.8% |
 | onhl_pull_s25 | FundedNext Futures Flex | 46.9% | 37.0% (34.0% to 40.0%) | 7.7 | 31.5% |
 | onhl_s25 | Topstep | 50.4% | 40.8% (37.8% to 43.8%) | 3.6 | 26.8% |
-| onhl_s25 | LucidFlex | 47.8% | 40.2% (37.2% to 43.2%) | 3.5 | 22.2% |
+| onhl_s25 | LucidFlex | 47.9% | 40.2% (37.2% to 43.2%) | 3.5 | 26.6% |
 | onhl_s25 | FundedNext Futures Flex | 45.3% | 39.5% (36.5% to 42.5%) | 3.6 | 19.7% |
 | onhl_s15 | Topstep | 45.6% | 30.9% (28.0% to 33.8%) | 3.7 | 38.8% |
-| onhl_s15 | LucidFlex | 46.6% | 27.7% (24.9% to 30.5%) | 5.7 | 33.7% |
+| onhl_s15 | LucidFlex | 46.6% | 27.7% (24.9% to 30.5%) | 5.7 | 38.0% |
 | onhl_s15 | FundedNext Futures Flex | 47.9% | 26.1% (23.4% to 28.8%) | 5.3 | 29.3% |
 | combo_s15 | Topstep | 43.1% | 26.1% (23.4% to 28.8%) | 4.3 | 34.5% |
-| combo_s15 | LucidFlex | 45.3% | 27.8% (25.0% to 30.6%) | 6.8 | 34.5% |
+| combo_s15 | LucidFlex | 45.3% | 27.8% (25.0% to 30.6%) | 6.8 | 37.5% |
 | combo_s15 | FundedNext Futures Flex | 44.5% | 27.6% (24.8% to 30.4%) | 6.7 | 25.4% |
 | onhl_pull_struct | Topstep | 45.0% | 42.7% (39.6% to 45.8%) | 7.8 | 37.8% |
-| onhl_pull_struct | LucidFlex | 42.1% | 40.0% (37.0% to 43.0%) | 7.9 | 35.6% |
+| onhl_pull_struct | LucidFlex | 44.3% | 41.3% (38.2% to 44.4%) | 7.4 | 39.2% |
 | onhl_pull_struct | FundedNext Futures Flex | 42.7% | 38.7% (35.7% to 41.7%) | 8.0 | 26.2% |
 | combo_s25 | Topstep | 41.9% | 35.2% (32.2% to 38.2%) | 4.2 | 29.0% |
-| combo_s25 | LucidFlex | 40.7% | 35.1% (32.1% to 38.1%) | 4.2 | 24.9% |
+| combo_s25 | LucidFlex | 40.7% | 35.1% (32.1% to 38.1%) | 4.2 | 28.5% |
 | combo_s25 | FundedNext Futures Flex | 37.5% | 32.8% (29.9% to 35.7%) | 4.1 | 19.2% |
 | pdhl_s15 | Topstep | 36.0% | 28.3% (25.5% to 31.1%) | 4.8 | 28.1% |
-| pdhl_s15 | LucidFlex | 38.6% | 24.6% (21.9% to 27.3%) | 7.9 | 22.8% |
+| pdhl_s15 | LucidFlex | 38.6% | 24.6% (21.9% to 27.3%) | 7.9 | 26.9% |
 | pdhl_s15 | FundedNext Futures Flex | 36.9% | 24.6% (21.9% to 27.3%) | 7.3 | 19.8% |
 | onhl_struct | Topstep | 35.3% | 40.4% (37.4% to 43.4%) | 3.7 | 18.3% |
-| onhl_struct | LucidFlex | 33.2% | 41.1% (38.1% to 44.1%) | 4.0 | 14.3% |
+| onhl_struct | LucidFlex | 33.3% | 41.6% (38.5% to 44.7%) | 3.7 | 17.1% |
 | onhl_struct | FundedNext Futures Flex | 35.3% | 41.8% (38.7% to 44.9%) | 4.0 | 11.5% |
 | pdhl_s25 | Topstep | 36.1% | 36.4% (33.4% to 39.4%) | 4.5 | 20.6% |
-| pdhl_s25 | LucidFlex | 33.2% | 37.1% (34.1% to 40.1%) | 4.6 | 17.4% |
+| pdhl_s25 | LucidFlex | 33.2% | 37.3% (34.3% to 40.3%) | 4.6 | 20.4% |
 | pdhl_s25 | FundedNext Futures Flex | 32.0% | 35.3% (32.3% to 38.3%) | 4.4 | 13.8% |
-| combo_struct | Topstep | 33.7% | 35.5% (32.5% to 38.5%) | 4.2 | 24.6% |
-| combo_struct | LucidFlex | 30.9% | 34.0% (31.1% to 36.9%) | 4.8 | 21.1% |
-| combo_struct | FundedNext Futures Flex | 30.4% | 32.8% (29.9% to 35.7%) | 4.6 | 17.1% |
 | combo_two_s15 | Topstep | 31.1% | 24.7% (22.0% to 27.4%) | 3.7 | 32.7% |
-| combo_two_s15 | LucidFlex | 29.6% | 21.5% (19.0% to 24.0%) | 5.8 | 30.9% |
+| combo_two_s15 | LucidFlex | 35.4% | 28.6% (25.8% to 31.4%) | 3.9 | 33.0% |
 | combo_two_s15 | FundedNext Futures Flex | 32.4% | 21.3% (18.8% to 23.8%) | 6.2 | 23.4% |
+| combo_struct | Topstep | 33.7% | 35.5% (32.5% to 38.5%) | 4.2 | 24.6% |
+| combo_struct | LucidFlex | 32.4% | 34.8% (31.8% to 37.8%) | 4.6 | 24.1% |
+| combo_struct | FundedNext Futures Flex | 30.4% | 32.8% (29.9% to 35.7%) | 4.6 | 17.1% |
 | pdhl_struct | Topstep | 28.4% | 34.1% (31.2% to 37.0%) | 4.6 | 22.4% |
-| pdhl_struct | LucidFlex | 26.5% | 32.1% (29.2% to 35.0%) | 4.8 | 22.4% |
+| pdhl_struct | LucidFlex | 27.5% | 34.3% (31.4% to 37.2%) | 4.5 | 25.6% |
 | pdhl_struct | FundedNext Futures Flex | 24.5% | 33.0% (30.1% to 35.9%) | 4.8 | 13.8% |
 | pdhl_two_s15 | Topstep | 24.7% | 24.9% (22.2% to 27.6%) | 4.1 | 27.6% |
-| pdhl_two_s15 | LucidFlex | 24.8% | 21.5% (19.0% to 24.0%) | 6.3 | 20.6% |
+| pdhl_two_s15 | LucidFlex | 30.2% | 27.1% (24.3% to 29.9%) | 4.3 | 25.9% |
 | pdhl_two_s15 | FundedNext Futures Flex | 25.3% | 22.3% (19.7% to 24.9%) | 6.0 | 15.2% |
 
-A single winning day does not pass these three default rules. Topstep's best day has to stay within 55% of the target, so one day that takes the whole $3,000 raises the target to about $5,455. LucidFlex's standard rule is 40% and the minimum is two days, so two equal $1,500 days are 50% and do not pass. The 50% add-on would. FundedNext's 40% rule raises a $2,500 target to $6,250 if one day is the whole target. The rows below are still one full-target trade per day, and the paths that pass do it by winning again on a later day. They are not one-day passes.
+A single winning day does not pass these rules. Topstep's best day has to stay within 55% of the target, so one day that takes the whole $3,000 raises the target to about $5,455. LucidFlex is modeled at 50% with a two-day minimum, so two equal $1,500 days pass. FundedNext's rule raises a $2,500 target to $6,250 if one day is the whole target. The rows below are still one full-target trade per day, and the paths that pass do it by winning again on a later day. They are not one-day passes.
 
 | firm | one trade at the full target, validation pass | days |
 |---|---:|---:|
 | Topstep | 29.6% (26.8% to 32.4%) | 2.7 |
-| LucidFlex | 25.4% (22.7% to 28.1%) | 5.2 |
+| LucidFlex | 33.0% (30.1% to 35.9%) | 3.2 |
 | FundedNext Futures Flex | 21.9% (19.3% to 24.5%) | 5.4 |
 
 ## Lifecycle
@@ -95,7 +95,7 @@ Eval days are the validation-best 0.75R book, scored on the holdout. The big fun
 | Topstep | $2,000 | 41.3% | $409 ($306 to $512) | 35.9 |
 | Topstep | $1,000 | 41.6% | $369 ($278 to $461) | 33.1 |
 | LucidFlex | $2,000 | 39.6% | $266 ($201 to $332) | 37.6 |
-| LucidFlex | $1,000 | 38.3% | $223 ($162 to $283) | 32.7 |
+| LucidFlex | $1,000 | 40.4% | $209 ($150 to $268) | 31.4 |
 | FundedNext Futures Flex | $1,500 | 39.7% | $269 ($204 to $334) | 41.6 |
 | FundedNext Futures Flex | $1,000 | 28.1% | $114 ($67 to $161) | 23.3 |
 
@@ -145,5 +145,5 @@ One payout cycle, exact, not a sample. Fail and the fee is lost. Pass and the ac
 
 ## Verdict
 
-`onhl_pull_s15` clears 37%. Holdout hit 48.3% (39.3% to 57.3%) on 118 fills. The interval starts just above 37% and above the 38.9% cost breakeven at this stop. The validation hit was higher, 54.8%. The validation test survived the correction. Stretching the prior-day fade to 1.7R did not beat this overnight pull. Topstep at $2,000 eval risk: EV $409 ($306 to $512), 36 payouts per 100. LucidFlex at $2,000 eval risk: EV $266 ($201 to $332), 38 payouts per 100. FundedNext Futures Flex at $1,500 eval risk: EV $269 ($204 to $334), 42 payouts per 100. FundedNext Futures Flex at $1,000 eval risk: EV $114 ($67 to $161), 23 payouts per 100. Topstep month $3,863, P(negative) 13.0%. LucidFlex month $806, P(negative) 37.0%. FundedNext Futures Flex month $750, P(negative) 34.5%. On the validation window the average pass rate at a $2,000 risk is 37.2% for prior-day levels, 61.9% for the overnight pull, and 44.3% for the two on the same order. Combining them does not raise the pass rate.
+`onhl_pull_s15` clears 37%. Holdout hit 48.3% (39.3% to 57.3%) on 118 fills. The interval starts just above 37% and above the 38.9% cost breakeven at this stop. The validation hit was higher. The validation test survived the correction. Stretching the prior-day fade to 1.7R did not beat this overnight pull. Topstep at $2,000 eval risk: EV $409 ($306 to $512), 36 payouts per 100. LucidFlex at $2,000 eval risk: EV $266 ($201 to $332), 38 payouts per 100. FundedNext Futures Flex at $1,500 eval risk: EV $269 ($204 to $334), 42 payouts per 100. FundedNext Futures Flex at $1,000 eval risk: EV $114 ($67 to $161), 23 payouts per 100. Topstep month $3,863, P(negative) 13.0%. LucidFlex month $806, P(negative) 37.0%. FundedNext Futures Flex month $750, P(negative) 34.5%. On the validation window the average pass rate at a $2,000 risk is 37.2% for prior-day levels, 61.9% for the overnight pull, and 44.3% for the two on the same order. Combining them does not raise the pass rate.
 

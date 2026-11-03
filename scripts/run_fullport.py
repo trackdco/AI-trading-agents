@@ -598,9 +598,9 @@ def render(funded, winner, eval_rows, lives, months, firms_list, cuts, n_var) ->
             )
     a("")
     a(
-        "A single winning day does not pass these three default rules. Topstep's best day has to stay within 55% of the target, so one day that takes the whole $3,000 raises the target to about $5,455. "
-        "LucidFlex's standard rule is 40% and the minimum is two days, so two equal $1,500 days are 50% and do not pass. The 50% add-on would. "
-        "FundedNext's 40% rule raises a $2,500 target to $6,250 if one day is the whole target. "
+        "A single winning day does not pass these rules. Topstep's best day has to stay within 55% of the target, so one day that takes the whole $3,000 raises the target to about $5,455. "
+        "LucidFlex is modeled at 50% with a two-day minimum, so two equal $1,500 days pass. "
+        "FundedNext's rule raises a $2,500 target to $6,250 if one day is the whole target. "
         "The rows below are still one full-target trade per day, and the paths that pass do it by winning again on a later day. They are not one-day passes."
     )
     a("")
