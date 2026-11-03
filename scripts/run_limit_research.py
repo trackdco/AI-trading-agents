@@ -1052,8 +1052,19 @@ def main() -> None:
         catalog, chosen, funded_winner, baselines, lives, months, grid, firm_list,
         reference, funded_touch, funded_miss, funded_r,
     )
-    OUT.write_text(text)
+    _write_preserving_jake(text)
     print("wrote", OUT, flush=True)
+
+
+def _write_preserving_jake(text: str) -> None:
+    marker = "## Jake Ryan's rules"
+    if OUT.exists():
+        old = OUT.read_text()
+        if marker in old:
+            text = text.rstrip() + "\n\n" + old[old.index(marker):]
+    if not text.endswith("\n"):
+        text += "\n"
+    OUT.write_text(text)
 
 
 def render(

@@ -146,3 +146,77 @@ Rows are the eval pass rate. Columns are the funded 1.7:1 hit rate. The cell is 
 
 The funded winner `onhl_pull_none` holdout hit rate is 42.2% (33.3% to 51.2%). That interval does not sit above the 37% random-walk line, so a 50% hit on the 1.7:1 funded day was not found. Holdout mean R is 0.180 (-0.063 to 0.424). That interval covers zero. The eval search was allowed to return a negative-R book. `onhl_pull_none` is not one. Its 0.75R holdout hit rate is 72.4% (64.3% to 80.5%) on 116 fills, against 57.1% for a no-drift path and about 60% to break even after commission and one tick of stop slippage. Holdout mean R is 0.251 (0.109 to 0.393). Validation hit was 73.9% on 119 fills. The same variant won the funded ranking. Topstep holdout pass 49.8% (47.3% to 52.3%), against the ±$500 coin at 25.7% and the random-walk 0.75R book at 33.2%. The interval clears the ±$500 coin. It also clears the random-walk 0.75R book. Lifecycle EV is $513, and that interval is above zero. LucidFlex holdout pass 49.3% (46.8% to 51.9%), against the ±$500 coin at 25.7% and the random-walk 0.75R book at 23.0%. The interval clears the ±$500 coin. It also clears the random-walk 0.75R book. Lifecycle EV is $478, and that interval is above zero. FundedNext Futures Flex holdout pass 48.9% (46.4% to 51.5%), against the ±$500 coin at 25.4% and the random-walk 0.75R book at 23.0%. The interval clears the ±$500 coin. It also clears the random-walk 0.75R book. Lifecycle EV is $390, and that interval is above zero. The lifecycle dollar interval resamples those recorded days. It is not a second test of the 1.7:1 hit rate against 37%.
 
+## Jake Ryan's rules
+
+These are Jake Ryan's rules as written down from two months of reels. The reels are his claims. Nothing in them was checked against a brokerage statement. The rules below were fixed before this run. Every pre-declared rule is in the table. A weak holdout was not a reason to drop one.
+
+Absorption, a trapped-trader wick, and a footprint refresh need tick or market-by-order data. They are not in the 1-minute file, so they are not approximated. The first 15-second candle after 08:30 CT is not in the file either, so that funded-open push is not tested. A 1-minute bar is a different rule. The CPI straddle, a VPN, and buying a batch of accounts for a news release are left out. Those break the firm rules this book is allowed to trade under, or they need a queue-position fill.
+
+The volume profile runs from the Sunday 18:00 ET open (17:00 CT) through 09:29 ET the morning of the trade. Monday afternoon is in Tuesday's profile and is not in Monday's. Volume is the 1-minute bar booked at the close, in 1-point bins. The value area is 70% around the point of control. Limits go out at 09:30 ET and cancel at 11:00 ET (10:00 CT) if they have not traded through. A fade is taken only when the point of control is at least the target distance inside the edge, so a 2R target really is a fade toward the middle.
+
+The open-reversion needs a first-five-minute push of at least 31.8 points, the median of that push on the train window. The stop is 10 points beyond the five-minute extreme and the target is the 09:30 open. The order is live at 09:35.
+
+The trend rule needs an overnight gap of at least 107.9 points, the 75th percentile of the train window. After 09:30 it waits for a sweep through the 09:00-09:30 high or low that closes back inside, then rests a limit at that level on the next bar, with the overnight trend. The stop is 12 points. The target is the overnight extreme, and only when that extreme is at least one stop away.
+
+| rule | val n | val hit | val mean R | hold n | hold hit | hold mean R | random-walk hit |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| vp_10_2r | 116 | 44.0% | 0.244 | 123 | 41.5% (32.8% to 50.2%) | 0.168 (-0.096 to 0.433) | 33.3% |
+| vp_15_2r | 107 | 39.3% | 0.138 | 113 | 43.4% (34.2% to 52.5%) | 0.251 (-0.026 to 0.528) | 33.3% |
+| vp_10_3r | 107 | 29.9% | 0.118 | 113 | 32.7% (24.1% to 41.4%) | 0.232 (-0.118 to 0.582) | 25.0% |
+| vp_15_3r | 94 | 23.4% | -0.103 | 105 | 30.5% (21.7% to 39.3%) | 0.188 (-0.167 to 0.543) | 25.0% |
+| vp_12_poc | 121 | 18.2% | -0.174 | 129 | 20.9% (13.9% to 28.0%) | 0.210 (-0.308 to 0.728) | see mean R |
+| revert_open | 183 | 13.1% | -0.322 | 214 | 13.6% (9.0% to 18.1%) | -0.062 (-0.429 to 0.305) | see mean R |
+| trend_sweep | 59 | 6.8% | -0.461 | 88 | 8.0% (2.3% to 13.6%) | -0.304 (-0.949 to 0.341) | see mean R |
+
+A 2R target is touched by a no-drift path about 33% of the time. A 3R target about 25%. The point-of-control fade, the open reversion, and the trend sweep do not have one reward, so that single percentage is not their null. Their mean R interval is.
+
+Pass rate, one trade a day, stop sized to the max loss and no more than $2,000. A 2R win on that size is about $4,000, and a 3R win is about $6,000. The consistency rule then raises the target, because one day is more than half the profit. The fair coin wins at the no-drift rate for that reward and loses the whole stop otherwise. The ±$500 coin is the same roughly 26% baseline as the rest of this note.
+
+| rule | firm | val pass | holdout pass | holdout days |
+|---|---|---:|---:|---:|
+| vp_10_2r | Topstep | 29.5% | 26.3% (24.0% to 28.5%) | 6.1 |
+| vp_10_2r | LucidFlex | 23.4% | 20.1% (18.1% to 22.2%) | 12.3 |
+| vp_10_2r | FundedNext Futures Flex | 23.3% | 19.3% (17.3% to 21.3%) | 12.6 |
+| vp_15_2r | Topstep | 24.5% | 26.9% (24.7% to 29.2%) | 7.1 |
+| vp_15_2r | LucidFlex | 17.5% | 21.9% (19.8% to 24.0%) | 13.3 |
+| vp_15_2r | FundedNext Futures Flex | 15.4% | 21.7% (19.6% to 23.8%) | 13.4 |
+| vp_10_3r | Topstep | 16.3% | 18.6% (16.6% to 20.6%) | 9.3 |
+| vp_10_3r | LucidFlex | 14.5% | 16.5% (14.6% to 18.3%) | 14.6 |
+| vp_10_3r | FundedNext Futures Flex | 13.6% | 17.2% (15.3% to 19.1%) | 14.0 |
+| vp_15_3r | Topstep | 11.3% | 16.7% (14.8% to 18.6%) | 9.6 |
+| vp_15_3r | LucidFlex | 7.8% | 13.9% (12.2% to 15.7%) | 15.9 |
+| vp_15_3r | FundedNext Futures Flex | 6.4% | 13.7% (11.9% to 15.4%) | 15.6 |
+| vp_12_poc | Topstep | 2.2% | 5.5% (4.3% to 6.6%) | 15.5 |
+| vp_12_poc | LucidFlex | 0.9% | 2.5% (1.7% to 3.3%) | 24.9 |
+| vp_12_poc | FundedNext Futures Flex | 0.4% | 1.9% (1.2% to 2.6%) | 21.1 |
+| revert_open | Topstep | 2.7% | 3.7% (2.8% to 4.7%) | 11.3 |
+| revert_open | LucidFlex | 1.0% | 2.0% (1.3% to 2.7%) | 16.2 |
+| revert_open | FundedNext Futures Flex | 0.9% | 1.7% (1.0% to 2.3%) | 15.8 |
+| trend_sweep | Topstep | 0.3% | 0.7% (0.3% to 1.1%) | 17.1 |
+| trend_sweep | LucidFlex | 0.1% | 0.2% (-0.0% to 0.4%) | 27.7 |
+| trend_sweep | FundedNext Futures Flex | 0.2% | 0.1% (-0.1% to 0.3%) | 17.0 |
+
+| firm | fair 2R coin | fair 3R coin | ±$500 coin |
+|---|---:|---:|---:|
+| Topstep | 15.3% in 2.9 days | 10.9% in 3.8 days | 23.9% in 17.8 days |
+| LucidFlex | 11.9% in 5.0 days | 8.5% in 7.4 days | 23.9% in 17.8 days |
+| FundedNext Futures Flex | 11.9% in 5.0 days | 8.5% in 7.4 days | 23.3% in 12.7 days |
+
+## Sizing the funded day
+
+Same eval book as the lifecycle above (`onhl_pull_none`, the validation winner) and the same grind rate. The big day is that setup's filled 1.7:1 holdout trades, resized. Angus risks the max loss, and no more than $2,000. Where the line is $2,000, a target hit is about $3,400 before commission. FundedNext's line is $1,500, so that trade is sized to $1,500. Jake's one trade risks $1,300, the middle of his $1,200 to $1,400 band, so the 1.7 reward lands near $2,210, inside the $2,100 to $2,400 band. His two trades are two independent draws at $1,000 risk, about $1,700 each, and both are taken. They are two resamples of one setup, not two different signals. Topstep and LucidFlex pay at most $2,000 in a cycle. FundedNext Flex pays at most $1,500. A win larger than the cap stays in the account. An up day is the average of days that finished positive. A down day in the two-trade row is both trades losing. The EV is cash after the cap, the split, and the fee.
+
+| firm | sizing | mean up day | mean down day | EV per eval | payouts / 100 |
+|---|---|---:|---:|---|---:|
+| Topstep | Angus, one trade risking $2,000 | $3,248 | $-2,068 | $513 ($437 to $589) | 37.5 |
+| Topstep | Jake, one trade risking $1,300 | $2,111 | $-1,344 | $372 ($307 to $436) | 36.2 |
+| Topstep | Jake, two trades risking $1,000 each | $1,414 | $-2,021 | $813 ($708 to $917) | 84.7 |
+| LucidFlex | Angus, one trade risking $2,000 | $3,259 | $-2,059 | $478 ($408 to $547) | 35.2 |
+| LucidFlex | Jake, one trade risking $1,300 | $2,118 | $-1,339 | $294 ($247 to $341) | 34.9 |
+| LucidFlex | Jake, two trades risking $1,000 each | $1,424 | $-2,013 | $276 ($231 to $322) | 38.7 |
+| FundedNext Futures Flex | Angus, one trade risking $1,500 | $2,436 | $-1,551 | $390 ($333 to $447) | 35.3 |
+| FundedNext Futures Flex | Jake, one trade risking $1,300 | $2,111 | $-1,344 | $337 ($285 to $388) | 34.0 |
+| FundedNext Futures Flex | Jake, two trades risking $1,000 each | $1,414 | $-2,021 | $487 ($432 to $542) | 72.9 |
+
+`vp_10_2r` holdout mean R is 0.168 (-0.096 to 0.433). `vp_15_2r` holdout mean R is 0.251 (-0.026 to 0.528). The lower end of the hit-rate interval is above the pre-cost 33.3% line and not above the 35.0% line after commission and one tick of stop slippage. `vp_10_3r` holdout mean R is 0.232 (-0.118 to 0.582). `vp_15_3r` holdout mean R is 0.188 (-0.167 to 0.543). `vp_12_poc` holdout mean R is 0.210 (-0.308 to 0.728). `revert_open` holdout mean R is -0.062 (-0.429 to 0.305). `trend_sweep` holdout mean R is -0.304 (-0.949 to 0.341). Every one of these holdout mean-R intervals covers zero or is below it. The highest holdout pass rate in the list is 26.9% for `vp_15_2r` on Topstep. That is the neighborhood of the ±$500 coin, and it is above the fair high-R coin because a day with no fill does not take the stop. It is not the roughly 49% pass rate of the 0.75R book above. None of these rules replaces that book. The sizing table uses the earlier 1.7:1 fills. A smaller risk does not change their hit rate. On a two-trade row, an up day can be one win and one loss, and a down day is both trades losing, about two full stops. Two trades leave the account alive after a single loss. On Topstep the two-trade EV is $813 against $513 for the single full-risk trade and $372 for the single $1,300 trade. On LucidFlex the two-trade EV is $276 against $478 for the single full-risk trade and $294 for the single $1,300 trade. On FundedNext Futures Flex the two-trade EV is $487 against $390 for the single full-risk trade and $337 for the single $1,300 trade. That is the sizing, not a new signal, and the 1.7:1 hit rate still has a holdout interval that includes 37%.
+
