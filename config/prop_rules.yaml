@@ -271,6 +271,11 @@ accounts:
     mll_mode: eod_trail_lock_at_buffer
     trail_trigger: 52100
     lock_floor: 50100
+    # Re-fetched 2026-11-03 after Angus said Flex evals are 50% and that 40%
+    # may be Pro or an older rule. The live evaluation page, consistency page,
+    # and customization page all say 40% is standard and 50% is a checkout
+    # add-on. LucidPro's evaluation page has no consistency column and says
+    # the eval can be passed in one day, so 40% is not the Pro rule either.
     consistency: 0.40
     consistency_addon: 0.50
     consistency_raises_target: true
@@ -291,15 +296,21 @@ accounts:
       - url: "https://support.lucidtrading.com/en/articles/12945790-lucidflex-evaluation-account"
         title: "LucidFlex Evaluation Account"
         page_date: null
+        retrieved: "2026-11-03"
+        quote: "40% (50% with add-on). Pass in as few as 3 days with 40% consistency, or 2 days with the 50% consistency add-on."
       - url: "https://support.lucidtrading.com/en/articles/12945815-lucidflex-drawdown"
         title: "LucidFlex Drawdown"
         page_date: null
       - url: "https://support.lucidtrading.com/en/articles/12945805-lucidflex-consistency-percentage"
         title: "LucidFlex Consistency Percentage"
         page_date: null
+        retrieved: "2026-11-03"
+        quote: "Your Consistency Percentage must be 40% or less to be eligible to upgrade to a LucidFlex funded account. If you added the 50% consistency add-on at checkout, it must be 50% or less."
       - url: "https://support.lucidtrading.com/en/articles/16226050-lucidflex-customization"
         title: "LucidFlex Customization"
         page_date: null
+        retrieved: "2026-11-03"
+        quote: "40% (standard). 50% (add-on), added at checkout for a small fee. Consistency applies to the evaluation only."
 
   lucidflex_eval_25k:
     <<: *lucidflex_eval_50k
@@ -347,6 +358,9 @@ accounts:
     mll_mode: eod_trail_lock_at_buffer
     trail_trigger: 52100
     lock_floor: 50100
+    # Re-fetched 2026-11-03. The funded page says there is no consistency
+    # rule. The payout page's two requirements are five winning days and
+    # positive cycle profit. Neither requirement is a consistency percentage.
     consistency: null
     dll: null
     dll_is_breach: false
@@ -377,9 +391,13 @@ accounts:
       - url: "https://support.lucidtrading.com/en/articles/12945795-lucidflex-funded-account"
         title: "LucidFlex Funded Account"
         page_date: null
+        retrieved: "2026-11-03"
+        quote: "LucidFlex funded accounts have an optional Daily Loss Limit, no consistency rule and no payout buffer. There is no Consistency Percentage on LucidFlex funded accounts."
       - url: "https://support.lucidtrading.com/en/articles/12945796-lucidflex-payouts"
         title: "LucidFlex Payouts"
         page_date: "2026-07-28"
+        retrieved: "2026-11-03"
+        quote: "There are two requirements must be met in LucidFlex to qualify for a payout. 1. Trading Days with Profit, five days at the size's minimum. 2. Net Profit in Payout Cycle, positive net profit. The page does not add a consistency percentage."
       - url: "https://support.lucidtrading.com/en/articles/12945815-lucidflex-drawdown"
         title: "LucidFlex Drawdown"
         page_date: null
@@ -591,7 +609,7 @@ unconfirmed:
     url: "https://support.lucidtrading.com/en/articles/12945796-lucidflex-payouts"
   - id: lucidflex_consistency_cushion
     affects: "50% consistency add-on"
-    why: "The page shows an example cushion ($1,560 vs $1,500 on a 50K) and says it is a percentage of the actual best day, not a fixed dollar amount. The formula is not specified. The simulator uses a plain 50% ratio and no cushion."
+    why: "Re-fetched 2026-11-03. The example table is $1,560 against a $1,500 half on a 50K, and the same 4% step on 25K ($650 vs $625), 100K ($3,120 vs $3,000) and 150K ($4,680 vs $4,500). The page says this is an example, not a fixed dollar amount, and that the cushion is a percentage of the actual best day. Two equal days that land on exactly half the target are already '50% or less', so they pass the add-on without the cushion. The simulator uses that plain ratio."
     url: "https://support.lucidtrading.com/en/articles/12945805-lucidflex-consistency-percentage"
   - id: lucid_dollar_fees
     affects: "Eval cost and EV per attempt at Lucid"

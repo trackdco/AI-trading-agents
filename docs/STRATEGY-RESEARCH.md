@@ -202,3 +202,225 @@ Resets do not fix this. Up to three attempts are inside the search. Paying the f
 ## What raw ticks would change
 
 A tick tape would let a stop and a target be ordered inside the minute, instead of this model's stop-first rule. That helps the small-target variants if the target really prints before the stop, and it hurts them if the stop does. It would also let CRT be defined on a sweep of a few ticks rather than a whole 1-minute bar, and it would make absorption and stacked imbalance real rather than minute proxies. It would not remove the commission. Any 0.25R result that is only a point or two wide dies on $1.22 and a tick whether or not the tape is finer. The minute bars are enough to reject the claim that a no-drift 0.25R trade, or the CRT rules above, are a prop-firm edge.
+
+## The prop-farm claim
+
+These are the claims from @lndhmtapes (Kairos), tested on the rules in `config/prop_rules.yaml`. Nothing here places an order. Cross-account hedging is not tested. Lucid bans it, and so does the note he wrote himself.
+
+### The live wording, next to Angus
+
+Angus trades these accounts. On 3 Nov 2026 he said LucidFlex evals use a 50% consistency rule, that 40% may be the Pro rule or an older one, and that a funded LucidFlex account has no consistency rule, so a trader can take a large day first and then farm days of +$150. The help pages were fetched again the same day. The funded half of that matches the pages. The eval half does not. Pro is not the 40% rule either. The Pro evaluation page, <https://support.lucidtrading.com/en/articles/12890029-lucidpro-evaluation-account>, has no consistency column and says "Pass the evaluation in one trading day."
+
+| question | Angus | live page |
+|---|---|---|
+| Eval consistency | 50% is the Flex rule. 40% may be Pro or older. | Evaluation account, <https://support.lucidtrading.com/en/articles/12945790-lucidflex-evaluation-account>: the 50K row is "40% (50% with add-on)" and the page says "Pass in as few as 3 days with 40% consistency, or 2 days with the 50% consistency add-on." Consistency page, <https://support.lucidtrading.com/en/articles/12945805-lucidflex-consistency-percentage>: "In LucidFlex evaluation accounts your Consistency Percentage must be 40% or less to be eligible to upgrade to a LucidFlex funded account. If you added the 50% consistency add-on at checkout, it must be 50% or less." Customization, <https://support.lucidtrading.com/en/articles/16226050-lucidflex-customization>: "40% (standard): your largest day must be 40% or less of your evaluation profit. Lowest price. 50% (add-on): your largest day can be up to 50%, so you can pass in as few as 2 days. Added at checkout for a small fee." |
+| Funded / payout consistency | No consistency rule. A big day one, then +$150 days, is allowed. | Funded account, <https://support.lucidtrading.com/en/articles/12945795-lucidflex-funded-account>: "LucidFlex funded accounts have an optional Daily Loss Limit, no consistency rule and no payout buffer." And: "There is no Consistency Percentage on LucidFlex funded accounts." Payouts, <https://support.lucidtrading.com/en/articles/12945796-lucidflex-payouts>, page date 28 Jul 2026: "There are two requirements must be met in LucidFlex to qualify for a payout." The two are five days at the minimum daily profit ($150 on a 50K) and positive net profit in the cycle. The page does not add a consistency percentage. The 50K cap is "50% of Profit up to $2,000." |
+
+The formula on the consistency page is "Largest Single Day Profit / Account Profit = Consistency Percentage." The same page says the requirement "applies only during the evaluation stage." The 50% add-on has an example cushion, not a formula: on a 50K the table shows $1,500 at 50% and a cushion of $1,560, and the 25K, 100K and 150K rows are the same 4% step. The page says the table is an example, "not a fixed dollar amount," and that the cushion is a percentage of the actual day. Two days of exactly $1,500 are already 50%, so they pass the add-on without that cushion. The simulator keeps that plain ratio. Both the 40% standard and the 50% add-on are in the recipe tables below. The standard is not changed to 50%.
+
+### The earlier no-edge LucidFlex rows, at both percentages
+
+These are the gross-zero books from the prop-structure search, rerun at 1,500 paths. Each pair uses one seed, so the only change is the eval percentage. The fee is the assumed $100. This is a fresh seed, not a revision of the earlier point estimates. On this seed the two columns match on every row: no path was passed by 50% and failed by 40%. A best day large enough to sit between those two lines did not decide a pass here. The pre-declared $200 stake was never going to. The 2R, $1,000 rows could have, and did not.
+
+| book | rule | EV | 95% CI |
+|---|---|---:|---|
+| 50K baseline | 40% | $-91 | $-95 to $-87 |
+| 50K baseline | 50% | $-91 | $-95 to $-87 |
+| 50K angus 0.25R | 40% | $-300 | $-300 to $-300 |
+| 50K angus 0.25R | 50% | $-300 | $-300 to $-300 |
+| 100K baseline | 40% | $-100 | $-100 to $-99 |
+| 100K baseline | 50% | $-100 | $-100 to $-99 |
+| 100K angus 0.25R | 40% | $-300 | $-300 to $-300 |
+| 100K angus 0.25R | 50% | $-300 | $-300 to $-300 |
+| 150K baseline | 40% | $-100 | $-100 to $-100 |
+| 150K baseline | 50% | $-100 | $-100 to $-100 |
+| 150K angus 0.25R | 40% | $-300 | $-300 to $-300 |
+| 150K angus 0.25R | 50% | $-300 | $-300 to $-300 |
+| 50K searched gross-zero | 40% | $24 | $-11 to $59 |
+| 50K searched gross-zero | 50% | $24 | $-11 to $59 |
+| 100K searched gross-zero | 40% | $105 | $44 to $166 |
+| 100K searched gross-zero | 50% | $105 | $44 to $166 |
+| 150K searched gross-zero | 40% | $189 | $124 to $255 |
+| 150K searched gross-zero | 50% | $189 | $124 to $255 |
+
+### Reproducing +$250 to +$300 per attempt
+
+His slideshow, not the farm recipe: one ±$500 trade a day, 50/50, no commission in the payoff, Topstep 50K. He reports a pass rate of about 25–28%, about $220 to get funded at $49 a month, 97% of funded accounts dead within a year, 60% of funded accounts paid before they die because Topstep pays from $125, an average payout of about $700, a median of $225, and a net of about +$300 per attempt. Apex at 80% off is the +$250. Apex is not in the rule file, so that half is not run.
+
+The no-cost coin that takes the maximum payout, charges the $49 month and the $149 activation, and grades the floor from the close is the row that meets the descriptive statistics. Pass 26.7%. Of funded accounts, 57.9% are paid and 100.0% are dead by day 252. Median cash among funded accounts $225. Mean cash among funded accounts $687. Mean payouts among funded accounts 0.98. Fees per passed account $375, of which the activation is $149, so the subscription piece is $226. EV per eval purchase $83 ($61 to $106). The same paths, stated per funded account, are mean funded cash minus every eval fee spent to produce that account: $312. Those two are the same object. Per-purchase EV equals the pass rate times the per-funded net.
+
+The table changes one assumption at a time, 2,500 paths, still a ±$500 coin with no commission unless the row says otherwise. "Per funded" is funded cash minus fees per passed account.
+
+| assumption | pass | funded, paid | median cash if funded | mean cash if funded | fees per pass | EV per purchase | per funded |
+|---|---:|---:|---:|---:|---:|---|---|
+| published XFA, max payout, activation, no cost | 26.8% | 64.2% | $225 | $767 | $373 | $106 ($78 to $134) | $395 |
+| no activation | 26.8% | 61.8% | $225 | $699 | $224 | $128 ($97 to $158) | $475 |
+| trader keeps 100%, not 90% | 27.8% | 59.9% | $250 | $796 | $366 | $119 ($85 to $154) | $430 |
+| $125 minimum payout | 29.0% | 61.2% | $112 | $208 | $357 | $-43 ($-51 to $-35) | $-149 |
+| fixed $778 request, trader keeps $700 | 27.0% | 36.1% | $0 | $780 | $371 | $110 ($75 to $146) | $409 |
+| 3 winning days, not 5 | 26.4% | 69.4% | $225 | $616 | $375 | $64 ($41 to $86) | $241 |
+| no winning-day requirement | 27.5% | 77.0% | $225 | $486 | $373 | $31 ($18 to $45) | $113 |
+| funded starts at $50,000, payout floor $0 | 27.3% | 65.4% | $1,800 | $1,336 | $369 | $264 ($233 to $295) | $967 |
+| funded starts at $50,000, payout floor $50,000 | 26.1% | 64.4% | $1,800 | $1,190 | $378 | $212 ($186 to $238) | $812 |
+| no trailing floor | 39.6% | 62.4% | $225 | $766 | $353 | $163 ($126 to $201) | $413 |
+| $35 MNQ cost, max payout, intraday | 11.7% | 40.1% | $0 | $259 | $617 | $-42 ($-48 to $-35) | $-359 |
+
+Per-purchase EV falls near +$250 to +$320 in: funded starts at $50,000, payout floor $0 at $264 ($233 to $295), median $1,800, pass 27.3%. That row does not also have his $225 median.
+
+His descriptive statistics line up with the no-activation row, not with a +$300 purchase. That row, 2,500 paths: pass 26.8%, 61.8% of funded accounts paid, median $225, mean funded cash $699, fees per pass $224. Those are his 25–28%, about 60%, $225, about $700, and about $220. Its per-purchase EV is $128 ($97 to $158). Its per-funded net is $475.
+
+The 4,000-path row that also charges the $149 activation has per-purchase EV $83 ($61 to $106) and a per-funded point of $312. Dividing that purchase interval by the pass rate spreads the per-funded net from $228 to $397. His +$300 sits inside that spread and outside the purchase interval. A second sample of the same activation-on rule, the first variant row, put the per-funded net at $395. So +$300 is a number the per-funded arithmetic can print. It is not a number the per-purchase interval contains, and it is not stable to a fresh sample. The subscription piece of the activation-on row is $226, which is the ~$220, and the $375 fees-per-pass is what you get once the $149 is included. The $225 median is 90% of a $250 request under the maximum-payout rule. The $125 minimum raises how many funded accounts get paid. It does not produce the median dollar. Mean funded cash of $687 is the "average payout about $700."
+
+Assumption differences, from his slideshow to the model that produced the earlier −$100:
+
+- His trade is +$500 or −$500, one a day, and the trade itself is worth zero. The earlier baseline risked $200 twice a day, then paid $1.22 and one tick each side, so the trade was already negative. That is why one number was about −$100 and the other is positive before costs are put back.
+- His pass rate, about 25–28%, is the trailing floor. A static $2,000 floor on a fair ±$500 coin passes near 40%. The "no trailing floor" row is that object. It does not have his pass rate.
+- The $220 figure is months of the $49 subscription allocated to each pass. The published path also charges $149 after a pass. Dropping the activation raises the per-purchase EV by about that $149 times the pass rate. It does not add $200.
+- Putting the $35 MNQ cost back on, and grading the breach intraday, is the last row of the variant table. That is the slideshow coin under the cost model used everywhere else in this file.
+- A funded account that starts at $50,000 instead of the XFA's $0, a payout that does not keep 10%, and a request sized so the trader keeps $700 are the other rows. Compare each one's pass rate and median with the 25–28% and $225 before calling it his slideshow.
+- 54% and 60% win rates, in the coin table above, are not +$1,400 and +$3,300. The gap between those rows and the 50/50 row is the win rate.
+- LucidFlex funded having no consistency rule was already how the recipe was run. The live page confirms it. The 40% versus 50% rows are the eval rule, and only the eval rule.
+
+
+### The ±$500 coin, against the earlier −$100
+
+His slideshow coin is one trade a day that closes at **+$500 or −$500**. The trade's own expectancy is zero. There is no commission in that payoff. He reports about **+$300 per Topstep attempt** and about +$250 on an Apex account at 80% off. Apex is not simulated. He also says a pass is about 25–28%, that about 60% of Topstep funded accounts get a payout before they die because the minimum request is $125, that the median Topstep payout is $225 and the average about $700, that 97% of funded accounts are dead within a year, and that the cost of getting funded is about $220 at $49 a month.
+
+The earlier gross-zero result in the prop-structure search is a different bet. The pre-declared baseline risked **$200 twice a day**. Each trade was a random walk aimed at a target, then charged the published MNQ commission of $1.22 and one tick of slippage each side, so the trade was already negative before the firm took a fee. That row was **−$105** on Topstep 50K (−$112 to −$98) and **−$86** on LucidFlex 50K (−$91 to −$81) at an assumed $100 Lucid fee. The Lucid number sat on the fee because a $200 stake rarely reached a $3,000 target inside the horizon. CRT resampled into the same small stake did the same thing and printed the fee.
+
+The table is his coin, one attempt, 4,000 paths, up to 252 trading days. The interval is a 95% interval on the mean. `No activation` drops the $149 Topstep charges after a pass. `$125 payout` requests the minimum whenever half the balance covers it. `Max payout` requests half the balance, capped at $2,000. Intraday mode busts the account when the planned loss is larger than the room under the current floor, which is how Topstep monitors the line. LucidFlex's own check is the close, so its intraday row is a re-grade. The Lucid fee is one-time and the dollar amount is not on the help page.
+
+| setup | pass | ever paid | of funded, paid | of funded, dead in a year | median cash if funded | fees | fees per pass | EV per attempt |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| Topstep ±$500, no cost, max payout, activation, end of day | 26.7% | 15.4% | 57.9% | 100.0% | $225 | $100 | $375 | $83 ($61 to $106) |
+| Topstep ±$500, no cost, $125 payout, activation, end of day | 26.6% | 15.6% | 58.7% | 93.3% | $112 | $99 | $374 | $-42 ($-49 to $-36) |
+| Topstep ±$500, no cost, $125 payout, no activation, end of day | 27.3% | 15.8% | 58.1% | 94.7% | $112 | $61 | $223 | $-7 ($-14 to $-1) |
+| Topstep ±$500, no cost, $125 payout, activation, intraday | 27.3% | 15.5% | 56.7% | 96.5% | $112 | $100 | $367 | $-62 ($-66 to $-57) |
+| Topstep ±$500, $14.52 cost, $125 payout, activation, intraday | 15.7% | 7.0% | 44.3% | 98.1% | $0 | $78 | $499 | $-58 ($-62 to $-55) |
+| Topstep ±$500, $35 cost, $125 payout, activation, intraday | 13.2% | 5.5% | 41.7% | 99.2% | $0 | $75 | $563 | $-63 ($-66 to $-61) |
+| Topstep ±$500, $35 cost, max payout, activation, intraday | 11.5% | 5.1% | 44.8% | 100.0% | $0 | $72 | $623 | $-36 ($-42 to $-29) |
+| Topstep 54% win, no cost, $125 payout, activation, end of day | 40.6% | 27.9% | 68.8% | 79.5% | $112 | $122 | $300 | $69 ($54 to $85) |
+| Topstep 60% win, no cost, $125 payout, activation, end of day | 66.0% | 53.6% | 81.3% | 50.6% | $450 | $159 | $241 | $725 ($688 to $762) |
+| LucidFlex ±$500, no cost, max payout, end of day, fee $50 | 26.9% | 14.3% | 53.2% | 95.9% | $450 | $50 | $186 | $97 ($82 to $112) |
+| LucidFlex ±$500, no cost, max payout, end of day, fee $100 | 27.3% | 15.0% | 55.0% | 95.7% | $450 | $100 | $367 | $53 ($38 to $68) |
+| LucidFlex ±$500, no cost, max payout, end of day, fee $150 | 27.0% | 14.6% | 54.1% | 96.1% | $450 | $150 | $557 | $-6 ($-21 to $8) |
+| LucidFlex ±$500, no cost, max payout, end of day, fee $200 | 27.3% | 14.4% | 52.7% | 95.8% | $450 | $200 | $733 | $-50 ($-65 to $-35) |
+| LucidFlex ±$500, no cost, $500 payout, end of day, fee $100 | 27.4% | 14.6% | 53.4% | 93.8% | $450 | $100 | $365 | $22 ($10 to $33) |
+| LucidFlex ±$500, no cost, max payout, intraday, fee $100 | 26.4% | 14.4% | 54.6% | 98.4% | $450 | $100 | $380 | $5 ($-5 to $16) |
+| LucidFlex ±$500, $14.52 cost, max payout, end of day, fee $100 | 23.2% | 11.4% | 49.0% | 97.3% | $0 | $100 | $431 | $29 ($15 to $43) |
+| LucidFlex ±$500, $35 cost, max payout, end of day, fee $100 | 16.8% | 7.9% | 47.1% | 99.1% | $0 | $100 | $596 | $-30 ($-39 to $-21) |
+
+The row that matches his accounting most closely is the no-activation, $125-payout, no-cost Topstep coin: EV $-7 ($-14 to $-1), pass 27.3%, 58.1% of funded accounts get paid, median cash among funded accounts $112, mean cash among funded accounts $197, 94.7% of funded accounts dead by day 252, fees per passed account $223. His +$300, 25–28% pass, 60% of funded paid, $225 median, $700 average, 97% dead, and ~$220 to get funded sit next to those six numbers. Where a figure matches, it is this row and not the row with the activation.
+
+Charging the $149 activation and grading the breach intraday, still with no commission, is $-62 ($-66 to $-57), below zero. Adding $14.52, his one-NQ round turn, is $-58 ($-62 to $-55). Adding $35, which is what $500 of risk costs in MNQ at a 16-point stop under the commission used everywhere else in this file, is $-63 ($-66 to $-61). Taking the maximum payout instead of $125, with no commission and the activation, is $83 ($61 to $106). A $500 day is 17% of the $3,000 target, so Topstep's 55% consistency rule does not raise the target. Intraday and end-of-day grading agree while the stop fits under the floor. They split once the room is under $500.
+
+His 54% and 60% win-rate claims, on the same $125 Topstep book with the activation and no commission, are $69 ($54 to $85) and $725 ($688 to $762). He quotes +$1,400 and +$3,300. The gap between those and the 50/50 row is the win rate, not the fee.
+
+On LucidFlex 50K the same no-cost coin, end of day, maximum payout, is $97 ($82 to $112) at a $50 fee, $53 ($38 to $68) at $100, and $-50 ($-65 to $-35) at $200. With the $35 MNQ cost and a $100 fee it is $-30 ($-39 to $-21). The intraday re-grade at $100 and no cost is $5 ($-5 to $16). Lucid's minimum request is $500, not $125, and the payout is half of cycle profit rather than half of a balance that started at zero. There is no activation fee. A $500 day does not trip the 40% eval consistency rule. The earlier −$100 was not this coin failing. It was a smaller, already-costed bet that never got to a payout.
+
+### His LucidFlex recipe
+
+The recipe, as he describes it: an eval day is +$1,500 with probability 60% or a −$2,000 bust. Two of those wins reach the $3,000 target. A funded day is then +$3,400 or −$2,000 with probability 39%, then days of +$150 with probability 95%. The big day counts as one of the five winning days. Profit of $4,000 pays half, capped at $2,000, and the trader keeps 90%, which is $1,800. He stops at 4 payouts. The rule is 5, and this sim allows 5. Those probabilities are his claims about a signal. They are not measurements from this repo. A 60% chance to make $1,500 while risking $2,000 is +$100 on the day before any fee.
+
+Two +$1,500 days make the best day 50% of the profit. The default eval rule is 40%, so those two days do not pass. A third +$1,500 day makes the best day 33% and passes. The 50% add-on passes on day two. Its price is not on the help page, and it is not added on top of the fee. The cushion he mentions, about $1,560, is an example on the page and not a formula. This sim uses a plain ratio and no cushion. A missed +$150 day loses $150 and is retried, which is what the rulebook allows, except the one row where a miss fails the account. That fail rule is what his 81% joint probability assumes.
+
+The household cannot run 100 evals at once. The notes cite Lucid's general FAQ for 10 evals, 5 funded, and 10 combined. The batch section buys a new eval only when the cash covers the fee and a slot is free. 3,000 paths for the per-eval table. The interval is on the mean.
+
+| book | pass | payout rate per eval | payouts per 100 evals | EV per eval |
+|---|---:|---:|---:|---|
+| 25K 40% end of day fee $100 | 25.7% | 10.2% | 16.0 | $44 ($26 to $62) |
+| 25K 40% intraday fee $100 | 21.7% | 8.9% | 13.6 | $23 ($6 to $39) |
+| 25K 50% add-on end of day fee $100 | 36.6% | 14.7% | 23.9 | $114 ($93 to $136) |
+| 25K 50% add-on intraday fee $100 | 36.0% | 13.6% | 21.3 | $91 ($71 to $112) |
+| 50K 40% end of day fee $50 | 26.4% | 10.3% | 15.8 | $232 ($197 to $266) |
+| 50K 40% end of day fee $80 | 26.9% | 10.1% | 16.4 | $213 ($176 to $250) |
+| 50K 40% end of day fee $100 | 27.1% | 10.2% | 17.2 | $208 ($170 to $246) |
+| 50K 40% end of day fee $150 | 27.2% | 11.7% | 19.5 | $198 ($158 to $239) |
+| 50K 40% end of day fee $200 | 29.3% | 10.9% | 18.0 | $122 ($83 to $162) |
+| 50K 40% intraday fee $50 | 22.6% | 8.5% | 8.5 | $102 ($85 to $120) |
+| 50K 40% intraday fee $100 | 21.1% | 8.4% | 8.4 | $51 ($33 to $68) |
+| 50K 40% intraday fee $150 | 21.0% | 7.7% | 7.7 | $-12 ($-29 to $5) |
+| 50K 50% add-on end of day fee $50 | 35.1% | 14.1% | 21.3 | $331 ($292 to $369) |
+| 50K 50% add-on end of day fee $80 | 36.5% | 13.3% | 21.9 | $311 ($269 to $353) |
+| 50K 50% add-on end of day fee $100 | 36.9% | 14.2% | 22.3 | $298 ($257 to $340) |
+| 50K 50% add-on end of day fee $150 | 35.9% | 13.5% | 21.3 | $230 ($189 to $270) |
+| 50K 50% add-on end of day fee $200 | 34.6% | 13.8% | 22.4 | $200 ($157 to $243) |
+| 50K 50% add-on intraday fee $50 | 34.9% | 13.6% | 13.6 | $192 ($170 to $214) |
+| 50K 50% add-on intraday fee $100 | 36.8% | 14.3% | 14.3 | $156 ($134 to $179) |
+| 50K 50% add-on intraday fee $150 | 34.6% | 13.5% | 13.5 | $91 ($69 to $113) |
+| 100K 40% end of day fee $100 | 27.2% | 11.0% | 17.8 | $300 ($252 to $348) |
+| 100K 40% intraday fee $100 | 21.6% | 8.3% | 13.5 | $204 ($161 to $247) |
+| 100K 50% add-on end of day fee $100 | 36.4% | 14.5% | 23.5 | $429 ($374 to $484) |
+| 100K 50% add-on intraday fee $100 | 36.7% | 14.0% | 21.8 | $390 ($340 to $441) |
+| 50K 50% add-on end of day fee $100, a missed $150 day fails the account | 37.2% | 10.9% | 17.4 | $213 ($175 to $250) |
+| 50K 50% add-on end of day fee $100, same payoffs at 50/50 | 23.7% | 7.8% | 11.4 | $89 ($62 to $116) |
+| 50K 50% add-on intraday fee $100, same payoffs at 50/50 | 23.5% | 7.9% | 7.9 | $30 ($14 to $46) |
+| 50K 40% end of day fee $100, same payoffs at 50/50 | 16.0% | 4.9% | 7.1 | $17 ($-4 to $39) |
+
+At his hit rates, the 50K with the 50% add-on, end-of-day grading and a $100 fee is pass 36.9%, payout rate 14.2%, 22.3 payouts per 100 evals, EV $298 ($257 to $340). He quotes a 36% pass, an 11% chance an eval ever pays, about 22 payouts per 100 evals, and about +$290 per eval ($29k on $10k of fees). The same book at the default 40% rule is pass 27.1%, EV $208 ($170 to $246). Replacing his hit rates with a 50/50 coin on the same dollar payoffs is $89 ($62 to $116), above zero. Forcing a missed $150 day to fail the account, which is his 95% assumption rather than the rulebook, is $213 ($175 to $250).
+
+Intraday grading is the open-loss check. On the 50K the first funded trade risks the full $2,000, which still fits. A $2,000 withdrawal then locks the floor at $50,100 and leaves about $1,900. The next trade still risks $2,000. End of day can close that trade green. Intraday liquidates it on the way down, so the winner is never banked. At his hit rates that re-grade is $156 ($134 to $179) against $298 ($257 to $340) at the close. The 50/50 version graded intraday is $30 ($14 to $46). His martingale post is the same point, with a pass rate of 64–67% at the close and 15–19% on the open loss. That book is not re-run. He already measured it as a net loser, and it has no stop to grade except the firm's line.
+
+### A household for one month
+
+One household, a $2,000 starting bankroll, 21 trading days, his hit rates, the 50K recipe, 600 households. A passed eval does not trade again the same day. New evals are bought only when a slot is free and the cash covers the fee. The 10th and 90th percentiles are one household's month, not the uncertainty on the mean. P(month negative) is the chance fees exceed payouts. P(can't buy another) is the chance less than one fee is left. A third-party card says Lucid treats a breach-and-rebuy batch as gambling. That sentence was not on the Lucid pages read for the rule file, so it is not in the sim, and it is the rule risk around the table.
+
+| fee | consistency | grading | mean month | 95% CI of the mean | 10th to 90th | P(month negative) | P(can't buy another) | P(a payout) | mean payouts |
+|---:|---|---|---:|---|---|---:|---:|---:|---:|
+| $50 | 50% add-on | end of day | $12,206 | $11,892 to $12,520 | $7,332 to $17,232 | 0.2% | 0.2% | 99.8% | 9.41 |
+| $50 | 50% add-on | intraday | $8,938 | $8,700 to $9,176 | $5,379 to $13,034 | 0.5% | 0.3% | 99.7% | 7.79 |
+| $50 | 40% | end of day | $9,238 | $8,881 to $9,595 | $3,200 to $14,832 | 2.3% | 1.0% | 99.3% | 7.25 |
+| $50 | 40% | intraday | $5,643 | $5,391 to $5,895 | $1,179 to $9,105 | 5.0% | 1.3% | 99.2% | 5.40 |
+| $80 | 50% add-on | end of day | $8,745 | $8,391 to $9,098 | $3,292 to $13,654 | 3.3% | 2.7% | 97.8% | 8.62 |
+| $80 | 40% | end of day | $5,914 | $5,522 to $6,305 | $-641 to $12,666 | 13.2% | 6.5% | 94.7% | 6.29 |
+| $100 | 50% add-on | end of day | $6,447 | $6,057 to $6,837 | $-2,000 to $12,203 | 13.8% | 10.8% | 91.3% | 7.74 |
+| $100 | 50% add-on | intraday | $3,532 | $3,257 to $3,808 | $-1,671 to $7,803 | 18.3% | 9.3% | 94.8% | 6.52 |
+| $100 | 40% | end of day | $4,107 | $3,726 to $4,489 | $-2,000 to $10,546 | 25.8% | 16.5% | 90.0% | 5.60 |
+| $100 | 40% | intraday | $1,562 | $1,315 to $1,809 | $-2,000 to $6,001 | 39.0% | 22.0% | 90.7% | 4.37 |
+| $150 | 50% add-on | end of day | $2,115 | $1,804 to $2,426 | $-1,950 to $7,650 | 39.2% | 27.7% | 84.8% | 6.00 |
+| $150 | 40% | end of day | $942 | $655 to $1,230 | $-1,950 to $6,329 | 54.0% | 42.7% | 77.7% | 4.11 |
+| $200 | 50% add-on | end of day | $-3 | $-216 to $209 | $-2,000 to $3,998 | 63.2% | 46.8% | 75.5% | 4.93 |
+| $200 | 40% | end of day | $-835 | $-1,025 to $-645 | $-2,000 to $2,730 | 79.8% | 68.3% | 69.0% | 3.00 |
+
+### Account size, at the same fee
+
+The recipe scales with the max-loss line. The eval win is half the profit target, the loss is the full max loss, and the big win is 1.7 times that max loss. The small day is the account's own minimum winning day, $100, $150 or $200. The fee in this comparison is a flat $100, which is his 50K assumption, not a published card. A real fee that scales with size would move the ranking.
+
+End of day, 50% add-on, fee $100: 25K $114 ($93 to $136), 50K $298 ($257 to $340), 100K $429 ($374 to $484). The same three graded on the open loss: 25K $91 ($71 to $112), 50K $156 ($134 to $179), 100K $390 ($340 to $441). He says the 50K wins at every farm size. The two rows are the test, at a fee that does not grow with the account. A 25K request must be at least $500 and the cap is $1,000 before the split. A 100K cap is $2,500.
+
+Across the 50K end-of-day 50% add-on, the fee sensitivity is:
+
+- Fee $50: $331 ($292 to $369), above zero.
+- Fee $80: $311 ($269 to $353), above zero.
+- Fee $100: $298 ($257 to $340), above zero.
+- Fee $150: $230 ($189 to $270), above zero.
+- Fee $200: $200 ($157 to $243), above zero.
+
+### Does a signal add anything inside that policy?
+
+The 5-minute rule is his, and it was not fitted here. The 09:30–09:35 ET candle sets the direction and the stop, the entry is the 09:35 open, there is no target, and the trade is flat before 15:55. A session with a missing minute in that candle is skipped. The R column is one MNQ after $1.22 and one tick each side. The NQ dollar column uses the unslipped points and then subtracts his $14.52 once, so the tick is not charged twice. Holdout is July 2025 through July 2026. The earlier window is shown so the holdout is not the only number. It was not used to keep the rule.
+
+- 5-minute, before July 2025: n=639, win 21.6%, mean R 0.103 (-0.140 to 0.345), PF 1.13, mean $ at 1 NQ after his $14.52 $84, mean $ at 1 MNQ after our costs $8, median MAE 1.12R
+- 5-minute, holdout: n=266, win 28.2%, mean R 0.094 (-0.181 to 0.370), PF 1.13, mean $ at 1 NQ after his $14.52 $6, mean $ at 1 MNQ after our costs $-0, median MAE 1.11R
+
+The three-bar gap is the reading of his IFVG post that can be coded without inventing a second rule: the first gap of at least one point between 09:30 and 11:00, one trade a day, stop beyond the gap, target 2R. He reported that family as a loser. CRT at 15 minutes and 0.25R is already in the table above: holdout mean R −0.081, win 77.2%, n=2175. His own 4-hour CRT post found profit factor 0.84.
+
+- Three-bar gap, before July 2025: n=640, win 31.7%, mean R -0.131 (-0.239 to -0.022), PF 0.82
+- Three-bar gap, holdout: n=267, win 35.2%, mean R -0.002 (-0.174 to 0.170), PF 1.00
+
+Inside the 50K farm each step still risks that step's dollars, and the day's result is a draw from the holdout R. That is the signal sized to the farm, not one NQ. The coin next to it is his dollar payoffs at 50%, not at 60/39/95. Both pay a $100 fee and use the 50% add-on.
+
+- His hit rates, from the recipe table: $298 ($257 to $340).
+- Same payoffs, 50% coin, end of day: $89 ($62 to $116).
+- Holdout 5-minute R, sized to the same risks, end of day: pass 4.0%, payout rate 0.1%, EV $-98 ($-100 to $-96).
+- The same 5-minute book, graded intraday: $-98 ($-100 to $-97).
+- Holdout three-bar gap, sized the same way, end of day: pass 13.3%, payout rate 1.5%, EV $-72 ($-80 to $-63).
+
+The holdout 5-minute win rate is 28.2%. That is the rate that has to become a 60% eval day and a 95% day of +$150 if this rule is the farm's signal. Sizing the holdout R up to the farm's dollar risk is the EV row above, set next to the 50/50 coin and next to his 60/39/95 book. The difference from the coin is what the rule adds. The difference from his book is what the rule does not.
+
+Not tested, because the post does not give a rule that can be run once: the first-hour session bias, and the Kairos Max overnight entry. Absorption at the day's high or low was not retested. It needs the MBP-10 tape, and the minute book in this repo is the end-of-minute snapshot.
+
+### Verdict
+
+The no-cost Topstep coin, taking $125 and skipping the activation, is $-7 ($-14 to $-1), below zero. That is the version of his claim this simulator can reproduce, and it is the version that leaves out the $149. With the activation and an intraday breach it is $-62 ($-66 to $-57), below zero. With the $35 MNQ cost as well it is $-63 ($-66 to $-61), below zero. The earlier −$100 was the $200 costed baseline, not this coin priced with no commission. On LucidFlex the ±$500 coin at a $100 fee is $53 ($38 to $68), above zero, and $-30 ($-39 to $-21), below zero, once the $35 cost is on. The fee is unconfirmed. The sign follows the fee row above. His recipe is not that coin. At the 60/39/95 hit rates, a 50K, the 50% add-on, end-of-day grading and a $100 fee, EV is $298 ($257 to $340), above zero. The default 40% rule, same fee, is $208 ($170 to $246), above zero. The open-loss re-grade of the 50% book is $156 ($134 to $179), above zero. The same payoffs at 50/50 are $89 ($62 to $116), above zero. Set that row next to the hit-rate row before treating the payout cap as the source of the profit. Per eval, the 50% end-of-day 50K book is $50 above zero ($331), $80 above zero ($311), $100 above zero ($298), $150 above zero ($230), $200 above zero ($200). A household with his hit rates, a $2,000 bankroll and a $100 fee has a 13.8% chance the month's cash is negative and a 10.8% chance it cannot buy another eval. At $200 those figures are 63.2% and 46.8%. The 10th percentile of a single month is $-2,000 at $100 and $-2,000 at $200. That is the risk of ruin for the month. It is not a lifetime bust probability. The 5-minute holdout, sized to the farm, is $-98 ($-100 to $-96), below zero. With the activation and the MNQ cost, the no-skill Topstep coin sits below zero. On Lucid the recipe is a bet that the 60/39/95 rates are real, that the account is graded at the close, that the 50% add-on is the rule in force, and that the fee is on the side of the table whose interval is above zero. Those are claims about a signal and a price, not a property of the payout cap.
+

@@ -229,8 +229,11 @@ def run_lucidflex(
     eval_days: int = 100,
     funded_days: int = 120,
     samples: np.ndarray | None = None,
+    consistency: float | None = None,
 ) -> np.ndarray:
-    spec = LUCIDFLEX[size]
+    spec = dict(LUCIDFLEX[size])
+    if consistency is not None:
+        spec["consistency"] = float(consistency)
     win, loss, p = payout_dollars(policy, mode, edge)
     cash = np.zeros(n)
     fees = np.zeros(n)
