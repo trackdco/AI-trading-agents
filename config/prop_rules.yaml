@@ -639,3 +639,277 @@ unconfirmed:
     affects: "When a Lucid eval is marked passed"
     why: "Lucid says activation is real-time, within 5–30 minutes of hitting the target. The simulator marks a pass at the session close, and a failure the moment the max-loss line is touched. A path that tags the target and then breaches the same day can disagree with the firm."
     url: "https://support.lucidtrading.com/en/articles/12945790-lucidflex-evaluation-account"
+
+# Multi-firm map, re-fetched 2026-11-03. Apex is absent on purpose.
+# `simulate: true` means the firm allows a bot and the funded plan has no
+# consistency rule, with an end-of-day trail that locks and a small payout day.
+# Everyone else is recorded so the exclusion is sourced. The simulator reads
+# this block. It does not place orders.
+firm_survey:
+  retrieved: "2026-11-03"
+  lucid_flex_50k:
+    simulate: true
+    firm: LucidFlex
+    size: 50000
+    fee: null
+    fee_note: "Help centre describes a one-time fee and does not print it. Rank uses an assumed $100. The table also runs $80 and $150."
+    activation: 0
+    target: 3000
+    mll: 2000
+    consistency: 0.40
+    consistency_addon: 0.50
+    min_eval_days: 2
+    funded_start: 50000
+    lock_trigger: 52100
+    lock_floor: 50100
+    win_min: 150
+    winning_days: 5
+    payout_fraction: 0.50
+    payout_base: cycle
+    cap: 2000
+    min_request: 500
+    split: 0.90
+    max_payouts: 5
+    buffer: 0
+    next_cycle: 0.01
+    eval_cap: 10
+    funded_cap: 5
+    stated_breach: eod
+    bots: "Allowed. Trade copiers allowed. Flex news trading is allowed."
+    flipping: "Not found on the Lucid pages read for this file. A third-party card says breach-and-rebuy batches are prohibited. That sentence is not in the help centre."
+    quotes:
+      - url: "https://support.lucidtrading.com/en/articles/11404728-other-trading-activities"
+        quote: "Bots and trade copiers are allowed on Lucid. LucidFlex news trading is allowed and is not a breach."
+      - url: "https://support.lucidtrading.com/en/articles/12945805-lucidflex-consistency-percentage"
+        quote: "Consistency Percentage must be 40% or less, or 50% or less with the add-on. It applies only during the evaluation."
+      - url: "https://lucidtrading.com/general-faq/"
+        retrieved: "2026-11-03"
+        quote: "Up to 10 active evaluation accounts per household/family. Up to 5 active funded accounts per household/family. Total combined limit across eval + funded is 10. Automated strategies and in-platform/third party trade copiers are permitted. Hedging is prohibited. LucidFlex payouts need 5 profitable trading days plus positive net profit. Accounts are one-time fees."
+  topstep_50k:
+    simulate: true
+    firm: Topstep
+    size: 50000
+    fee: 49
+    fee_note: "Monthly Trading Combine subscription. A failed attempt still pays the month. There is no published cap on how many Combines you can hold. The month below starts at most 15, so it can be compared with firms that do cap evals. Only the 5 XFA limit is a Topstep rule."
+    activation: 149
+    target: 3000
+    mll: 2000
+    consistency: 0.55
+    min_eval_days: 1
+    funded_start: 0
+    lock_trigger: 2000
+    lock_floor: 0
+    win_min: 150
+    winning_days: 5
+    payout_fraction: 0.50
+    payout_base: balance
+    cap: 2000
+    min_request: 125
+    split: 0.90
+    max_payouts: null
+    buffer: 0
+    next_cycle: 0.01
+    eval_cap: 15
+    funded_cap: 5
+    stated_breach: intraday
+    bots: "Bots allowed on your own device through the ProjectX API. No VPS or VPN for orders. API does not run on a live funded account."
+    flipping: "Not named. The max-loss line is monitored on unrealized P&L, so a full-port trade that trades through the floor is a breach before the close."
+    quotes:
+      - url: "https://help.topstep.com/en/articles/11187768-topstepx-api-access"
+        page_date: "2026-09-17"
+        quote: "Bots are allowed. Orders must come from the trader's own device. VPS and VPN use for orders is banned."
+      - url: "https://help.topstep.com/en/articles/8284215-express-funded-account-parameters"
+        quote: "You can hold up to 5 active XFAs at a time. Balance starts at $0."
+      - url: "https://help.topstep.com/en/articles/8284197-trading-combine-parameters"
+        quote: "Can I have more than one Trading Combine? Yes. There's no limit to the number of Trading Combines you can have."
+  tradeify_select_flex_50k:
+    simulate: true
+    firm: Tradeify Select Flex
+    size: 50000
+    fee: 165
+    fee_note: "Select 50K with the standard 40% consistency rule. The 50% add-on is $205 and lowers the Flex payout cap from $2,500 to $2,000. No activation fee is printed."
+    activation: 0
+    target: 3000
+    mll: 2000
+    consistency: 0.40
+    consistency_addon: 0.50
+    min_eval_days: 1
+    funded_start: 50000
+    lock_trigger: 52100
+    lock_floor: 50100
+    win_min: 150
+    winning_days: 5
+    payout_fraction: 0.50
+    payout_base: total_profit
+    cap: 2500
+    min_request: 1
+    split: 0.90
+    max_payouts: null
+    buffer: 0
+    next_cycle: 0.01
+    eval_cap: 15
+    funded_cap: 5
+    stated_breach: intraday
+    bots: "Allowed only if you own the strategy, do not share it, and do not run it at another firm. Not HFT. They can ask for a video of you enabling it."
+    flipping: "Payouts can be reviewed. Funded payouts also need half the trades and half the profit held longer than 10 seconds. One trade a day, held to the close, meets that. A shared multi-firm bot does not meet the exclusive-use rule."
+    quotes:
+      - url: "https://help.tradeify.co/en/articles/10468318-guidelines-for-traders"
+        quote: "You must prove you are the sole owner. Using the bot across multiple firms is against Tradeify's policy. No high-frequency bots."
+      - url: "https://help.tradeify.co/en/articles/10495897-rules-trailing-max-drawdowns"
+        quote: "The limit only updates at the end of the day, but it is enforced in real time. Touching it fails the account immediately."
+      - url: "https://help.tradeify.co/en/articles/10468320-rules-consistency-rule"
+        quote: "Select evaluation is 40%. There is no consistency rule for Select accounts in funded mode."
+      - url: "https://help.tradeify.co/en/articles/14369021-tradeify-pricing-reference"
+        quote: "Select 50K with 40% consistency costs $165. With the 50% add-on it costs $205."
+      - url: "https://help.tradeify.co/en/articles/12853966-select-flex-and-select-daily-payout-policies"
+        quote: "Select Flex, accounts bought on or after 1 Sep 2026: 50K cap is 50% of total profits, capped at $2,500. Winning day is $150. Split is 90/10."
+      - url: "https://help.tradeify.co/en/articles/10468251-how-many-simulated-funded-accounts-can-i-have-at-once"
+        quote: "Up to 5 simulated funded accounts per person and per household. Up to 15 Select evaluations per 30 days."
+  mff_rapid_eod_50k:
+    simulate: true
+    firm: MyFundedFutures Rapid EOD
+    size: 50000
+    fee: 157
+    fee_note: "The help article does not print the price. The firm's own blog says $135 in one paragraph and $157 in another. The rank uses $157, the higher figure. $135 is in the sensitivity."
+    activation: 0
+    target: 3000
+    mll: 2000
+    consistency: 0.30
+    min_eval_days: 4
+    funded_start: 0
+    lock_trigger: 2100
+    lock_floor: 100
+    win_min: 0
+    winning_days: 0
+    payout_fraction: 1.0
+    payout_base: above_lock
+    cap: null
+    min_request: 500
+    split: 0.90
+    max_payouts: null
+    buffer: 2100
+    next_cycle: 500
+    eval_cap: 10
+    funded_cap: 3
+    stated_breach: eod
+    bots: "Automated strategies are allowed if they are your own settings. High-frequency trading is not. Strategies that exploit simulated fills, missing slippage, or tight brackets are prohibited."
+    flipping: "Not named as flipping. Exploiting the absence of slippage and bracket fills is prohibited, and passed evals are reviewed. A full-port bust-and-rebuy is the behaviour that page describes."
+    quotes:
+      - url: "https://help.myfundedfutures.com/en/articles/8444599-fair-play-and-prohibited-trading-practices"
+        quote: "Traders may use automated strategies tailored to their own settings so long as they do not exploit the favorable fills of the simulated environment. High-frequency trading is not allowed."
+      - url: "https://help.myfundedfutures.com/en/articles/16158363-rapid-eod-50k-a-comprehensive-look"
+        page_date: "2026-08-24"
+        quote: "Evaluation consistency is 30%, minimum 4 days, EOD max loss $2,000, target $3,000. Sim funded consistency is none. Buffer $2,100, then $500 since the last payout. No cap. Minimum request $500. Split 90/10. Trail locks at $100. No activation fee. Tier-1 news is banned once funded."
+      - url: "https://help.myfundedfutures.com/en/articles/16498635-moving-from-evaluation-to-sim-funded-account"
+        quote: "Up to 10 active evaluations. Rapid EOD 50K is capped at 3 sim-funded accounts."
+      - url: "https://myfundedfutures.com/blog/myfundedfutures-rapid-eod-plan"
+        quote: "The blog states both a $135 one-time fee and a $157 one-time fee for the 50K. The help centre does not print either number."
+  fundednext_flex_50k:
+    simulate: true
+    firm: FundedNext Futures Flex
+    size: 50000
+    fee: 84.99
+    fee_note: "List price on the Flex challenge page is $141.99. The same page says the third purchase onward is $84.99, and the first two are $74.99. A farm's next eval is the repeat price. The list price is in the sensitivity. No activation fee."
+    activation: 0
+    target: 2500
+    mll: 1500
+    consistency: 0.40
+    min_eval_days: 1
+    funded_start: 50000
+    lock_trigger: 51600
+    lock_floor: 50100
+    win_min: 200
+    winning_days: 5
+    payout_fraction: 0.50
+    payout_base: cycle
+    cap: 1500
+    min_request: 250
+    split: 0.95
+    max_payouts: 5
+    buffer: 500
+    next_cycle: 500
+    eval_cap: 15
+    funded_cap: 5
+    stated_breach: eod
+    bots: "EAs and bots are allowed on the challenge and the funded account. Latency abuse, order flooding, and a Telegram or WhatsApp EA are prohibited. VPN and VPS are allowed."
+    flipping: "Not named. The challenge consistency target is raised if one day exceeds 40% of the target. Passed challenges are checked at the end of the day."
+    quotes:
+      - url: "https://helpfutures.fundednext.com/en/articles/14298560-is-the-usage-of-automated-trading-systems-eas-and-bots-allowed-in-fundednext-futures"
+        page_date: "2026-04-09"
+        quote: "FundedNext Futures allows EAs and trading bots during the Challenge and on FundedNext Accounts. Latency abuse and order flooding are prohibited."
+      - url: "https://helpfutures.fundednext.com/en/articles/17229807-what-is-fundednext-futures-flex-challenge"
+        page_date: "2026-10-29"
+        quote: "Flex 50K target $2,500, maximum loss $1,500, locks at $50,100. Price $141.99, third purchase onward $84.99. Consistency 40% in the challenge only."
+      - url: "https://helpfutures.fundednext.com/en/articles/17229848-fundednext-futures-flex-fundednext-account-all-rules"
+        quote: "No consistency rule once funded. Five benchmark days of $200, $500 cycle profit, minimum withdrawal $250, maximum 50% up to $1,500, 95% reward share, account ends after 5 rewards."
+      - url: "https://helpfutures.fundednext.com/en/articles/17225812-how-many-accounts-can-i-hold-with-fundednext-futures-and-what-is-the-maximum-allocation-available"
+        quote: "Challenges up to $750,000 combined. Up to 5 active funded accounts per user and per household, and 10 issued per calendar month."
+  take_profit_trader:
+    simulate: false
+    exclude: "Bots and algorithmic execution are prohibited on every account."
+    quotes:
+      - url: "https://takeprofittraderhelp.zendesk.com/hc/en-us/articles/34431153546397-TakeProfitTrader-Universal-Trading-Policies-UTP"
+        quote: "No Trading Bots or Algos. Automated trading systems, bots, or algorithmic execution tools are not permitted."
+      - url: "https://takeprofittraderhelp.zendesk.com/hc/en-us/articles/15171769361053-PRO-Account-Rules"
+        quote: "We do not allow any automated or bot trading of any kind. All trades must be manually executed by the trader."
+  alpha_futures:
+    simulate: false
+    exclude: "Full automation is prohibited, and account rolling is named as a banned practice."
+    quotes:
+      - url: "https://help.alpha-futures.com/en/articles/9508585-prohibited-trading-practices"
+        quote: "The use of AI, bots, and other automated trading mechanisms is strictly prohibited. Hands-off full automation is forbidden. Account rolling, max leverage into the max loss and then buying another account, is not tolerated. VPS is permitted. VPN to hide an IP is not."
+  elite_trader_funding:
+    simulate: false
+    exclude: "A bot needs written authorization. The only tools they currently authorize are listed trade copiers."
+    quotes:
+      - url: "https://elitetraderfunding.app/help/trade-copier-disclaimer"
+        quote: "You may not use AI, bots, automated trading systems, or other automated trading strategies unless expressly authorized in writing by ETF. The only automated tools currently authorized are the approved trade copiers."
+  bulenox:
+    simulate: false
+    exclude: "The Master account pays only if the best day is at most 40% of profit. That is a funded consistency rule, so the one-big-day recipe is blocked."
+    quotes:
+      - url: "https://bulenox.com/index.php/help/master-account/"
+        quote: "The 40% Consistency rule states that upon submitting a withdrawal request, the balance must not consist of more than 40% of the total profit balance from a single trading day. Minimum withdrawal $1,000 after 10 trading days."
+      - url: "https://bulenox.com/help/qualification-account/"
+        page_date: "2023-08-14"
+        quote: "Connecting to Rithmic through a third-party API or trader composite software costs $100 a month. The page does not say a self-written bot is banned."
+  earn2trade:
+    simulate: false
+    exclude: "The prohibited-conduct page bars software and AI used for an unfair advantage, and the programs are a progression evaluation rather than a Flex-style funded account."
+    quotes:
+      - url: "https://help.earn2trade.com/en/articles/9286647-prohibited-conduct-in-earn2trade-evaluations-and-in-the-livesim-live-trading-environment"
+        quote: "Utilizing software, artificial intelligence, or ultra-fast data entry techniques that could manipulate the trading environment or provide an unfair advantage is prohibited conduct."
+  tradeday:
+    simulate: false
+    exclude: "Third-party bots are forbidden and the Tradovate API is not exposed. That is not a platform you can hang an unattended farm on."
+    quotes:
+      - url: "https://tradeday.freshdesk.com/en/support/solutions/articles/103000085101-automated-algo-and-bot-trading"
+        quote: "We do not make platform APIs available to traders. Algos and bots purchased from a third party are forbidden. If multiple users are making the same trades, the accounts will be shut down."
+      - url: "https://tradeday.freshdesk.com/en/support/solutions/articles/103000121031-prohibited-trade-practices"
+        quote: "Using a VPN or VPS to mask the location of the trading is prohibited. Hedging across accounts is prohibited. More than 200 trades in a day is prohibited."
+  lucid_pro:
+    simulate: false
+    exclude: "Eval can be passed in one day and has no consistency rule, but the funded payout table did not extract into clean cells. Inventing the caps would overstate the firm."
+    quotes:
+      - url: "https://support.lucidtrading.com/en/articles/12890029-lucidpro-evaluation-account"
+        page_date: "2026-08-26"
+        quote: "Pass the evaluation in one trading day."
+  lucid_direct:
+    simulate: false
+    exclude: "Straight to funded, with a 20% consistency rule. That is not a no-consistency funded account."
+    quotes:
+      - url: "https://support.lucidtrading.com/en/articles/12890178-luciddirect-consistency-percentage"
+        quote: "LucidDirect uses a 20% consistency rule."
+  fundednext_rapid_pro:
+    simulate: false
+    exclude: "Bots are allowed, but the funded account has a 40% consistency rule, so the one-big-day payout is blocked."
+    quotes:
+      - url: "https://helpfutures.fundednext.com/en/articles/17230245-is-there-any-consistency-rule-to-be-followed-in-the-fundednext-futures-challenge-fundednext-account"
+        quote: "On the FundedNext Account, 40% consistency applies only to Rapid Pro. Legacy and Flex have no consistency rule once funded. Direct is 20% perpetual. Rapid Daily has none at either stage and uses a buffer."
+  tradeify_growth:
+    simulate: false
+    exclude: "Bots are allowed under the same exclusive-use rule, but Growth sim-funded payouts have a 35% consistency rule."
+    quotes:
+      - url: "https://help.tradeify.co/en/articles/10468320-rules-consistency-rule"
+        quote: "Growth Sim Funded Accounts must follow a 35% Consistency Rule."
+
