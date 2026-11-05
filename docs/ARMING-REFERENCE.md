@@ -1,5 +1,7 @@
 # ARMING REFERENCE — rebuilt canon, NY pre-market + golden window
 
+> **INVALID — 2026-11-03.** The dollar totals in this file (including fit +$82,543 and holdout +$48,211) come from the end-of-minute depth book. Do not quote them and do not arm against them. See the banner in `docs/CANON.md`.
+
 **Status: NOT ARMED. This document does not arm anything.** Arming requires Angus's token
 against a certified commit (`src/live/arming.py`, two-party). What follows is the package
 that has to be signed off *before* that step, plus an explicit list of what is still

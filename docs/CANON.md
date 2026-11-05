@@ -1,6 +1,18 @@
-# THE CANON — single source of truth (ANGUS ruling, 2026-07-29)
+# THE CANON — historical note, not a result
 
-**If you are a chat/session orienting yourself in this repo: this file is the law.**
+> **INVALID — 2026-11-03.** Do not quote the dollar figures in this file.
+> The lucid and scaled600 totals (including +$77,202 / +$44,844, +$82,543 /
+> +$48,211, +$90,015 / +$56,409, and the "every month green" lines) were
+> scored on MBP-10 snapshots stored as the last book state of each minute.
+> A fill stamped at the start of that minute was allowed to see up to 60
+> seconds of future book. `docs/FINDING-depth-lookahead.md` measured the
+> damage: the pre-market wall check and the wall-size check change sign
+> once the book is lagged to the previous minute. Later, on a causal book,
+> the wall-quality cut reproduced the win rate and lost money in R.
+> Those totals are not an edge. The replacement research stack, which does
+> not trade, is `src/research/` and `config/prop_rules.yaml`.
+
+**If you are a chat/session orienting yourself in this repo: the dollar results below are not the law.**
 
 The pre-2026-07-28 "canon" (CANON-MECHANICAL, CHAMPION-v1.1, the old dashboards, the
 substrate/cap architecture, and every study built on it) was **structurally broken** — its
