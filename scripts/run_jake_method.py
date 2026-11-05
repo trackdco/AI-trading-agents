@@ -766,13 +766,15 @@ def render(rows, base, lives, coverage) -> str:
     lines = [
         "# Jake Ryan method test",
         "",
+        "The print count is the `trades` column on the footprint already in `data/reference/cvd/`. The follow-up that uses it is `docs/OF-VP-FOOTPRINT-TEST.md`. This note does not ask for another trades purchase. A refill of the offer inside the minute is still absent: that is a sub-second book, and the last-of-minute depth files are not a refill clock.",
+        "",
         _lead(rows, base),
         "",
         "Disarmed. Nothing here places an order. The rules are the four variants in the 5 Nov 2026 YouTube note, and no others. LucidFlex evals are modeled at 50%.",
         "",
         "The footprint in the repo is one row per minute, per price, per aggressor side, from 1 Jun 2025 through 15 Jul 2026. A same-minute 80th percentile needs 20 prior sessions, so June is the warmup and the first scored window is the holdout from 1 Jul 2025. There is no train sample and no real validation month for this flag. The list was frozen before that holdout was read. Benjamini-Hochberg at 10% is applied to the holdout test of mean R above zero, across the nine rows. That correction is on the first look, not on a separate validation pass.",
         "",
-        "His trigger is a sub-minute bubble and an offer that refreshes within seconds. This test uses the whole minute. A minute can show heavy buying and a down close even when the buying was rewarded for most of that minute. The flag is the spec's proxy, and it is coarse.",
+        "His trigger is a sub-minute bubble and an offer that refreshes within seconds. This test uses the whole minute's buy and sell volume. It does not use the `trades` column, which is the print count at that minute and price. That column is already on the footprint. The follow-up is `docs/OF-VP-FOOTPRINT-TEST.md`. A minute can still show heavy buying and a down close when the buying was rewarded for most of that minute.",
         "",
         f"Coverage: {coverage}",
         "",
@@ -824,19 +826,9 @@ def render(rows, base, lives, coverage) -> str:
             f"{money(row['life']['mean'])} ({money(row['life']['lo'])} to {money(row['life']['hi'])}) | {row['life']['pays']:.1f} |"
         )
     a("")
-    a("## What a real tick test would take")
+    a("## Print count, already on the footprint")
     a("")
-    a("The minute flag cannot see a single large print or an offer that reappears a few seconds later. Those need Databento `GLBX.MDP3`, symbol the NQ front month on the same roll as the one-minute master.")
-    a("")
-    a("`trades` is every fill with aggressor side, size, and exchange timestamp. That is the bubble and the true footprint profile. `mbo` is every order add, cancel, and modify. That is the refresh and an iceberg. GEX walls are options data. They are not in CME futures, so Databento will not supply the levels he imports from Discord.")
-    a("")
-    a("To rerun this holdout on the real trigger, pull both schemas from 1 Jun 2025 through 15 Jul 2026. The extra June is the 20-session warmup. Restricting the clock to 18:00 ET through 11:30 ET covers the weekly profile and the entry window. To choose a variant before reading the holdout, the pull has to start where the one-minute master starts, 2 Jan 2023, and run through 15 Jul 2026.")
-    a("")
-    a("Databento's public pricing page, read 5 Nov 2026, bills historical data by the uncompressed binary size and confirms a usage-based rate plus subscription plans. The page's rate table is drawn in the browser and did not come through as text. The unit-price sheet they still publish, dated 11 Dec 2024, lists `GLBX.MDP3` historical `trades` at $28 per GB and historical `mbo` at $1.80 per GB. New accounts get $125 of credit. The exact bill for a request is their `metadata.get_cost` call, not this note.")
-    a("")
-    a("This repo's April 2026 footprint note counts about 7.7 million front-month NQ trades in that month. The public `trades` fields pack to about 48 bytes. That is about 0.37 GB, about $10 at $28 per GB, which is the same $10 to $20 per month this project already used for the trades tape. Thirteen months, June 2025 through July 2026, is on the order of $130 to $260 if every month looks like April. The 2023-to-2026 span is longer, and 2023/24 volume was about half, so the trades bill for the whole master is a few hundred dollars. That is an estimate from the tick count, not an invoice.")
-    a("")
-    a("`mbo` is not priced by the trade count. April's ten-level book export in this repo was described as about 13 GB compressed and about 144 GB raw, and the project had been using about $80 for a month of that book. Market-by-order is a different schema. The $1.80 per GB rate is the listed price. The gigabytes are the part that has to be quoted before anyone buys it.")
+    a("This run scored absorption from total buy and sell volume in the minute. It did not use `trades`, the count of prints at that minute, price, and side. That column is the bubble. `docs/OF-VP-FOOTPRINT-TEST.md` reruns the fade with a single print of at least 15 contracts, and with the video's 60. GEX walls are not in the footprint. A sub-second refill of the offer is not in it either.")
     a("")
     return "\n".join(lines) + "\n"
 

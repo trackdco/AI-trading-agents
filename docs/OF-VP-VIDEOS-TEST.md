@@ -1,12 +1,14 @@
 # Order-flow and volume-profile videos
 
+The print count is already on the footprint, in the `trades` column. The bubble test that uses it is `docs/OF-VP-FOOTPRINT-TEST.md`. This note does not ask for another trades purchase.
+
 Neither A nor C beats `onhl_pull_s15` on the holdout. C never reached 80 validation fills. The best ranked A row, `a_mkt_poc`, has mean R 0.010 (-0.210 to 0.231) on 207 fills. The overnight pull is 0.270 (0.025 to 0.515) on 118 fills. Topstep per eval is $135 against $451.
 
 Disarmed. Nothing here places an order. LucidFlex evals are at 50%, and the lifecycle fee is the assumed $100. The two videos sell a room and a Discord. The examples are winners. One video calls the value-area edges the prices with the least volume. That is not how a value area is built. These tests use the ordinary 70% area around the heaviest price.
 
 Variant A anchors the profile at 18:00 ET and stops it at 09:29. Volume is the one-minute close, in one-tick bins. From 09:30 to 11:30, a bar trades at least one tick outside the area and a one-minute close is back inside within three bars, counting the poke bar. The market version fills on the next bar's open, one tick worse. The limit version rests at the reclaimed edge after that close. The stop is the poke extreme plus two ticks. The targets, each its own row, are the point of control, the opposite edge, and 1.7 times the stop.
 
-The footprint filter asks for 60 contracts of aggressive volume at the extreme price of the poke minute. That is the whole minute at that price, not one print of 60. It is labeled coarse for that reason. Variant B marks wick volume versus body volume on that same minute and enters on a later close back through the heaviest wick price. A minute cannot say where inside the bar the print happened. Both need tick `trades` before they are the rule in the video.
+The footprint filter in this note asks for 60 contracts of aggressive volume at the extreme price of the poke minute. That sum can be many small prints. The later note splits it with the `trades` column, which is the print count at that minute and price. Variant B marks wick volume versus body volume on the finished bar. The footprint gives the price of each aggressor row, so body versus wick is testable. It does not give the order of those prints inside the minute.
 
 Variant C keeps an overnight push only when the overnight range is at least half the prior 20 cash-session ranges and the 09:29 close is in the outer 30% of that range. The leg is profiled from the overnight extreme to 09:29. A vacuum is a thin tail, rows under the median volume, covering at least 15% of the leg. A five-minute close back through the leg's point of control enters, at the next open plus one tick. The stop is four points beyond that point of control. The target is the far end of the thin tail. After the target prints, the stop trails to the completed five-minute bar, and it only tightens. Two attempts, and the second only if the first never reached the target.
 
@@ -64,15 +66,7 @@ The lifecycle replays the selected entry, not its native target. The eval is 0.7
 | LucidFlex | onhl | 40.8% | $262 ($175 to $349) | 37.2 | 3.18 | $717 ($413 to $1,021) | 34.0% |
 | FundedNext Futures Flex | onhl | 43.0% | $247 ($166 to $328) | 39.2 | 3.62 | $717 ($449 to $984) | 37.0% |
 
-## Databento pull, not bought
+## Print count
 
-A two-month pilot of NQ trades fits inside the $125 credit on a new Databento account. This run did not call the API and did not spend the credit.
-
-Buy `GLBX.MDP3`, schema `trades`, the front-month outright on the same roll as `data/reference/nq_1m_master`. Drop calendar spreads. Pass timezone-aware `America/New_York` timestamps. Do not hardcode one UTC offset: 2 March 2026 is still Eastern Standard Time, and 8 March is the change to daylight time.
-
-Window: 2 March 2026 18:00 ET through 30 April 2026 16:00 ET. Both months are inside the holdout, so the tick profile can be compared with this minute test. A clock of 18:00 to 11:30 ET is enough for the overnight profile and the morning entry, and it cuts the afternoon.
-
-The unit sheet dated 11 December 2024 lists historical `trades` at $28 per GB. The pricing page read on 5 November 2026 still bills the uncompressed binary size. April 2026 in this repo is about 7.7 million front-month trades. At about 48 bytes a trade that is about 0.37 GB, about $10. Two months are on the order of $20 to $40 before the clock filter, inside the $125 credit, which expires six months after signup. That is an estimate from the tick count, not an invoice. The exact number is `metadata.get_cost` before anyone confirms the download.
-
-`scripts/trades_profile.py` reads a trades table and builds the one-tick value area, clusters of prints at or above a contract threshold, the body-versus-wick location once the minute bar exists, and an absorption flag: a large aggressive print at the extreme with no further progress for N seconds. Sixty MNQ contracts are six NQ. The video did not say which one.
+The footprints in `data/reference/cvd/` are the condensed trades tape. `trades` is the number of prints behind `volume` at that minute, price, and aggressor side. The bubble test is in `docs/OF-VP-FOOTPRINT-TEST.md`. No further trades file was bought for that test. A sub-second refill is the piece those files do not contain.
 
